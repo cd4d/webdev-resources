@@ -1,0 +1,5 @@
+[
+  { "python": ["django", "fundamentals", "flask"] },
+  { "javascript": ["node", "fundamentals", "react"] },
+  { "HTML": ["HTML5", "fundamentals", "media-queries"] }
+]

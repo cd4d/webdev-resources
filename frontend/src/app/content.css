@@ -1,0 +1,7 @@
+
+
+.content {
+    display: grid;
+    grid-template-columns: auto-fit [sidebar]1fr [content]3fr;
+    grid-template-areas: "sidebar content";
+}
