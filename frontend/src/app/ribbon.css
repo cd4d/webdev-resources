@@ -1,14 +1,8 @@
 .ribbon {
-    margin-top: 1rem;
-}
-
-.subjects-ribbon {
-  list-style-type: none;
-  display: flex;
-  flex-wrap: wrap;
+  margin-top: 1rem;
+  
 }
 
 .subject {
   text-decoration: none;
-  
 }

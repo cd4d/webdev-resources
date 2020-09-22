@@ -1,5 +1,4 @@
-
- .sidebar {
-    float: left;
-    min-height: 100%;
- }
+.sidebar {
+  background-color: lightgreen;
+  grid-column: 1/2;
+}

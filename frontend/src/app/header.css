@@ -1,7 +1,10 @@
 .header-container {
   display: flex;
   max-height: 150px;
-  margin-bottom: 1rem;;
+  margin-bottom: 1rem;
+  background-color: lightpink;
+  position: fixed;
+  width: 100%;
 }
 
 .logo {

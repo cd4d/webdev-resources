@@ -10,7 +10,7 @@ export default function () {
     <nav className="ribbon">
       <ul className="subjects-ribbon">
         {titles.map((title) => (
-          <li className="subject btn btn-outline-light mr-3" key={uuidv4()}>
+          <li className="subject btn btn-outline-dark mr-3" key={uuidv4()}>
             <Subject  subjectTitle={title}/>
           </li>
         ))}

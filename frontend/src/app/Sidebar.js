@@ -1,9 +1,9 @@
 import React from "react";
-
+import "./sidebar.css"
 export default function (props) {
   return (
     <div className="sidebar" >
-      <nav className="nav">
+      <nav >
         <ul>
           <li>element 1</li>
           <li>element 2</li>
