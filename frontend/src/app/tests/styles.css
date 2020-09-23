@@ -1,0 +1,30 @@
+.content {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  grid-template-areas: "sidebar content";
+}
+.sidebar {
+  background-color: lightgreen;
+  grid-column: 1/2;
+}
+
+.header-container {
+  display: flex;
+  max-height: 150px;
+  margin-bottom: 1rem;
+  background-color: lightpink;
+  position: fixed;
+  width: 100%;
+}
+
+.logo {
+  height: 100%;
+}
+.main {
+  background-color: lightblue;
+  grid-column: 2/3;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}

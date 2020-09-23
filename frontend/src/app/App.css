@@ -1,7 +1,11 @@
-.App {
-  text-align: center;
+html { /*CSS variable for fixed header*/
+  --top-spacing: 150px;
 }
-
+body {
+  scroll-padding-top: var(--top-spacing);
+  /* overriding bootstrap margin */
+  margin: var(--top-spacing) auto !important;
+}
 .content {
   display: grid;
   grid-template-columns: [left]1fr [main]4fr;
