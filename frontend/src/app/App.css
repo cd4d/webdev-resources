@@ -9,29 +9,40 @@ body {
   display: flex;
   box-sizing: border-box;
 }
-.top{
-  background-color: #333;
-  padding: 20px;
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  position: fixed;
-  color: white;
-}
+
 .column {
-  height: 100vh;  /*allows both columns to span the full height of the browser window*/
+  height: 100vh; /*allows both columns to span the full height of the browser window*/
   display: flex;
-  flex-direction: column;  /*places the left and right headers above the bottom content*/
+  flex-direction: column; /*places the left and right headers above the bottom content*/
 }
 .lower {
   height: 100vh;
   display: flex;
   overflow: hidden;
-  padding-top: var(--top-spacing);	
+  padding-top: var(--top-spacing);
 }
 .content {
-  flex-grow: 1;  /*ensures that the container will take up the full height of the parent container*/
-  overflow-y: auto;  /*adds scroll to this container*/
-  
+  flex-grow: 1; /*ensures that the container will take up the full height of the parent container*/
+  overflow-y: auto; /*adds scroll to this container*/
+}
+
+/* Media queries  */
+@media (max-width: 505px) {
+  .ribbon {
+    display: none;
+  }
+}
+
+
+@media (max-width: 767px) {
+  #mobile-menu-checkbox {
+    display: none;
+  }
+  /* toggle mobile menu */
+  label[for="mobile-menu-checkbox"] {
+    display: block;
+  }
+  #mobile-menu-checkbox:not(:checked) ~ .sidebar {
+    display: none;
+  }
 }

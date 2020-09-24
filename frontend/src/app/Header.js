@@ -6,11 +6,11 @@ import "./header.css";
 export default function () {
   return (
     <div className="header-container top">
+    <label for="mobile-menu-checkbox">Menu</label>
+    
+      <img className="logo" src={logo} alt="logo" />
 
-        <img className="logo" src={logo} alt="logo" />
- 
       <Ribbon />
-      <hr />
     </div>
   );
 }

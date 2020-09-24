@@ -1,18 +1,17 @@
-import React from 'react';
-import './App.css';
-import Header from "./Header"
+import React from "react";
+
+import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Main from "./Main";
-
+import "./App.css"; // keep last for CSS order
 function App() {
   return (
-    
     <>
-     <Header/>
-    <div className="lower">
-     <Sidebar />
-      <Main />
-</div>
+      <Header />
+      <div className="lower">
+        <Sidebar />
+        <Main />
+      </div>
     </>
   );
 }

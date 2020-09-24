@@ -1,8 +1,12 @@
 .ribbon {
-  margin-top: 1rem;
-  
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
+.subjects-ribbon {
+  margin: 0;
+}
 .subject {
   text-decoration: none;
 }

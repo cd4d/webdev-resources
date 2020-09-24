@@ -1,9 +1,12 @@
+
 .sidebar {
   background-color: lightgreen;
-}
+  padding: 0.5rem 1rem 1rem;}
 
 .sidebar-items {
   list-style-type: none;
-  padding: 20px ;
-  margin: auto 20px;
+  padding: 0 1rem 0 0 ;
+  margin: 1rem 1rem 0;
+  width: 100%;
+  line-height: 1.8;
 }

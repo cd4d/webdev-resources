@@ -2,8 +2,12 @@ import React from "react";
 import "./sidebar.css"
 export default function (props) {
   return (
+    <>
+    <input type="checkbox" id="mobile-menu-checkbox"/>
     <div className="sidebar column" >
+    
       <nav className="content">
+      
         <ul className="sidebar-items">
           <li>element 1</li>
           <li>element 2</li>
@@ -32,5 +36,6 @@ export default function (props) {
         </ul>
       </nav>
     </div>
+    </>
   );
 }
