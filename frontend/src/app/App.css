@@ -1,13 +1,37 @@
-html { /*CSS variable for fixed header*/
+html {
+  /*CSS variable for fixed header*/
   --top-spacing: 150px;
 }
 body {
-  scroll-padding-top: var(--top-spacing);
-  /* overriding bootstrap margin */
-  margin: var(--top-spacing) auto !important;
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  box-sizing: border-box;
+}
+.top{
+  background-color: #333;
+  padding: 20px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  color: white;
+}
+.column {
+  height: 100vh;  /*allows both columns to span the full height of the browser window*/
+  display: flex;
+  flex-direction: column;  /*places the left and right headers above the bottom content*/
+}
+.lower {
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+  padding-top: var(--top-spacing);	
 }
 .content {
-  display: grid;
-  grid-template-columns: [left]1fr [main]4fr;
-  grid-template-areas: "sidebar content";
+  flex-grow: 1;  /*ensures that the container will take up the full height of the parent container*/
+  overflow-y: auto;  /*adds scroll to this container*/
+  
 }

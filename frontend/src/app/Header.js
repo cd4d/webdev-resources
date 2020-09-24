@@ -5,10 +5,10 @@ import Ribbon from "./Ribbon";
 import "./header.css";
 export default function () {
   return (
-    <div className="header-container ">
-      <div>
+    <div className="header-container top">
+
         <img className="logo" src={logo} alt="logo" />
-      </div>
+ 
       <Ribbon />
       <hr />
     </div>

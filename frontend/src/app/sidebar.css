@@ -1,4 +1,9 @@
 .sidebar {
   background-color: lightgreen;
-  grid-column: 1/2;
+}
+
+.sidebar-items {
+  list-style-type: none;
+  padding: 20px ;
+  margin: auto 20px;
 }

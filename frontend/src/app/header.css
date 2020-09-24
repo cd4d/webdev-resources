@@ -1,14 +1,10 @@
 .header-container {
-  display: flex;
-  max-height: 150px;
-  margin-bottom: 1rem;
+
   background-color: lightpink;
-  position: fixed;
-  width: 100%;
-  top:0;
-  left:0;
+max-height: 150px;
 }
 
 .logo {
-  height: 100%;
+  max-width: 100%;
+  height: auto;
 }

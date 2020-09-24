@@ -9,11 +9,10 @@ function App() {
     
     <>
      <Header/>
-    
-  <div className="content">
+    <div className="lower">
      <Sidebar />
       <Main />
-    </div>
+</div>
     </>
   );
 }

@@ -2,7 +2,7 @@ import React from "react";
 import "./main.css";
 export default function () {
   return (
-    <div className="main">
+    <div className="main content column">
       <div>
         <h1>Subject title</h1>
         <p>
