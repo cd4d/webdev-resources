@@ -1,5 +1,28 @@
 [
-  { "python": ["django", "fundamentals", "flask"] },
-  { "javascript": ["node", "fundamentals", "react"] },
-  { "HTML": ["HTML5", "fundamentals", "media-queries"] }
+  {
+    "python": [
+      "django",
+      "general",
+      "flask"
+    ]
+  },
+  {
+    "javascript": [
+      "general"
+    ]
+  },
+  {
+    "HTML": [
+      "HTML5",
+      "general",
+      "media-queries"
+    ]
+  },
+  {
+    "webdev": [
+      "node",
+      "general",
+      "react"
+    ]
+  }
 ]

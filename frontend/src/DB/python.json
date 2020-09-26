@@ -1,0 +1,43 @@
+{
+    "topic": "python",
+    "title": "Python",
+    "sublevels": [
+        "OOP"
+    ],
+    "links": [
+        {
+            "title": "5. Data Structures — Python 3.8.0 documentation",
+            "url": "https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions"
+        },
+        {
+            "title": "Code with Python (The Modern Python 3 Bootcamp) | Udemy",
+            "url": "https://www.udemy.com/course/the-modern-python3-bootcamp/#instructor-1"
+        },
+        {
+            "title": "Object-Oriented Programming (OOP) in Python 3 – Real Python",
+            "url": "https://realpython.com/python3-object-oriented-programming/"
+        },
+        {
+            "title": "Python Functions | DataCamp",
+            "url": "https://www.datacamp.com/courses/python-data-science-toolbox-part-1"
+        },
+        {
+            "title": "Python Tutorial: Object Oriented Programming",
+            "url": "https://www.python-course.eu/python3_object_oriented_programming.php"
+        },
+        {
+            "title": "Table of contents - Dive Into Python 3",
+            "url": "https://diveinto.org/python3/table-of-contents.html#iterators"
+        },
+        {
+            "title": "The Flask Mega-Tutorial Part I: Hello, World! - miguelgrinberg.com",
+            "index": 7,
+
+            "url": "https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world"
+        },
+        {
+            "title": "How To Code in Python 3 | DigitalOcean",
+            "url": "https://www.digitalocean.com/community/tutorial_series/how-to-code-in-python-3"
+        }
+    ]
+}

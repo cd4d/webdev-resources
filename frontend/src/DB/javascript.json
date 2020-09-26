@@ -1,0 +1,29 @@
+{
+    "topic": "javascript",
+    "title": "Javascript",
+    "sublevels": [
+        "OOP"
+    ],
+    "links": [
+        {
+            "title": "JavaScript: Understanding the Weird Parts | Udemy",
+            "url": "https://www.udemy.com/course/understand-javascript/?couponCode=6118495DE2F1408C71A1"
+        },
+        {
+            "title": "Eloquent JavaScript",
+            "url": "http://eloquentjavascript.net/"
+        },
+        {
+            "title": "Flavio Copes",
+            "url": "https://flaviocopes.com"
+        },
+        {
+            "title": "JavaScript 30 — Build 30 things with vanilla JS in 30 days with 30 tutorials",
+            "url": "https://javascript30.com/"
+        },
+        {
+            "title": "The Modern JavaScript Tutorial",
+            "url": "https://javascript.info/"
+        }
+    ]
+}
