@@ -25,9 +25,7 @@ export default function () {
           ))}
         </ul>
       </nav>
-      <Switch>
-        <Route path="/:subject" component={Main}></Route>
-      </Switch>
+
     </>
   );
 }
