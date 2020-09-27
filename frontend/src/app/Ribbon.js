@@ -1,4 +1,5 @@
 import React from "react";
+import Main from "./Main";
 import {
   BrowserRouter as Router,
   Switch,
@@ -25,7 +26,7 @@ export default function () {
         </ul>
       </nav>
       <Switch>
-        <Route></Route>
+        <Route path="/:subject" component={Main}></Route>
       </Switch>
     </>
   );

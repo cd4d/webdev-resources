@@ -4,7 +4,10 @@ import Lorem from "./tests/lorem"
 import webDevData from "../DB/web-development.json"
 import nodeData from "../DB/node.json"
 
-export default function () {
+
+export default function (props) {
+  let displayedData = props.match
+  console.log(displayedData.match);
   return (
     <div className="main content column">
       <h1>{webDevData.title}</h1>
