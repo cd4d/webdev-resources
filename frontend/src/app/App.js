@@ -1,30 +1,44 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  NavLink,
-} from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
+import webdev from "../DB/web-development.json";
+import node from "../DB/node.json";
+import javascript from "../DB/javascript.json";
+import HTML from "../DB/html-css.json";
+import python from "../DB/python.json";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Main from "./Main";
 import "./App.css"; // keep last for CSS order
+const mockDB = [
+  { ...webdev },
+  { ...node },
+  { ...javascript },
+  { ...HTML },
+  { ...python },
+];
+
 function App() {
   return (
     <>
       <Header />
       <div className="lower">
         <Sidebar />
-        <Main />
+
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={() => <Main topic="javascript" />}
+          ></Route>
+          <Route
+            exact
+            path="/:topic"
+            render={(routeProps) => <Main {...routeProps} mockDB={mockDB} />}
+          ></Route>
+        </Switch>
       </div>
-
-  
-
-      <Switch>
-        <Route exact path="/" render={() => <Main topic="javascript" />}></Route>
-        <Route exact path="/:topic" render={(routeProps) => <Main {...routeProps} />}></Route>
-      </Switch>
-    </>)
+    </>
+  );
 }
 
 export default App;
