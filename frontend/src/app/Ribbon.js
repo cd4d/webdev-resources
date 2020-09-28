@@ -13,7 +13,7 @@ export default function () {
       <nav className="ribbon">
         <ul className="subjects-ribbon">
           {topics.map((topic) => (
-            <li className="subject btn btn-outline-dark mr-3" key={uuidv4()}>
+            <li className="subject btn btn-outline-dark mr-3 btn-responsive" key={uuidv4()}>
               <NavLink className="nav-link" to={`/${topic}`}>
                 <Subject subjectTitle={topic} />
               </NavLink>

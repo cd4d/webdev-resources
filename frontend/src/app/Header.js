@@ -7,7 +7,7 @@ export default function () {
   return (
     <div className="header-container top">
       <label htmlFor="mobile-menu-checkbox">Menu</label>
-      <img className="logo" src={logo} alt="logo" />
+      <a href="/"><img className="logo" src={logo} alt="logo" /></a>
       <Ribbon />
     </div>
   );
