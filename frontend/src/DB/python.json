@@ -2,8 +2,10 @@
     "topic": "python",
     "title": "Python",
     "sublevels": [
-        "OOP"
-    ],
+        {"title":"django"},
+        {"title":"general"},
+        {"title":"flask"}
+      ],
     "links": [
         {
             "title": "5. Data Structures — Python 3.8.0 documentation",

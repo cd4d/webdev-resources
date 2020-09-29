@@ -22,19 +22,16 @@ function App() {
     <>
       <Header />
       <div className="lower">
-        <Sidebar />
+        <Sidebar mockDB={mockDB} />
 
         <Switch>
           <Route
             exact
-            path="/"
-            render={() => <Main topic="javascript" />}
-          ></Route>
-          <Route
-            exact
             path="/:topic"
-            render={(routeProps) => <Main {...routeProps} mockDB={mockDB} />}
+            render={(routeProps) => <Main {...routeProps} mockDB={mockDB}  />}
           ></Route>
+          <Route path="/" render={() => <Main />}></Route>
+          
         </Switch>
       </div>
     </>

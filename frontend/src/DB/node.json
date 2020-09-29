@@ -2,8 +2,8 @@
     "topic": "node",
     "title": "Node JS",
     "sublevels": [
-        "express",
-        "passport"
+        {"title":"express"},
+        {"title":"passport"}
     ],
     "links": [
         {

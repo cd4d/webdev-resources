@@ -1,30 +1,27 @@
 {
-    "topic": "webdev",
-    "title": "Web Development",
-    "sublevels": [
-        "node",
-        "react"
-    ],
-    "links": [
-        {
-            "title": "Web Development Course Resources | The App Brewery",
-            "url": "https://www.appbrewery.co/p/web-development-course-resources/"
-        },
-        {
-            "title": "webdev: reddit for web developers",
-            "url": "https://www.reddit.com/r/webdev/"
-        },
-        {
-            "title": "How I became a web developer in under 7 months – and how you can too",
-            "url": "https://www.freecodecamp.org/news/how-i-became-a-web-developer-in-under-7-months-and-how-you-can-too/"
-        },
-        {
-            "title": "API Marketplace - Free Public & Open Rest APIs | RapidAPI",
-            "url": "https://rapidapi.com/"
-        },
-        {
-            "title": "Tools & resources I use for front-end development - Tomas Pustelnik's personal website",
-            "url": "https://pustelto.com/blog/tools-i-use/"
-        }
-    ]
+  "topic": "webdev",
+  "title": "Web Development",
+  "sublevels": [{"title":"node"}, {"title":"react"}, {"title":"general"}],
+  "links": [
+    {
+      "title": "Web Development Course Resources | The App Brewery",
+      "url": "https://www.appbrewery.co/p/web-development-course-resources/"
+    },
+    {
+      "title": "webdev: reddit for web developers",
+      "url": "https://www.reddit.com/r/webdev/"
+    },
+    {
+      "title": "How I became a web developer in under 7 months – and how you can too",
+      "url": "https://www.freecodecamp.org/news/how-i-became-a-web-developer-in-under-7-months-and-how-you-can-too/"
+    },
+    {
+      "title": "API Marketplace - Free Public & Open Rest APIs | RapidAPI",
+      "url": "https://rapidapi.com/"
+    },
+    {
+      "title": "Tools & resources I use for front-end development - Tomas Pustelnik's personal website",
+      "url": "https://pustelto.com/blog/tools-i-use/"
+    }
+  ]
 }
