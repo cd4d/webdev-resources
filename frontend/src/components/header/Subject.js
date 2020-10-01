@@ -3,7 +3,7 @@ import React from 'react';
 export default function(props){
     return(
         <>
-        {props.subjectTitle}
+        {props.topicTitle}
         </>
     )
 }
