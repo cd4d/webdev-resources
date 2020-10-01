@@ -1,7 +1,7 @@
 {
   "topic": "javascript",
   "title": "Javascript",
-  "sublevels": [{"title":"OOP"}, {"title":"general"}],
+
   "links": [
     {
       "title": "JavaScript: Understanding the Weird Parts | Udemy",
@@ -23,5 +23,13 @@
       "title": "The Modern JavaScript Tutorial",
       "url": "https://javascript.info/"
     }
+  ],
+  "sublevels": [
+    {
+      "title": "OOP",
+      "topic": "oop",
+      "sublevels": [{ "title": "express" }, { "title": "passport" }]
+    },
+    { "title": "general" }
   ]
 }

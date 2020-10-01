@@ -9,13 +9,11 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Main from "./Main";
 import "./App.css"; // keep last for CSS order
-const mockDB = [
-  { ...webdev },
-  { ...node },
-  { ...javascript },
-  { ...HTML },
-  { ...python },
-];
+const mockDB = [{ ...webdev }, { ...javascript }, { ...HTML }, { ...python }];
+
+
+
+
 
 function App() {
   return (
@@ -27,13 +25,22 @@ function App() {
         <Switch>
           <Route
             exact
-            path="/:topic"
-            render={(routeProps) => <Main {...routeProps} mockDB={mockDB}  />}
+            path="/:mainTopic"
+            render={(routeProps) => (
+              <Main {...routeProps} mockDB={mockDB} />
+            )}
+          ></Route>
+          <Route
+            exact
+            path="/:mainTopic/:firstSubLvl"
+            render={(routeProps) => (
+              <Main {...routeProps}  mockDB={mockDB} />
+            )}
           ></Route>
           <Route path="/" render={() => <Main />}></Route>
-          
         </Switch>
       </div>
+      dsdsdsd
     </>
   );
 }

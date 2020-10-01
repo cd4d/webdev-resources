@@ -1,7 +1,7 @@
 {
   "topic": "webdev",
   "title": "Web Development",
-  "sublevels": [{"title":"node"}, {"title":"react"}, {"title":"general"}],
+  
   "links": [
     {
       "title": "Web Development Course Resources | The App Brewery",
@@ -23,5 +23,32 @@
       "title": "Tools & resources I use for front-end development - Tomas Pustelnik's personal website",
       "url": "https://pustelto.com/blog/tools-i-use/"
     }
-  ]
+  ],
+  "sublevels": [{
+    "topic": "node",
+    "title": "Node JS",
+    "sublevels": [
+        {"title":"express"},
+        {"title":"passport"}
+    ],
+    "links": [
+        {
+            "title": "Node.js Resiliency Concepts: Recovery and Self-Healing | AppSignal Blog",
+            "url": "https://blog.appsignal.com/2020/09/09/nodejs-resiliency-concepts-recovery-and-self-healing.html"
+        },
+        {
+            "title": "12 Useful Packages Every Node.js Developer Should Know | by Indrek Lasn | Better Programming | Sep, 2020 | Medium",
+            "url": "https://medium.com/better-programming/12-useful-packages-every-node-js-developer-should-know-2746db760e"
+        },
+        {
+            "title": "How to manage secrets and configs using dotenv in Node.js and Docker - DEV",
+            "url": "https://dev.to/getd/how-to-manage-secrets-and-configs-using-dotenv-in-node-js-and-docker-2214"
+        },
+        {
+            "title": "Node.js Error Handling Best Practices: Ship With Confidence",
+            "url": "https://stackify.com/node-js-error-handling/"
+        }
+        
+    ]
+}, {"title":"react"}, {"title":"general"}]
 }

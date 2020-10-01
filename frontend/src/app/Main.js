@@ -4,44 +4,53 @@ import "./main.css";
 import getTopicData, { displayLinks } from "./utils";
 
 export default function (props) {
-  
   // default data to be displayed
   let displayedData = {
     topic: "web resources",
     title: "Web resources",
     links: [
       {
-        title: "JavaScript: Understanding the Weird Parts | Udemy",
+        title:
+          "Web Development - Online Courses, Classes, Training, Tutorials on Lynda",
         url:
-          "https://www.udemy.com/course/understand-javascript/?couponCode=6118495DE2F1408C71A1",
+          "https://www.lynda.com/Web-Development-training-tutorials/1471-0.html",
       },
       {
-        title: "Eloquent JavaScript",
-        url: "http://eloquentjavascript.net/",
-      },
-      {
-        title: "Flavio Copes",
-        url: "https://flaviocopes.com",
+        title: "webdev: reddit for web developers",
+        url: "https://www.reddit.com/r/webdev/",
       },
       {
         title:
-          "JavaScript 30 — Build 30 things with vanilla JS in 30 days with 30 tutorials",
-        url: "https://javascript30.com/",
+          "How I became a web developer in under 7 months – and how you can too",
+        url:
+          "https://www.freecodecamp.org/news/how-i-became-a-web-developer-in-under-7-months-and-how-you-can-too/",
       },
       {
-        title: "The Modern JavaScript Tutorial",
-        url: "https://javascript.info/",
+        title: "API Marketplace - Free Public & Open Rest APIs | RapidAPI",
+        url: "https://rapidapi.com/",
+      },
+
+      {
+        title:
+          "cdnjs - The #1 free and open source CDN built to make life easier for developers",
+        url: "https://cdnjs.com/",
+      },
+      {
+        title: "Frontend Mentor | Challenges",
+        url: "https://www.frontendmentor.io/challenges",
       },
     ],
   };
-  // access db if route matches 
+  // access db if route matches, to be replaced by validation in backend
   if (Object.keys(props).length != 0 && props.match.params) {
     // query DB
-    let queryDBResult = getTopicData(props.mockDB, props.match.params.topic);
+    let topic = props.match.params.firstSubLvl || props.match.params.mainTopic;
+    console.log(topic);
+    let queryDBResult = getTopicData(props.mockDB, topic);
+    console.log(queryDBResult);
     // update displayedData if result
     if (queryDBResult != undefined) displayedData = queryDBResult;
   }
-
   return (
     <div className="main content column">
       <h1>{displayedData.title}</h1>
