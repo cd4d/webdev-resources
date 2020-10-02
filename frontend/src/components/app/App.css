@@ -27,16 +27,13 @@ body {
   align-items: center;
 }
 
-
 /* Media queries  */
 @media (max-width: 505px) {
   .ribbon {
     display: none;
   }
-  
 }
-@media (max-width: 680px){
-  
+@media (max-width: 680px) {
 }
 
 @media (max-width: 767px) {
@@ -50,9 +47,10 @@ body {
   #mobile-menu-checkbox:not(:checked) ~ .sidebar {
     display: none;
   }
+
   .btn {
-    padding:2px 4px;
-    font-size:80%;
+    padding: 2px 4px;
+    font-size: 80%;
     line-height: 1;
   }
 }

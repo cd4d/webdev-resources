@@ -1,18 +1,23 @@
 import React from "react";
 import "./sidebar.css";
 import { v4 as uuidv4 } from "uuid";
+import { Link } from "react-router-dom";
 // https://dev.to/jsmanifest/create-a-modern-dynamic-sidebar-menu-in-react-using-recursion-36eo
 
 function SidebarItem(item) {
-
   return (
     <li key={uuidv4()}>
-      { <a href={`${item.stringUrl}${item.topic}`}>{item.title}</a>}
+      {<Link to={`${item.stringUrl}${item.topic}`}>{item.title}</Link>}
       {/* Sublevel, adding topic to build url e.g webdev/node */}
       {Array.isArray(item.sublevels) && (
         <ul>
           {item.sublevels.map((subItem) => (
-            <SidebarItem key={uuidv4()} depth={item.depth + 1} stringUrl={item.stringUrl + item.topic + "/"} {...subItem} />
+            <SidebarItem
+              key={uuidv4()}
+              depth={item.depth + 1}
+              stringUrl={item.stringUrl + item.topic + "/"}
+              {...subItem}
+            />
           ))}
         </ul>
       )}
@@ -20,7 +25,6 @@ function SidebarItem(item) {
   );
 }
 export default function (props) {
-
   return (
     <>
       <input type="checkbox" id="mobile-menu-checkbox" />
