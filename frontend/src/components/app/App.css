@@ -33,6 +33,13 @@ body {
   .ribbon {
     display: none;
   }
+  
+}
+@media (max-width: 680px){
+  
+}
+
+@media (max-width: 767px) {
   #mobile-menu-checkbox {
     display: none;
   }
@@ -43,11 +50,6 @@ body {
   #mobile-menu-checkbox:not(:checked) ~ .sidebar {
     display: none;
   }
-}
-
-
-@media (max-width: 767px) {
-  
   .btn {
     padding:2px 4px;
     font-size:80%;

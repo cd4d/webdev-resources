@@ -44,8 +44,7 @@ export default function (props) {
   // access db if route matches, to be replaced by validation in backend
   if (Object.keys(props).length !== 0 && props.match.params) {
     // query DB
-    let topic = props.match.params.firstSubLvl || props.match.params.mainTopic;
-    console.log(topic);
+    let topic = props.match.params.secondSubLvl || props.match.params.firstSubLvl || props.match.params.mainTopic;
     let queryDBResult = getTopicData(props.mockDB, topic);
     console.log(queryDBResult);
     // update displayedData if result

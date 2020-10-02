@@ -27,9 +27,24 @@
   "sublevels": [
     {
       "title": "OOP",
-      "topic": "oop",
-      "sublevels": [{ "title": "express" }, { "title": "passport" }]
+      "topic": "oop"
     },
-    { "title": "general" }
+    { "title": "general", "topic": "general" },
+    {
+      "title": "ES6",
+      "topic": "es6",
+      "sublevels": [
+        {
+          "title": "general",
+          "topic": "general",
+          "links": [
+            {
+              "url": "https://lorenstewart.me/2017/01/22/javascript-array-methods-mutating-vs-non-mutating/",
+              "title": "javascript-array-methods-mutating-vs-non-mutating"
+            }
+          ]
+        }
+      ]
+    }
   ]
 }

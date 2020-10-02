@@ -7,12 +7,12 @@ function SidebarItem(item) {
 
   return (
     <li key={uuidv4()}>
-      { <a href={`/${item.topic}`}>{item.title}</a>}
-      {/* Sublevel */}
+      { <a href={`${item.stringUrl}${item.topic}`}>{item.title}</a>}
+      {/* Sublevel, adding topic to build url e.g webdev/node */}
       {Array.isArray(item.sublevels) && (
         <ul>
           {item.sublevels.map((subItem) => (
-            <SidebarItem key={uuidv4()} depth={item.depth + 1} {...subItem} />
+            <SidebarItem key={uuidv4()} depth={item.depth + 1} stringUrl={item.stringUrl + item.topic + "/"} {...subItem} />
           ))}
         </ul>
       )}
@@ -28,7 +28,7 @@ export default function (props) {
         <nav className="content">
           <ul className="sidebar-items">
             {props.mockDB.map((item) => (
-              <SidebarItem key={uuidv4()} depth={0} {...item} />
+              <SidebarItem key={uuidv4()} depth={0} stringUrl="/" {...item} />
             ))}
           </ul>
         </nav>

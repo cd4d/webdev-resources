@@ -2,9 +2,9 @@
     "topic": "python",
     "title": "Python",
     "sublevels": [
-        {"title":"django"},
-        {"title":"general"},
-        {"title":"flask"}
+        {"title":"django","topic": "django"},
+        {"title":"general","topic": "general"},
+        {"title":"flask","topic": "flask"}
       ],
     "links": [
         {

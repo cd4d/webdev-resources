@@ -16,6 +16,11 @@ export default function () {
         path="/:mainTopic/:firstSubLvl"
         render={(routeProps) => <Main {...routeProps} mockDB={mockDB} />}
       ></Route>
+      <Route
+        exact
+        path="/:mainTopic/:firstSubLvl/:secondSubLvl"
+        render={(routeProps) => <Main {...routeProps} mockDB={mockDB} />}
+      ></Route>
       <Route path="/" render={() => <Main />}></Route>
     </Switch>
   );

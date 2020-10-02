@@ -1,12 +1,26 @@
-
 .sidebar {
   background-color: lightgreen;
-  padding: 0.5rem 1rem 1rem;}
+  padding: 0.5rem 1rem 1rem;
+  animation-name: sidebar-animation;
+  animation-duration: 300ms;
+}
 
 .sidebar-items {
   list-style-type: none;
-  padding: 0 ;
+  padding: 0;
   margin: 1rem 1rem 0;
-  
+
   line-height: 1.8;
+}
+@keyframes sidebar-animation {
+  from {
+    margin-left: -500px
+  }
+  
+  /* 99% {
+    margin-left: -5px
+  } */
+  to {
+    margin-left: 0px
+  }
 }
