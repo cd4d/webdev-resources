@@ -2,6 +2,8 @@ import React from "react";
 import "./main.css";
 //import Lorem from "./tests/lorem"
 import getTopicData, { displayLinks } from "../../utils/utils";
+import "./NavigationPath"
+import NavigationPath from "./NavigationPath";
 export let displayedData = {
   topic: "web resources",
   title: "Web resources",
@@ -46,12 +48,13 @@ export default function (props) {
     // query DB
     let topic = props.match.params.secondSubLvl || props.match.params.firstSubLvl || props.match.params.mainTopic;
     let queryDBResult = getTopicData(props.mockDB, topic);
-    console.log(queryDBResult);
     // update displayedData if result
+    console.log(queryDBResult);
     if (queryDBResult !== undefined) displayedData = queryDBResult;
   }
   return (
     <div className="main content column">
+      <NavigationPath mockDB={props.mockDB} topic={displayedData.topic}/>
       <h1>{displayedData.title}</h1>
       <ul className="list-group list-group-flush">
       
