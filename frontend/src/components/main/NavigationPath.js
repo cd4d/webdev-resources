@@ -3,7 +3,6 @@ import { buildNavigationPath, displayNavigationPath } from "../../utils/utils";
 import "./navigation-path.css";
 
 export default function (props) {
-  console.log(props);
   let navigationPath;
   // build a navigation path if DB is accessed, otherwise just display default topic
   props.mockDB

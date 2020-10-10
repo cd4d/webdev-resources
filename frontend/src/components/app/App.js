@@ -1,18 +1,15 @@
 import React from "react";
-import webdev from "../../DB/web-development.json";
-import javascript from "../../DB/javascript.json";
-import HTML from "../../DB/html-css.json";
-import python from "../../DB/python.json";
+import mockDB from "../../DB/mockDB.json"
 import Header from "../header/Header";
 import Sidebar from "../sidebar/Sidebar";
 import Routes from "../../routes/routes";
 import "./App.css"; // keep last for CSS order
-export const mockDB = [
-  { ...webdev },
-  { ...javascript },
-  { ...HTML },
-  { ...python },
-];
+// export const mockDB = [
+//   { ...webdev },
+//   { ...javascript },
+//   { ...HTML },
+//   { ...python },
+// ];
 
 function App() {
   return (
@@ -28,3 +25,4 @@ function App() {
 }
 
 export default App;
+export {mockDB}

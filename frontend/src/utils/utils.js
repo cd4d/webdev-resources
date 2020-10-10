@@ -1,6 +1,6 @@
 // **** Shared functions **** //
 import React from "react";
-
+import { NavLink } from "react-router-dom";
 // Frontend data retrieval to be replaced with rest API
 import { v4 as uuidv4 } from "uuid";
 
@@ -52,17 +52,18 @@ const buildNavigationPath = (db, query) => {
 
 const displayNavigationPath = (topics) => {
   if (typeof topics === "string") {
-    return topics;
+    return null;
   }
   return topics.map((topic) => {
     return (
-      <li>
-        <a href={topic}>
+      <li key={uuidv4()}>
+        <NavLink to={topic}>
           {topic} {"/"}{" "}
-        </a>
+        </NavLink>
       </li>
     );
   });
 };
+
 export default getTopicData;
 export { displayLinks, buildNavigationPath, displayNavigationPath };

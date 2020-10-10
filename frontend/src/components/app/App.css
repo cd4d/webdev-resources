@@ -47,6 +47,22 @@ body {
   #mobile-menu-checkbox:not(:checked) ~ .sidebar {
     display: none;
   }
+  .sidebar {
+    animation-name: sidebar-show;
+    animation-duration: 300ms;
+  }
+  @keyframes sidebar-show {
+    from {
+      margin-left: -500px;
+    }
+
+    /* 99% {
+      margin-left: -5px
+    } */
+    to {
+      margin-left: 0px;
+    }
+  }
 
   .btn {
     padding: 2px 4px;

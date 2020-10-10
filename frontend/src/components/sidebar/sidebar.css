@@ -1,8 +1,7 @@
 .sidebar {
   background-color: lightgreen;
   padding: 0.5rem 1rem 1rem;
-  animation-name: sidebar-show;
-  animation-duration: 300ms;
+  
   
 }
 
@@ -13,15 +12,4 @@
 
   line-height: 1.8;
 }
-@keyframes sidebar-show {
-  from {
-    margin-left: -500px
-  }
-  
-  /* 99% {
-    margin-left: -5px
-  } */
-  to {
-    margin-left: 0px
-  }
-}
+
