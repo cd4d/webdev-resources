@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
-const Topic = require("../models/topics-model");
+const {Topic} = require("../models/topics-model");
+
 router.get("/", async (req, res) => {
   try {
     const topics = await Topic.find()
@@ -13,7 +14,7 @@ router.get("/", async (req, res) => {
       //   "ancestors.name": true,
       // })
       .exec();
-      console.log("get request");
+    console.log("get request");
     res.send(topics);
   } catch (err) {
     res.status(500).send(err);
@@ -21,11 +22,13 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const topic = new Topic({ title: req.body.title });
+  const {title,links,description} = req.body
+  const topic = new Topic({ title: title, links: links, description: description });
   try {
     let newTopic = await topic.save();
     res.status(201).send(newTopic);
   } catch (err) {
+    // console.log(err);
     res.status(500).send(err);
   }
 });

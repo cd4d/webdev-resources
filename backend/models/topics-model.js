@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
+const Joi = require("joi")
 const slugify = require("../utils/slugify");
+
 // https://medium.com/swlh/crud-operations-on-mongodb-tree-data-structure-f5afaeca1550
 const topicSchema = new mongoose.Schema({
   title: {
@@ -33,6 +35,18 @@ const topicSchema = new mongoose.Schema({
     },
   ],
 });
+
+
+// user input validation before sending data
+function validateTopic(topic) {
+  const validatorSchema = Joi.object({
+    title: Joi.string().alphanum().min(2).max(75).required,
+    description: Joi.string().alphanum().min(2).max(255),
+    links: Joi.array()
+  })
+  return validatorSchema.validate(topic)
+}
+// *** associated middlewares *** //
 // generates URL slug
 topicSchema.pre("save", async function (next)  {
   try {
@@ -43,7 +57,20 @@ topicSchema.pre("save", async function (next)  {
     return res.status(500).send(err);
   }
 });
+// validation
+topicSchema.pre("save", async function (next)  {
+  try {
+    validateTopic(this)
+    next();
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send(err);
+  }
+});
 
 const Topic = mongoose.model("Topic", topicSchema);
 
-module.exports = Topic;
+
+
+exports.topicSchema = topicSchema;
+exports.Topic = Topic;
