@@ -4,7 +4,7 @@
   "description": "backend of the web resources project",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --watchAll --runInBand --verbose --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +17,10 @@
   },
   "devDependencies": {
     "jest": "^26.4.2",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "supertest": "^5.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
