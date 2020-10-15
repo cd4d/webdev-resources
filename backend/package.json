@@ -19,7 +19,7 @@
   "devDependencies": {
     "jest": "^26.4.2",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.5",
     "supertest": "^5.0.0"
   },
   "jest": {

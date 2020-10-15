@@ -14,7 +14,6 @@ router.get("/", async (req, res) => {
       //   "ancestors.name": true,
       // })
       .exec();
-    console.log("get request");
     res.send(topics);
   } catch (err) {
     res.status(500).send(err);
@@ -28,7 +27,6 @@ router.post("/", async (req, res) => {
     let newTopic = await topic.save();
     res.status(201).send(newTopic);
   } catch (err) {
-    // console.log(err);
     res.status(500).send(err);
   }
 });
