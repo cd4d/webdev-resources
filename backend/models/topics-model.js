@@ -3,6 +3,7 @@ const Joi = require("joi");
 const slugify = require("../utils/slugify");
 const { linkSchema } = require("./links-model");
 
+const regex = /^[a-zA-Z0-9À-Ÿ-_]+( [a-zA-Z0-9À-Ÿ-_]+)*$/;
 // https://medium.com/swlh/crud-operations-on-mongodb-tree-data-structure-f5afaeca1550
 const topicSchema = new mongoose.Schema({
   title: {
@@ -11,18 +12,19 @@ const topicSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 75,
     trim: true,
-    match: /^[a-zA-Z0-9_-]+( [a-zA-Z0-9_-]+)*$/,
+    match: regex,
   },
   slug: {
     type: String,
     index: true,
+    //set: (value) => slugify(this.title),
   },
   description: {
     type: String,
     minlength: 2,
     maxlength: 255,
     trim: true,
-    match: /^[a-zA-Z0-9_-]+( [a-zA-Z0-9_-]+)*$/,
+    match: regex,
   }, // embedding the links schema defined in the links-model file
   links: [linkSchema],
   parent: {
@@ -45,7 +47,7 @@ function validateTopic(topic) {
     title: Joi.string().alphanum().min(2).max(75).required,
     description: Joi.string().alphanum().min(2).max(255),
     links: Joi.array().items(
-      Joi.object({ title: Joi.string(), url: Joi.string().uri() })
+      Joi.object({ description: Joi.string(), url: Joi.string().uri() })
     ),
   });
   return validatorSchema.validate(topic);
@@ -59,9 +61,29 @@ topicSchema.pre("save", async function (next) {
     next();
   } catch (err) {
     console.log(err);
-    return res.status(500).send(err);
   }
 });
+
+// TODO update middleware for slug
+topicSchema.pre("findOneAndUpdate", async function (next) {
+  try {
+    if (this.getUpdate().$set.title) {
+      const oldData = this.getFilter();
+      const newTitle = this.getUpdate().$set.title;
+      // console.log(newTitle);
+      const docToUpdate = await Topic.findOne(oldData).exec();
+      // console.log(docToUpdate);
+      await Topic.findOneAndUpdate(
+        { _id: docToUpdate._id },
+        { slug: slugify(newTitle) }
+      );
+    }
+    next();
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 // validation
 topicSchema.pre("save", async function (next) {
   try {
@@ -69,7 +91,6 @@ topicSchema.pre("save", async function (next) {
     next();
   } catch (err) {
     console.log(err);
-    return res.status(400).send(err);
   }
 });
 
