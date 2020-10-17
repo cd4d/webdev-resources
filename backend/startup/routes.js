@@ -1,3 +1,5 @@
+// routes paths defined here, used by index.js
+
 const express = require("express");
 const topicsRoute = require("../routes/topics-route")
 module.exports = function (app) {

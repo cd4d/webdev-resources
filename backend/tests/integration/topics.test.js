@@ -99,18 +99,79 @@ describe("api/topics", () => {
   describe("PATCH /:id", () => {
     const id = mongoose.Types.ObjectId();
     beforeEach(async () => {
-      const newTopic = new Topic({ _id: id, title: "Some topic to patch" });
-      await newTopic.save()
-      
+      const newTopic = new Topic({
+        _id: id,
+        title: "Some topic to patch",
+        description: "Some description",
+        links: [],
+      });
+      await newTopic.save();
     });
-    test("Should return 200, updated slug for correctly formatted update request", async () => {
+    test("Should return 200, updated slug for correctly formatted title update request", async () => {
       const res = await supertestRequest(server)
         .patch("/api/topics/" + id)
         .send({ title: "Changed topic" });
-      const changedTopic = await Topic.findById(id).exec()
-      expect(res.status).toBe(200)
-      expect(changedTopic.title).toBe("Changed topic")
-      expect(changedTopic.slug).toBe("changed-topic")
+      const changedTopic = await Topic.findById(id).exec();
+      expect(res.status).toBe(200);
+      expect(changedTopic.title).toBe("Changed topic");
+      expect(changedTopic.slug).toBe("changed-topic");
+    });
+    test("Should return 200, updated slug and description for correctly formatted title update request", async () => {
+      const res = await supertestRequest(server)
+        .patch("/api/topics/" + id)
+        .send({ description: "Changed description" });
+      const changedTopic = await Topic.findById(id).exec();
+      expect(res.status).toBe(200);
+      expect(changedTopic.description).toBe("Changed description");
+      expect(changedTopic.slug).toBe("some-topic-to-patch");
+    });
+    test("Should return 200, updated slug and new link for correctly formatted title update request", async () => {
+      const res = await supertestRequest(server)
+        .patch("/api/topics/" + id)
+        .send({
+          title: "Changed topic",
+          links: [{ description: "web dev", url: "http://example.com" }],
+        });
+      const changedTopic = await Topic.findById(id).exec();
+      expect(res.status).toBe(200);
+      expect(changedTopic.title).toBe("Changed topic");
+      expect(changedTopic.slug).toBe("changed-topic");
+      // https://medium.com/@andrei.pfeiffer/jest-matching-objects-in-array-50fe2f4d6b98
+      expect(changedTopic.links).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            description: "web dev",
+            url: "http://example.com",
+          }),
+        ])
+      );
+    });
+    test("Should return 400, for incorrectly formatted title", async () => {
+      const res = await supertestRequest(server)
+        .patch("/api/topics/" + id)
+        .send({ title: {} });
+      expect(res.status).toBe(400);
+    });
+  });
+
+  describe("DELETE /:id", () => {
+    const id = new mongoose.Types.ObjectId();
+    beforeEach(async () => {
+      const newTopic = new Topic({
+        _id: id,
+        title: "Some topic to delete",
+        description: "Some description",
+        links: [],
+      });
+      await newTopic.save();
+    });
+    test("should remove the selected topic", async () => {
+      const res = await supertestRequest(server).delete(
+        "/api/topics/" + id
+      );
+      expect(res.status).toBe(200);
+      const deletedDoc = await Topic.findById(id)
+      expect(deletedDoc).toBe(null)
     });
   });
 });

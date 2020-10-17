@@ -64,16 +64,15 @@ topicSchema.pre("save", async function (next) {
   }
 });
 
-// TODO update middleware for slug
+// update middleware for slug
 topicSchema.pre("findOneAndUpdate", async function (next) {
   try {
+    // only fires if title is updated
     if (this.getUpdate().$set.title) {
-      const oldData = this.getFilter();
+      const oldData = this.getFilter(); // grabs topic to be updated from query
       const newTitle = this.getUpdate().$set.title;
-      // console.log(newTitle);
       const docToUpdate = await Topic.findOne(oldData).exec();
-      // console.log(docToUpdate);
-      await Topic.findOneAndUpdate(
+      await Topic.updateOne(
         { _id: docToUpdate._id },
         { slug: slugify(newTitle) }
       );
@@ -94,6 +93,15 @@ topicSchema.pre("save", async function (next) {
   }
 });
 
+// TODO validation of links url in patch request
+// topicSchema.pre("findOneAndUpdate", async function (next) {
+//   try {
+//     validateTopic(this);
+//     next();
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
 const Topic = mongoose.model("Topic", topicSchema);
 
 exports.topicSchema = topicSchema;

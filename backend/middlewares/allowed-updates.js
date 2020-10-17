@@ -1,4 +1,4 @@
-// check if the fields to be updated are allowed
+// check if the fields to be updated are allowed according to an array of field passed when calling the query
 
 module.exports = (allowedUpdates) => {
     return(req,res,next) => {
