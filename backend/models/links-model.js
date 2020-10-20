@@ -31,4 +31,22 @@ const linkSchema = new mongoose.Schema({
   },
 });
 
+// user input validation before sending data
+function validateLink(topic) {
+  const validatorSchema = Joi.array().items(
+    Joi.object({ description: Joi.string(), url: Joi.string().uri() })
+  );
+
+  return validatorSchema.validate(topic);
+}
+// TODO validation of links url in patch request
+// linkSchema.pre("findOneAndUpdate", async function (next) {
+//   console.log(this);
+//   try {
+//     validateLink(this);
+//     next();
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
 exports.linkSchema = linkSchema;

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Joi = require("joi");
 const slugify = require("../utils/slugify");
 const { linkSchema } = require("./links-model");
 
@@ -9,7 +8,7 @@ const topicSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    minlength: 2,
+    minlength: 1,
     maxlength: 75,
     trim: true,
     match: regex,
@@ -21,7 +20,7 @@ const topicSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    minlength: 2,
+    minlength: 1,
     maxlength: 255,
     trim: true,
     match: regex,
@@ -41,67 +40,43 @@ const topicSchema = new mongoose.Schema({
   ],
 });
 
-// user input validation before sending data
-function validateTopic(topic) {
-  const validatorSchema = Joi.object({
-    title: Joi.string().alphanum().min(2).max(75).required,
-    description: Joi.string().alphanum().min(2).max(255),
-    links: Joi.array().items(
-      Joi.object({ description: Joi.string(), url: Joi.string().uri() })
-    ),
-  });
-  return validatorSchema.validate(topic);
-}
+
+
 
 // *** associated middlewares *** //
 // generates URL slug
-topicSchema.pre("save", async function (next) {
+topicSchema.pre("save", async function (req,res,next) {
   try {
+    
     this.slug = await slugify(this.title);
     next();
   } catch (err) {
-    console.log(err);
+    console.log("Error:", err);
   }
 });
 
-// update middleware for slug
-topicSchema.pre("findOneAndUpdate", async function (next) {
-  try {
-    // only fires if title is updated
-    if (this.getUpdate().$set.title) {
-      const oldData = this.getFilter(); // grabs topic to be updated from query
-      const newTitle = this.getUpdate().$set.title;
-      const docToUpdate = await Topic.findOne(oldData).exec();
-      await Topic.updateOne(
-        { _id: docToUpdate._id },
-        { slug: slugify(newTitle) }
-      );
-    }
-    next();
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-// validation
-topicSchema.pre("save", async function (next) {
-  try {
-    validateTopic(this);
-    next();
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-// TODO validation of links url in patch request
+// update middleware for slug, not used anymore, using save() for patch requests
 // topicSchema.pre("findOneAndUpdate", async function (next) {
 //   try {
-//     validateTopic(this);
+//     // only fires if title is updated
+//     if (this.getUpdate().$set.title) {
+//       const oldData = this.getFilter(); // grabs topic to be updated from query
+//       const newTitle = this.getUpdate().$set.title;
+//       const docToUpdate = await Topic.findOne(oldData).exec();
+//       await Topic.updateOne(
+//         { _id: docToUpdate._id },
+//         { slug: slugify(newTitle) }
+//       );
+//     }
 //     next();
 //   } catch (err) {
 //     console.log(err);
 //   }
 // });
+
+
+
+
 const Topic = mongoose.model("Topic", topicSchema);
 
 exports.topicSchema = topicSchema;
