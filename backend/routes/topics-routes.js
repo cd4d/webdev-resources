@@ -1,14 +1,16 @@
 const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
-const { Topic, validateTopic } = require("../models/topics-model");
+const { Topic } = require("../models/topics-model");
 const { buildAncestors } = require("../utils/tree-structure");
+const slugify = require("../utils/slugify");
 const checkAllowedUpdates = require("../middlewares/allowed-updates");
 const {
-  topicValidationRules,
+  topicPostValidationRules,
+  topicPatchValidationRules,
   validate,
 } = require("../middlewares/express-validator-middleware");
-const { update } = require("lodash");
+
 router.get("/", async (req, res) => {
   try {
     const topics = await Topic.find().exec();
@@ -20,14 +22,14 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const topic = await Topic.findById(req.params.id).exec();
+    const topic = await Topic.findById(req.params.id);
     res.send(topic);
   } catch (err) {
     res.status(500).send(err);
   }
 });
 
-router.post("/", topicValidationRules(), validate, async (req, res) => {
+router.post("/", topicPostValidationRules(), validate, async (req, res) => {
   const { title, links, description, parent } = req.body;
   const topic = new Topic({
     title: title,
@@ -47,21 +49,36 @@ router.post("/", topicValidationRules(), validate, async (req, res) => {
 router.patch(
   "/:id",
   checkAllowedUpdates(["title", "links", "description"]),
+  topicPatchValidationRules(),
+  validate,
   async (req, res) => {
     try {
-      // let newTopic = await Topic.findOneAndUpdate(
-      //   { _id: req.params.id },
-      //   { $set: req.body }
-      // );
-      // if (!newTopic) return res.status(404).send();
       // grab the list of updated fields
       const updates = Object.keys(req.body);
       const topic = await Topic.findById(req.params.id);
       if (!topic) return res.status(404).send();
+
       // replace all the fields
       updates.forEach((update) => {
         topic[update] = req.body[update];
       });
+
+      // update the title in child elements
+      if (updates.includes("title")) {
+        try {
+          await Topic.updateMany(
+            { "ancestors._id": mongoose.Types.ObjectId(topic._id) },
+            {
+              $set: {
+                "ancestors.$.title": topic.title,
+                "ancestors.$.slug": slugify(topic.title),
+              },
+            }
+          );
+        } catch (err) {
+          res.status(400).send(err);
+        }
+      }
       await topic.save();
       res.send(topic);
     } catch (err) {
@@ -72,7 +89,18 @@ router.patch(
 
 router.delete("/:id", async (req, res) => {
   try {
-    let deletedTopic = await Topic.findByIdAndDelete(req.params.id).exec();
+    let deletedTopic = await Topic.findByIdAndDelete(req.params.id);
+    // delete the topic from children elements
+    try {
+      await Topic.updateMany(
+        { "ancestors._id": mongoose.Types.ObjectId(deletedTopic._id) },
+        {
+          $pull: { ancestors: { _id: deletedTopic._id } },
+        }
+      );
+    } catch (err) {
+      res.status(400).send(err);
+    }
     res.send(deletedTopic);
   } catch (err) {
     res.status(500).send(err);

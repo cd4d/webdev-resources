@@ -40,14 +40,10 @@ const topicSchema = new mongoose.Schema({
   ],
 });
 
-
-
-
 // *** associated middlewares *** //
 // generates URL slug
-topicSchema.pre("save", async function (req,res,next) {
+topicSchema.pre("save", async function (req, res, next) {
   try {
-    
     this.slug = await slugify(this.title);
     next();
   } catch (err) {
@@ -73,9 +69,6 @@ topicSchema.pre("save", async function (req,res,next) {
 //     console.log(err);
 //   }
 // });
-
-
-
 
 const Topic = mongoose.model("Topic", topicSchema);
 

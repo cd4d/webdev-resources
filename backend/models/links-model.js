@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
-const Joi = require("joi");
 const validator = require("validator");
 
 //  See https://gist.github.com/dperini/729294 for regexp URL matcher
 const regex = /^[a-zA-Z0-9À-Ÿ-_]+( [a-zA-Z0-9À-Ÿ-_]+)*$/;
 
 const linkSchema = new mongoose.Schema({
+  topic: { type: mongoose.Types.ObjectId },
   description: {
     type: String,
     minlength: 2,
@@ -31,14 +31,6 @@ const linkSchema = new mongoose.Schema({
   },
 });
 
-// user input validation before sending data
-function validateLink(topic) {
-  const validatorSchema = Joi.array().items(
-    Joi.object({ description: Joi.string(), url: Joi.string().uri() })
-  );
-
-  return validatorSchema.validate(topic);
-}
 // TODO validation of links url in patch request
 // linkSchema.pre("findOneAndUpdate", async function (next) {
 //   console.log(this);
@@ -49,4 +41,6 @@ function validateLink(topic) {
 //     console.log(err);
 //   }
 // });
+const Link = mongoose.model("Link", linkSchema)
 exports.linkSchema = linkSchema;
+exports.Link = Link

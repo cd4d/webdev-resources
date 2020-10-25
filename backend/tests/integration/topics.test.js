@@ -7,7 +7,7 @@ const { Topic } = require("../../models/topics-model");
 
 let server;
 
-describe("api/topics", () => {
+describe("/api/topics", () => {
   beforeEach(() => {
     server = require("../../index");
   });
@@ -32,6 +32,20 @@ describe("api/topics", () => {
     });
   });
 
+  describe("GET /:id", () => {
+    test("should return one topic", async () => {
+      const id = new mongoose.Types.ObjectId();
+      const topic = new Topic({ _id: id, title: "Test Topic" });
+      await topic.save();
+      const res = await supertestRequest(server).get("/api/topics/" + id);
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("title");
+      expect(res.body.title).toBe("Test Topic");
+      expect(res.body).toHaveProperty("slug");
+      expect(res.body.slug).toBe("test-topic");
+    });
+  });
+
   describe("POST /", () => {
     let title = "";
     let links = undefined;
@@ -51,14 +65,14 @@ describe("api/topics", () => {
     });
     test("should return 201  from express-validator if title input  properly formatted", async () => {
       links = undefined;
-      description = undefined;
+      // description = undefined; description now mandatory
       const res = await execRequest();
       expect(res.status).toBe(201);
       expect(res.body.title).toBe("validTitle");
     });
 
     test("should return 201  from express-validator if title, links input properly formatted", async () => {
-      description = undefined;
+      // description = undefined; description now mandatory
       const res = await execRequest();
       expect(res.status).toBe(201);
       expect(res.body.title).toBe("validTitle");
@@ -127,7 +141,8 @@ describe("api/topics", () => {
 
     test("should fill ancestor and parent", async () => {
       links = undefined;
-      description = undefined;
+      // description = undefined; description now mandatory
+
       const res = await execRequest();
       expect(res.status).toBe(201);
       expect(res.body.title).toBe("validTitle");
@@ -144,6 +159,12 @@ describe("api/topics", () => {
         links: [],
       });
       await newTopic.save();
+      const res = await supertestRequest(server)
+        .patch("/api/topics/" + id)
+        .send({
+          title: "Changed topic",
+          links: [{ description: "web dev", url: "http://example.com" }],
+        });
     });
     test("Should return 200, updated slug for correctly formatted title update request", async () => {
       const res = await supertestRequest(server)
@@ -156,23 +177,13 @@ describe("api/topics", () => {
     });
 
     test("Should return 200, updated slug and description for correctly formatted title update request", async () => {
-      const res = await supertestRequest(server)
-        .patch("/api/topics/" + id)
-        .send({ description: "Changed description" });
       const changedTopic = await Topic.findById(id).exec();
-      expect(res.status).toBe(200);
-      expect(changedTopic.description).toBe("Changed description");
-      expect(changedTopic.slug).toBe("some-topic-to-patch");
+      expect(changedTopic.title).toBe("Changed topic");
+      expect(changedTopic.slug).toBe("changed-topic");
     });
+
     test("Should return 200, updated slug and new link for correctly formatted title update request", async () => {
-      const res = await supertestRequest(server)
-        .patch("/api/topics/" + id)
-        .send({
-          title: "Changed topic",
-          links: [{ description: "web dev", url: "http://example.com" }],
-        });
       const changedTopic = await Topic.findById(id).exec();
-      expect(res.status).toBe(200);
       expect(changedTopic.title).toBe("Changed topic");
       expect(changedTopic.slug).toBe("changed-topic");
       // https://medium.com/@andrei.pfeiffer/jest-matching-objects-in-array-50fe2f4d6b98
@@ -185,6 +196,7 @@ describe("api/topics", () => {
         ])
       );
     });
+
     test("Should return error,  for incorrectly formatted link update request", async () => {
       const res = await supertestRequest(server)
         .patch("/api/topics/" + id)
@@ -193,13 +205,38 @@ describe("api/topics", () => {
           links: [{ description: "web dev", url: "examplecom" }],
         });
       const changedTopic = await Topic.findById(id).exec();
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(422);
     });
     test("Should return 400, for incorrectly formatted title", async () => {
       const res = await supertestRequest(server)
         .patch("/api/topics/" + id)
         .send({ title: {} });
       expect(res.status).toBe(400);
+    });
+    test("should update ancestors array after renaming parent", async (done) => {
+      const childIdOne = new mongoose.Types.ObjectId();
+      const childIdTwo = new mongoose.Types.ObjectId();
+      const childTopicOne = new Topic({
+        _id: childIdOne,
+        title: "First child topic",
+        parent: id,
+      });
+      await childTopicOne.save();
+      const childTopicTwo = new Topic({
+        _id: childIdTwo,
+        title: "Second child topic",
+        parent: id,
+      });
+      await childTopicTwo.save();
+
+      const res2 = await supertestRequest(server).get(
+        "/api/topics/" + childIdOne
+      );
+      console.log("res2:", res2.body);
+
+      const firstChildTopic = await Topic.findById(childIdOne);
+      console.log("firstChildTopic", firstChildTopic);
+      done();
     });
   });
 
@@ -217,7 +254,7 @@ describe("api/topics", () => {
     test("should remove the selected topic", async () => {
       const res = await supertestRequest(server).delete("/api/topics/" + id);
       expect(res.status).toBe(200);
-      const deletedDoc = await Topic.findById(id);
+      const deletedDoc = await Topic.findById(id).exec();
       expect(deletedDoc).toBe(null);
     });
   });
