@@ -11,52 +11,66 @@ const {
   validate,
 } = require("../middlewares/express-validator-middleware");
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     const topics = await Topic.find().exec();
-    res.send(topics);
+    topics ? res.send(topics) : res.status(404).send("No topics found.");
   } catch (err) {
-    res.status(500).send(err);
+    //res.status(500).send(err);
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const topic = await Topic.findById(req.params.id);
     res.send(topic);
   } catch (err) {
-    res.status(500).send(err);
+    // res.status(500).send(err);
+    if (!err.statusCode) err.statusCode = 404;
+    next(err);
   }
 });
 
-router.post("/", topicPostValidationRules(), validate, async (req, res) => {
-  const { title, links, description, parent } = req.body;
-  const topic = new Topic({
-    title: title,
-    links: links,
-    description: description,
-    parent: parent,
-  });
-  try {
-    let newTopic = await topic.save();
-    if (parent) await buildAncestors(newTopic._id, parent);
-    res.status(201).send(newTopic);
-  } catch (err) {
-    res.status(500).send(err);
+router.post(
+  "/",
+  topicPostValidationRules(),
+  validate,
+  async (req, res, next) => {
+    const { title, links, description, parent } = req.body;
+    const topic = new Topic({
+      title: title,
+      links: links,
+      description: description,
+      parent: parent,
+    });
+    try {
+      let newTopic = await topic.save();
+      if (parent) await buildAncestors(newTopic._id, parent);
+      res.status(201).send(newTopic);
+    } catch (err) {
+      if (!err.statusCode) err.statusCode = 500;
+      next(err);
+    }
   }
-});
+);
 
 router.patch(
   "/:id",
   checkAllowedUpdates(["title", "links", "description"]),
   topicPatchValidationRules(),
   validate,
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       // grab the list of updated fields
       const updates = Object.keys(req.body);
       const topic = await Topic.findById(req.params.id);
-      if (!topic) return res.status(404).send();
+      if (!topic) {
+        const error = new Error("Topic not found");
+        error.statusCode = 404;
+        next(error);
+      } //return res.status(404).send();
 
       // replace all the fields
       updates.forEach((update) => {
@@ -76,18 +90,20 @@ router.patch(
             }
           );
         } catch (err) {
-          res.status(400).send(err);
+          if (!err.statusCode) err.statusCode = 400;
+          next(err);
         }
       }
       await topic.save();
       res.send(topic);
     } catch (err) {
-      res.status(400).send(err);
+      if (!err.statusCode) err.statusCode = 400;
+      next(err);
     }
   }
 );
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     let deletedTopic = await Topic.findByIdAndDelete(req.params.id);
     // delete the topic from children elements
@@ -99,11 +115,13 @@ router.delete("/:id", async (req, res) => {
         }
       );
     } catch (err) {
-      res.status(400).send(err);
+      if (!err.statusCode) err.statusCode = 400;
+      next(err);
     }
     res.send(deletedTopic);
   } catch (err) {
-    res.status(500).send(err);
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
   }
 });
 

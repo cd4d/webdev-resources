@@ -7,7 +7,7 @@ module.exports = (allowedUpdates) => {
         allowedUpdates.includes(update)
       );
       if (!isValidUpdate) {
-        return res.status(400).send({ error: "invalid request" });
+        return res.status(400).send({ error: "invalid request, bad input" });
       }
       next()
     }

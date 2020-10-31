@@ -12,6 +12,8 @@ const topicSchema = new mongoose.Schema({
     maxlength: 75,
     trim: true,
     match: regex,
+    unique: true,
+    sparse: true,
   },
   slug: {
     type: String,

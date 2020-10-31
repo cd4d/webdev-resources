@@ -44,6 +44,12 @@ describe("/api/topics", () => {
       expect(res.body).toHaveProperty("slug");
       expect(res.body.slug).toBe("test-topic");
     });
+    test("should return error 404 if topic not found", async () => {
+      
+      const res = await supertestRequest(server).get("/api/topics/" + "wrongId");
+      expect(res.status).toBe(404);
+      
+    });
   });
 
   describe("POST /", () => {
@@ -232,10 +238,8 @@ describe("/api/topics", () => {
       const res2 = await supertestRequest(server).get(
         "/api/topics/" + childIdOne
       );
-      console.log("res2:", res2.body);
 
       const firstChildTopic = await Topic.findById(childIdOne);
-      console.log("firstChildTopic", firstChildTopic);
       done();
     });
   });
