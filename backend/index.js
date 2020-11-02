@@ -2,7 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 // Returns a function, (app) is the parameter passed
-// require("./startup/logging")(app);
 
 // use development middlewares (morgan http request logger)
 if (process.env.NODE_ENV === "dev") {
@@ -12,6 +11,8 @@ if (process.env.NODE_ENV === "dev") {
 if (process.env.NODE_ENV === "production") {
   require("./startup/prod")(app);
 }
+
+require("./startup/auth-session")(app);
 require("./startup/routes")(app);
 require("./startup/errors")(app);
 require("./startup/connect-db")();

@@ -10,6 +10,7 @@ const {
   topicPatchValidationRules,
   validate,
 } = require("../middlewares/express-validator-middleware");
+const checkUser = require("../middlewares/check-user");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -22,8 +23,15 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", checkUser, async (req, res, next) => {
+  console.log(req.session);
   try {
+    req.body.currentUser &&
+    req.session.passport &&
+    req.body.currentUser === req.session.passport.user
+      ? console.log("A user is logged in:", req.session.passport.user)
+      : console.log("No user logged in");
+    console.log(req.body);
     const topic = await Topic.findById(req.params.id);
     res.send(topic);
   } catch (err) {

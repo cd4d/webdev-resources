@@ -230,16 +230,15 @@ describe("/api/links/", () => {
       );
     });
 
-    test("should reject update requested link with wrong id", async () => {
+    test("should reject update requested link with wrong id - 404 error - ", async () => {
       const wrongId = new mongoose.Types.ObjectId()
       const res = await supertestRequest(server)
         .patch("/api/links/" + wrongId)
         .send({ url: "http://changed-example.com" });
-        console.log(res.body);
       expect(res.status).toBe(404);
     });
 
-    test("should reject update requested link with malformatted url supplied", async () => {
+    test("should reject update requested link with malformatted url supplied - 422 error - ", async () => {
       //   const res2 = await supertestRequest(server).get("/api/links/" + linkIdOne)
       const res = await supertestRequest(server)
         .patch("/api/links/" + linkIdOne)
@@ -249,7 +248,7 @@ describe("/api/links/", () => {
       expect(res.status).toBe(422);
     });
 
-    test("should reject update requested link with empty values supplied", async () => {
+    test("should reject update requested link with empty values supplied - 422 error -", async () => {
       //   const res2 = await supertestRequest(server).get("/api/links/" + linkIdOne)
       const res = await supertestRequest(server)
         .patch("/api/links/" + linkIdOne)

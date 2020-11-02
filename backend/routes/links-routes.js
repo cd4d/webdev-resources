@@ -35,7 +35,7 @@ router.get("/topic/:topicId", async (req, res, next) => {
     } else {
       const error = new Error("Topic not found");
       error.statusCode = 404;
-      next(error);
+      throw error;
     }
   } catch (err) {
     if (!err.statusCode) err.statusCode = 400;
@@ -53,9 +53,9 @@ router.get("/link/:linkId", async (req, res, next) => {
       );
       res.send(link);
     } else {
-      const error = new Error("Link not found");
+      const error = new Error("Link requested not found");
       error.statusCode = 404;
-      next(error);
+      throw error;
     }
   } catch (err) {
     if (!err.statusCode) err.statusCode = 400;
@@ -79,7 +79,7 @@ router.post(
             if (err) {
               const error = new Error("Topic not found");
               error.statusCode = 404;
-              next(error);
+              throw error;
             }
             doc ? res.send(doc) : next(err);
           }
@@ -113,9 +113,9 @@ router.patch(
         function (err, doc) {
           if (err) {
             // 404
-            const error = new Error("Link not found");
+            const error = new Error("Link to be edited not found");
             error.statusCode = 404;
-            next(error);
+            throw error;
           }
           doc ? res.send(doc) : next(err);
         }
