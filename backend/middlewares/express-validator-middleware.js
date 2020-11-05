@@ -5,6 +5,7 @@ const topicPostValidationRules = () => {
   return [
     body("title").not().isEmpty().trim().escape().isLength(2, 75).isString(),
     body("description").trim().escape().isLength(2, 255).isString(),
+    body("user").trim().isMongoId().optional(),
     body("links").isArray().optional(),
     body("links.*.description").trim().escape().isLength(1, 255).isString(),
     body("links.*.url")
@@ -24,6 +25,7 @@ const topicPatchValidationRules = () => {
       .isString()
       .optional(),
     body("description").trim().escape().isLength(2, 255).isString().optional(),
+    body("user").trim().isMongoId().optional(),
     body("links").isArray().optional(),
     body("links.*.description").trim().escape().isLength(1, 255).isString(),
     body("links.*.url")

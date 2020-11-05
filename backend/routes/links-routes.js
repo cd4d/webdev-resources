@@ -9,6 +9,11 @@ const {
   validate,
 } = require("../middlewares/express-validator-middleware");
 const checkAllowedUpdates = require("../middlewares/allowed-updates");
+const {
+  findUser,
+  checkAdmin,
+  getUserTopic,
+} = require("../middlewares/user-middleware");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -43,14 +48,19 @@ router.get("/topic/:topicId", async (req, res, next) => {
   }
 });
 
-router.get("/link/:linkId", async (req, res, next) => {
+router.get("/link/:linkId", findUser, async (req, res, next) => {
   try {
-    const topic = await Topic.find({ "links._id": req.params.linkId });
+    const topic = await Topic.find({
+      "links._id": req.params.linkId,
+      user: req.body.user,
+    });
     // result is an array, check if array is not empty and contains links
     if (Array.isArray(topic) && topic.length && topic[0].links) {
       const link = topic[0].links.find(
         (el) => el._id.toString() === req.params.linkId
       );
+      if (!link) throw new Error("Link not found");
+      
       res.send(link);
     } else {
       const error = new Error("Link requested not found");
@@ -67,26 +77,22 @@ router.post(
   "/",
   linkPostValidationRules(),
   validate,
+  findUser,
   async (req, res, next) => {
     if (req.body.topic) {
       const topic = req.body.topic;
       try {
-        await Topic.findOneAndUpdate(
-          { _id: topic },
+        const newLink = await Topic.findOneAndUpdate(
+          { _id: topic, user: req.body.user },
           { $addToSet: { links: req.body } },
-          { new: true },
-          function (err, doc) {
-            if (err) {
-              const error = new Error("Topic not found");
-              error.statusCode = 404;
-              throw error;
-            }
-            doc ? res.send(doc) : next(err);
-          }
+          { new: true }
         );
+        if (!newLink) throw new Error("Link not found");
+        res.send(newLink);
       } catch (err) {
         //res.status(400).send(err);
-        if (!err.statusCode) err.statusCode = 400;
+        console.log("error post link");
+        if (!err.statusCode) err.statusCode = 404;
         next(err);
       }
     }
@@ -98,54 +104,83 @@ router.patch(
   checkAllowedUpdates(["topic", "url", "description"]),
   linkPatchValidationRules(),
   validate,
+  findUser,
   async (req, res, next) => {
+    // check if link is part of user data
+    try {
+      const link = await Topic.findOne({
+        "links._id": req.params.linkId,
+        user: req.body.user,
+      });
+      if (!link) throw new Error("Link was not found");
+    } catch (err) {
+      if (!err.statusCode) err.statusCode = 404;
+      return next(err);
+    }
+
     // append 'links.$.' in front of updated data i.e links.$.title : req.body.title
     let updatedData = {};
     for (let [key, value] of Object.entries(req.body)) {
       updatedData["links.$." + key] = value;
     } // adding the _id field
     updatedData["links.$._id"] = req.params.linkId;
-    try {
-      await Topic.findOneAndUpdate(
-        { "links._id": req.params.linkId },
-        updatedData,
-        { new: true },
-        function (err, doc) {
-          if (err) {
-            // 404
-            const error = new Error("Link to be edited not found");
-            error.statusCode = 404;
-            throw error;
-          }
-          doc ? res.send(doc) : next(err);
-        }
-      );
-    } catch (err) {
-      if (!err.statusCode) err.statusCode = 400;
-      next(err);
-    } // move link by removing from old topic adding it to new topic if topic has changed
-    if (Object.keys(req.body).includes("topic")) {
+    // updates the link if topic is not changed
+    if (!Object.keys(req.body).includes("topic")) {
       try {
-        await Topic.bulkWrite([
-          {
-            updateOne: {
-              filter: { "links._id": req.params.linkId },
-              update: {
-                $pull: {
-                  links: { _id: mongoose.Types.ObjectId(req.params.linkId) },
+        console.log("updating link");
+        const updatedLink = await Topic.findOneAndUpdate(
+          { "links._id": req.params.linkId, user: req.body.user },
+          updatedData,
+          { new: true }
+        );
+      if (!updatedLink) throw new Error("Link was not updated");
+
+        res.send(updatedLink);
+      } catch (err) {
+        return next(err);
+      }
+    } else {
+      try {
+        // check if new topic belongs to user
+        const topic = await getUserTopic(
+          req.body.user,
+          "getOneTopic",
+          req.body.topic
+        );
+        if (!topic) {
+          throw new Error("Wrong topic");
+        } else {
+          // updates the link itself first
+          await Topic.findOneAndUpdate(
+            { "links._id": req.params.linkId, user: req.body.user },
+            updatedData,
+            { new: true }
+          ).exec();
+          // then move the link  from old topic
+          await Topic.bulkWrite([
+            {
+              updateOne: {
+                filter: { "links._id": req.params.linkId },
+                update: {
+                  $pull: {
+                    links: {
+                      _id: mongoose.Types.ObjectId(req.params.linkId),
+                    },
+                  },
                 },
               },
             },
-          },
-          {
-            updateOne: {
-              filter: { _id: mongoose.Types.ObjectId(req.body.topic) },
-              update: { $addToSet: { links: req.body } },
+            {
+              // then add it to new topic
+              updateOne: {
+                filter: { _id: mongoose.Types.ObjectId(req.body.topic) },
+                update: { $addToSet: { links: req.body } },
+              },
             },
-          },
-        ]).then((result) => {
-          res.send(result);
-        });
+          ]).then((result) => {
+            res.send(result);
+          });
+        }
       } catch (err) {
         if (!err.statusCode) err.statusCode = 400;
         next(err);
@@ -155,21 +190,3 @@ router.patch(
 );
 
 module.exports = router;
-
-// patch alternative
-// try {
-//   const topic = await Topic.find({ "links._id": req.params.linkId });
-//   if (!topic) return res.status(404).send();
-//   const link = topic[0].links.find(
-//     (el) => el._id.toString() === req.params.linkId
-//   );
-//   console.log(topic[0].links._id);
-//   // replace all the fields
-//   updates.forEach((update) => {
-//     link[update] = req.body[update];
-//   });
-//   // TODO update the topic
-
-// } catch (err) {
-//   res.status(400).send(err);
-// }

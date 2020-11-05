@@ -7,7 +7,7 @@ module.exports = function (app) {
     const message = err.message;
 
     logger.error(
-      `${err.statusCode || 500} - ${err.message} - ${req.originalUrl} - ${
+      `${status} - ${message} - ${req.originalUrl} - ${
         req.method
       } - ${req.ip}`
     );

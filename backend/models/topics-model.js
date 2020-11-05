@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const slugify = require("../utils/slugify");
 const { linkSchema } = require("./links-model");
-
 const regex = /^[a-zA-Z0-9À-Ÿ-_]+( [a-zA-Z0-9À-Ÿ-_]+)*$/;
 // https://medium.com/swlh/crud-operations-on-mongodb-tree-data-structure-f5afaeca1550
 const topicSchema = new mongoose.Schema({
@@ -12,8 +11,6 @@ const topicSchema = new mongoose.Schema({
     maxlength: 75,
     trim: true,
     match: regex,
-    unique: true,
-    sparse: true,
   },
   slug: {
     type: String,
@@ -28,6 +25,11 @@ const topicSchema = new mongoose.Schema({
     match: regex,
   }, // embedding the links schema defined in the links-model file
   links: [linkSchema],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: null,
+    ref: "User",
+  },
   parent: {
     type: mongoose.Schema.Types.ObjectId,
     default: null,
@@ -41,6 +43,9 @@ const topicSchema = new mongoose.Schema({
     },
   ],
 });
+
+// compound index to ensure unique value for the same user , to be setup directly in prod
+// topicSchema.index({ user: 1, title: 1 }, { unique: true, sparse: true });
 
 // *** associated middlewares *** //
 // generates URL slug

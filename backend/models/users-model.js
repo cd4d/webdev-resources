@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 5,
     maxlength: 255,
+
     validate: [validator.isEmail, "Invalid e-mail."],
   },
   username: {
@@ -18,7 +19,6 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-
     minlength: 5,
     maxlength: 1024,
   },

@@ -4,7 +4,6 @@ const validator = require("validator");
 //  See https://gist.github.com/dperini/729294 for regexp URL matcher
 const regex = /^[a-zA-Z0-9À-Ÿ-_]+( [a-zA-Z0-9À-Ÿ-_]+)*$/;
 
-
 const linkSchema = new mongoose.Schema({
   topic: { type: mongoose.Types.ObjectId },
   description: {
@@ -14,16 +13,13 @@ const linkSchema = new mongoose.Schema({
     required: true,
     match: regex,
     index: true,
-    unique: true,
-    sparse: true,
   },
   url: {
     type: String,
     minlength: 10,
     maxlength: 255,
     required: true,
-    unique: true,
-    sparse: true,
+
     validate: [validator.isURL, "Invalid URL"],
   },
 });

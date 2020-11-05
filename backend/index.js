@@ -14,8 +14,8 @@ if (process.env.NODE_ENV === "production") {
 
 require("./startup/auth-session")(app);
 require("./startup/routes")(app);
-require("./startup/errors")(app);
 require("./startup/connect-db")();
+require("./startup/errors")(app); // error handling middleware must come last
 
 const server = require("./startup/connect-server")(app);
 
