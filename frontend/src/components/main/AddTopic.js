@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import addTopic from "../../utils/frontendDB";
 import Modal from "react-modal";
 import "./modal.css";
 Modal.setAppElement("#root");
 
-export default (props) => {
+export default function AddTopic(props) {
   const [modalIsOpen, setIsOpen] = React.useState(false);
   function openModal() {
     setIsOpen(true);
@@ -16,11 +16,11 @@ export default (props) => {
     topic: "",
     subTopic: "",
   });
-  function handleSubmit(e)  {
+  function handleSubmit(e) {
     e.preventDefault();
     const { topic, subTopic } = state;
     addTopic(topic);
-  };
+  }
   function handleChange(e) {
     setState({ topic: e.target.value });
   }
@@ -40,7 +40,12 @@ export default (props) => {
         <form onSubmit={handleSubmit}>
           <label>
             Topic
-            <input name="topicName" type="text" value={state.topic} onChange={handleChange}/>
+            <input
+              name="topicName"
+              type="text"
+              value={state.topic}
+              onChange={handleChange}
+            />
           </label>
           <br />
           <label>
@@ -54,4 +59,4 @@ export default (props) => {
       </Modal>
     </>
   );
-};
+}

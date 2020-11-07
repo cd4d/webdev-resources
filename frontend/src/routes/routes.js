@@ -2,7 +2,7 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 import Main from "../components/main/Main";
 import { mockDB } from "../components/app/App";
-export default function () {
+export default function Routes () {
   return (
     <Switch>
       <Route

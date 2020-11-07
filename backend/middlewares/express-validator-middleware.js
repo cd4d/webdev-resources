@@ -58,6 +58,41 @@ const linkPatchValidationRules = () => {
   ];
 };
 
+// for PATCH request all fields are optional so user is not required to update every field
+const userPatchValidationRules = () => {
+  return [
+    body("username").trim().escape().isLength(2, 50).isString().optional(),
+    body("password").escape().isLength(5, 1024).isString().optional(),
+    body("confirmPassword").escape().isLength(5, 1024).isString().optional(),
+    body("email")
+      .trim()
+      .isLength(5, 255)
+      .isEmail()
+      .optional(),
+  ];
+};
+//  rules for POST request, all fields are required
+const userPostValidationRules = () => {
+  return [
+    body("username").trim().escape().isLength(2, 50).isString(),
+    body("password").escape().isLength(5, 1024).isString(),
+    body("confirmPassword").escape().isLength(5, 1024).isString(),
+    body("email")
+      .trim()
+      .isLength(5, 255)
+      .isEmail()
+
+  ];
+};
+const userLoginValidationRules = () => {
+  return [
+    body("username").trim().escape().isLength(2, 50).isString(),
+    body("password").escape().isLength(5, 1024).isString()
+   
+
+  ];
+};
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
@@ -71,5 +106,8 @@ module.exports = {
   topicPatchValidationRules,
   linkPatchValidationRules,
   linkPostValidationRules,
+  userPatchValidationRules,
+  userPostValidationRules,
+  userLoginValidationRules,
   validate,
 };

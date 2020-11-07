@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
     maxlength: 1024,
   },
   isAdmin: { type: Boolean, default: false },
+  lastLogin:{type: Date, default: null}
 });
 userSchema.plugin(passportLocalMongoose);
 const User = mongoose.model("User", userSchema);

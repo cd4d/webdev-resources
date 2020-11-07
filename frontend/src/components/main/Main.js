@@ -48,7 +48,7 @@ export let displayedData = {
 
 
 
-export default function (props) {
+export default function Main (props) {
   
   // default data to be displayed
 

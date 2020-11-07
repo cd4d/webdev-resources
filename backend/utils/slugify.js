@@ -1,5 +1,5 @@
 // https://gist.github.com/hagemann/382adfc57adbd5af078dc93feef01fe1
-
+// generate URL slugs from regular string Web development -> web-development
 module.exports = function slugify(string) {
     const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
     const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------'

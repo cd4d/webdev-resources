@@ -117,7 +117,7 @@ router.patch(
         error.statusCode = 404;
         throw error;
       }
-    
+
       // replace all the fields
       updates.forEach((update) => {
         topic[update] = req.body[update];

@@ -6,7 +6,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import Subject from "./Subject"
 import "./ribbon.css";
-export default function (props) {
+export default function Ribbon (props) {
   const topics = props.mockDB.map((sub) => sub.topic);
   return (
     <>

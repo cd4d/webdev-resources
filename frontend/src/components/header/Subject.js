@@ -1,9 +1,5 @@
-import React from 'react';
+import React from "react";
 
-export default function(props){
-    return(
-        <>
-        {props.topicTitle}
-        </>
-    )
+export default function Subject(props) {
+  return <>{props.topicTitle}</>;
 }

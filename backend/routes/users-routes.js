@@ -3,16 +3,21 @@ const express = require("express");
 const router = express.Router();
 
 const passport = require("passport");
-const passportLocalMongoose = require("passport-local-mongoose");
+
 const { User } = require("../models/users-model");
 const checkAllowedUpdates = require("../middlewares/allowed-updates");
-
 const {
-  findUser,
-  checkAdmin,
-  getUserTopic,
-} = require("../middlewares/user-middleware");
-// https://github.com/jaredhanson/passport/issues/51#issuecomment-418313158
+  userPostValidationRules,
+  userPatchValidationRules,
+  validate,
+} = require("../middlewares/express-validator-middleware");
+const { findUser, checkAdmin } = require("../middlewares/user-middleware");
+const getTodayDate = require("../utils/get-today-date");
+const generateResetToken = require("../utils/generate-reset-token");
+const dayjs = require("dayjs");
+const sendResetEmail = require("../utils/send-reset-email");
+// router.use instead of app.use
+// see https://github.com/jaredhanson/passport/issues/51#issuecomment-418313158
 router.use(passport.initialize());
 router.use(passport.session());
 
@@ -28,50 +33,60 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-// get all users, for admin/testing only
-router.get("/", async (req, res) => {
-  try {
-    const allUsers = await User.find();
-    res.send(allUsers);
-  } catch (err) {
-    if (!err.statusCode) err.statusCode = 404;
-    next(err);
-  }
-});
-
-router.post("/register", async (req, res) => {
-  await User.register(
-    { username: req.body.username, email: req.body.email },
-    req.body.password,
-    (err, user) => {
-      if (err) {
-        console.log(err);
-        res.status(400).send(err, "Error at registration.");
-      } else {
-        passport.authenticate("local")(req, res, () => {
-          res.status(200).send("User successfully registered.");
-        });
+router.post(
+  "/register",
+  userPostValidationRules(),
+  validate,
+  async (req, res, next) => {
+    try {
+      // password confirm
+      if (req.body.password !== req.body.confirmPassword) {
+        const error = new Error("Passwords don't match.");
+        error.statusCode = 400;
+        throw error;
       }
+      await User.register(
+        { username: req.body.username, email: req.body.email },
+        req.body.password,
+        (err, user) => {
+          if (err) {
+            // const error = new Error("Error at registration.");
+            // error.statusCode = 400;
+            // throw error;
+            res.status(400).send("Error at registration.");
+          } else {
+            passport.authenticate("local")(req, res, () => {
+              res.status(200).send("User successfully registered.");
+            });
+          }
+        }
+      );
+    } catch (err) {
+      next(err);
     }
-  );
-});
+  }
+);
 
-router.post("/login", (req, res) => {
+router.post("/login", (req, res, next) => {
+  const today = getTodayDate(new Date());
   const user = new User({
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
   });
-  req.login(user, (err) => {
-    if (err) {
-      console.log("login has failed");
-      res.status(401).send(err, "Login failed");
-    } else {
-      passport.authenticate("local")(req, res, () => {
-        console.log("user is logged in");
-        res.status(200).send("User logged in.");
-      });
-    }
+  // passport provides 401 error for wrong credentials
+  req.login(user, () => {
+    passport.authenticate("local")(req, res, async () => {
+      // update last login date
+      await User.findOneAndUpdate(
+        { username: req.body.username },
+        { lastLogin: getTodayDate(new Date()) },
+        (err) => {
+          if (err) res.status(500).send("Cannot login");
+          res.status(200).send("User logged in.");
+        }
+      );
+    });
   });
 });
 
@@ -80,6 +95,133 @@ router.get("/logout", function (req, res) {
   res.send("Logged out.");
   // res.redirect('/');
 });
+
+router.patch(
+  "/:id",
+  checkAllowedUpdates(["username", "email", "password", "confirmPassword"]),
+  userPatchValidationRules(),
+  validate,
+  findUser,
+  async (req, res, next) => {
+    // grab the list of updated fields, filtering for user
+    let updatedData = {};
+    for (let [key, value] of Object.entries(req.body)) {
+      if (key !== "user") {
+        updatedData[key] = value;
+      }
+    }
+
+    try {
+      // password confirm
+      if (req.body.password && req.body.password !== req.body.confirmPassword) {
+        const error = new Error("Passwords don't match.");
+        error.statusCode = 400;
+        throw error;
+      }
+      // match user requesting with user id in url
+      if (req.params.id === req.body.user) {
+        const user = await User.findOneAndUpdate(
+          { _id: req.body.user },
+          updatedData
+        );
+        console.log("user update:", user);
+        if (!user) throw new Error("Error at updating user info");
+        res.send(user);
+      } // wrong user requesting update
+      else {
+        const error = new Error("No user found.");
+        error.statusCode = 404;
+        throw error;
+      }
+    } catch (err) {
+      if (!err.statusCode) err.statusCode = 400;
+      next(err);
+    }
+  }
+);
+
+// https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js#27580553
+
+// requesting password reset, sending reset link by email
+router.post("/reset-password", async (req, res, next) => {
+  // check if user already logged in
+  if (req.isAuthenticated()) res.status(400).send("Already logged in"); //return res.redirect("/");
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) throw new Error("User not found");
+
+    // create reset token based on date and user data
+    const today = getTodayDate(new Date());
+    const hashedDate = Buffer.from(today).toString("base64");
+
+    // hashing user data with secret salt
+    const userHash = generateResetToken(user, today);
+    // TODO: send link by email
+    const resetLink = new URL(
+      req.protocol +
+        "://" +
+        req.get("host") +
+        req.baseUrl +
+        "/password-change/" +
+        user._id +
+        "/" +
+        hashedDate +
+        "-" +
+        userHash
+    );
+
+    sendResetEmail({ username: user.username, resetLink: resetLink });
+    res.status(200).send({
+      userId: user._id,
+      requestedDate: today,
+      hashedDate: hashedDate,
+      hash: userHash,
+      resetLink: resetLink,
+    });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 404;
+    next(err);
+  }
+});
+
+// unique link for resetting password
+router.get(
+  "/password-change/:userId/:requestedDate-:hash",
+  async (req, res, next) => {
+    try {
+      // checking if link is out of date
+      const requestedDateString = Buffer.from(
+        req.params.requestedDate,
+        "base64"
+      ).toString("utf8");
+      const requestedDate = dayjs(requestedDateString);
+      const now = dayjs(new Date());
+      const timeSince = now.diff(requestedDate, "hours");
+      // 1 hour expiration
+      if (timeSince > 1) {
+        throw new Error("Link is not valid");
+      }
+      // get the user
+      const user = await User.findById(req.params.userId);
+      if (!user) {
+        const error = { statusCode: 404, message: "User invalid." };
+        throw error;
+      }
+      // hashing provided data and compare it to provided hash
+
+      const generatedHash = generateResetToken(user, requestedDateString);
+
+      console.log(req.params.hash, generatedHash);
+      if (req.params.hash !== generatedHash) {
+        throw new Error("Link is not valid.");
+      }
+      // TODO redirect to passport change form
+      res.send("ok");
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 router.get("/:id", async (req, res, next) => {
   try {
@@ -93,41 +235,15 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-// TODO edit user, validate fields?
-
-router.patch(
-  "/:id",
-  checkAllowedUpdates(["username", "email", "password"]),
-  findUser,
-  async (req, res, next) => {
-    // grab the list of updated fields, filtering for user
-    let updatedData = {};
-    for (let [key, value] of Object.entries(req.body)) {
-      if (key !== "user") {
-        updatedData[key] = value;
-      }
-    }
-    console.log("updatedData:", updatedData);
-    console.log("body:", req.body);
-
-    try {
-      // match user requesting with user id in url
-      if (req.params.id === req.body.user) {
-        const user = await User.findOneAndUpdate(
-          { _id: req.body.user },
-          updatedData
-        );
-        if (!user) throw new Error("No user found.");
-        res.send(user);
-      } // user not found or wrong user
-      const error = new Error("User not found");
-      error.statusCode = 404;
-      throw error;
-    } catch (err) {
-      if (!err.statusCode) err.statusCode = 400;
-      next(err);
-    }
+// get all users, for admin/testing only
+router.get("/", checkAdmin, async (req, res, next) => {
+  try {
+    const allUsers = await User.find();
+    res.send(allUsers);
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 404;
+    next(err);
   }
-);
+});
 
 module.exports = router;

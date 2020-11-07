@@ -24,7 +24,7 @@ function SidebarItem(item) {
     </li>
   );
 }
-export default function (props) {
+export default function Sidebar(props) {
   return (
     <>
       <input type="checkbox" id="mobile-menu-checkbox" />

@@ -1,0 +1,56 @@
+POST http://localhost:3000/api/topics/ HTTP/1.1
+content-type: application/json
+
+{
+	"title": "Topic someuser",
+	"description": "someuse"
+}
+
+###
+
+
+// Register
+POST http://localhost:3000/api/users/register HTTP/1.1
+content-type: application/json
+
+{
+	"username": "someuser7",
+	"email": "someuser7@caca.ca",
+	"password": "123456",
+	"confirmPassword":"123456"
+}
+
+###
+// Login 
+
+POST http://localhost:3000/api/users/login HTTP/1.1
+content-type: application/json
+
+{	
+	"username": "someuser666",
+	"password":"123456"
+	
+}
+
+###
+// Logout 
+
+GET http://localhost:3000/api/users/logout HTTP/1.1
+
+
+###
+// RESET password working email "someuser6@caca.ca"
+
+POST http://localhost:3000/api/users/reset-password HTTP/1.1
+content-type: application/json
+
+{"email": "someuser6@caca.ca"}
+
+###
+
+// Allow password reset (emailed link)
+GET  http://localhost:3000/api/users/password-change/5fa49a8e3a3fec278c531d63/MjAyMC0xMS02-jK6IguYKKWRkdL5PuMlHrIyUgJ6Ejd++fKP2bLfsXK4= HTTP/1.1
+content-type: application/json
+
+{"email": "someuser6@caca.ca"}
+
