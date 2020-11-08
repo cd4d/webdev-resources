@@ -9,6 +9,11 @@ content-type: application/json
 ###
 
 
+// wrong topic id
+GET http://localhost:3000/api/topics/wrongid HTTP/1.1
+
+###
+
 // Register
 POST http://localhost:3000/api/users/register HTTP/1.1
 content-type: application/json
@@ -49,7 +54,7 @@ content-type: application/json
 ###
 
 // Allow password reset (emailed link)
-GET  http://localhost:3000/api/users/password-change/5fa49a8e3a3fec278c531d63/MjAyMC0xMS02-jK6IguYKKWRkdL5PuMlHrIyUgJ6Ejd++fKP2bLfsXK4= HTTP/1.1
+GET  http://localhost:3000/api/users/password-change/5fa49a8e3a3fec278c531d63/MjAyMC0xMS0wN1QxNzo1NTo0NS0wNTowMA==-6+KvflvZzGhz69+BVUAWJWYEEg9ZN1ebaWcYQEf+ZzQ= HTTP/1.1
 content-type: application/json
 
 {"email": "someuser6@caca.ca"}

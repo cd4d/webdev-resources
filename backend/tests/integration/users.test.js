@@ -1,62 +1,55 @@
 require("dotenv").config();
-
-let supertestRequest = require("supertest");
 const mongoose = require("mongoose");
 
-const { Topic } = require("../../models/topics-model");
-const { Link } = require("../../models/links-model");
+const supertest = require("supertest");
+const { User } = require("../../models/users-model");
 
 let server;
+let id;
+let userId;
+const createUser = async () => {
+  const user = new User({
+    _id: userId,
+    username: "regularuser",
+    email: "regularuser@test.com",
+    password: "123456",
+    isAdmin: false,
+  });
+  await user.save();
+  console.log("user created", user);
+};
 
-describe("/api/users/", () => {
-  let id;
-  let secondTopicId;
-  let linkIdOne;
-  let linkIdTwo;
-  let userIdOne;
-  let userIdTwo;
-
-  const createTopics = async (user = null) => {
-    const topic = new Topic({
-      _id: id,
-      title: "Test Topic",
-      user: user,
-      links: [
-        {
-          _id: linkIdOne,
-          description: "some description",
-          url: "http://example.com",
-        },
-        {
-          _id: linkIdTwo,
-          description: "another description",
-          url: "http://example2.com",
-        },
-      ],
-    });
-    await topic.save();
-    const secondTopic = new Topic({
-      _id: secondTopicId,
-      title: "Second Test Topic",
-    });
-    await secondTopic.save();
-  };
-
+describe("Login", function () {
   beforeEach(async () => {
     server = require("../../index");
-    id = new mongoose.Types.ObjectId();
-    secondTopicId = new mongoose.Types.ObjectId();
-    linkIdOne = new mongoose.Types.ObjectId();
-    linkIdTwo = new mongoose.Types.ObjectId();
-    userIdOne = new mongoose.Types.ObjectId();
-    userIdTwo = new mongoose.Types.ObjectId();
+    userId = new mongoose.Types.ObjectId();
+    const user = new User({
+      _id: userId,
+      username: "regularuser",
+      email: "regularuser@test.com",
+      password: "123456",
+      isAdmin: false,
+    });
+    const registerUser = await User.register({username: "regularuser",
+    email: "regularuser@test.com"},"123456");
+  
   });
-
   afterEach(async () => {
-    await Topic.collection.deleteMany();
+    await User.collection.deleteMany();
     await server.close();
   });
   afterAll(async () => {
     await mongoose.connection.close();
+  });
+
+  it("should login user", async function () {
+    const agent = supertest.agent(server);
+    const user = await User.findById(userId);
+    console.log(user);
+
+    const res = await supertest(server)
+      .post("/api/users/login")
+      .send({ username: "regularuser", password: "123456" });
+    expect(res.status).toBe(200)
   });
 });

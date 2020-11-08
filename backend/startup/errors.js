@@ -11,7 +11,6 @@ module.exports = function (app) {
         req.method
       } - ${req.ip}`
     );
-
     res.status(status).send(message);
   });
 };

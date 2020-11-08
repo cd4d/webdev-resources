@@ -36,9 +36,10 @@ router.get("/alltopics", checkAdmin, async (req, res, next) => {
 router.get("/:id", findUser, async (req, res, next) => {
   console.log(req.session);
   try {
-    let topic;
-    topic = await getUserTopic(req.body.user, "getOneTopic", req.params.id);
-    if (!topic || typeof topic !== "object") {
+    
+    const topic = await getUserTopic(req.body.user, "getOneTopic", req.params.id);
+    if (!topic || topic instanceof Error) {
+      console.log("topic error/not found",topic);
       const error = new Error("Topic not found");
       error.statusCode = 404;
       throw error;
@@ -87,6 +88,7 @@ router.post(
     });
     try {
       let newTopic = await topic.save();
+      console.log("building ancestors");
       if (parent) await buildAncestors(newTopic._id, parent);
       res.status(201).send(newTopic);
     } catch (err) {

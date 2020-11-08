@@ -12,7 +12,6 @@ const {
   validate,
 } = require("../middlewares/express-validator-middleware");
 const { findUser, checkAdmin } = require("../middlewares/user-middleware");
-const getTodayDate = require("../utils/get-today-date");
 const generateResetToken = require("../utils/generate-reset-token");
 const dayjs = require("dayjs");
 const sendResetEmail = require("../utils/send-reset-email");
@@ -68,7 +67,7 @@ router.post(
 );
 
 router.post("/login", (req, res, next) => {
-  const today = getTodayDate(new Date());
+  const today = dayjs().format();
   const user = new User({
     username: req.body.username,
     email: req.body.email,
@@ -80,9 +79,10 @@ router.post("/login", (req, res, next) => {
       // update last login date
       await User.findOneAndUpdate(
         { username: req.body.username },
-        { lastLogin: getTodayDate(new Date()) },
+        { lastLogin: dayjs().format() },
         (err) => {
           if (err) res.status(500).send("Cannot login");
+          
           res.status(200).send("User logged in.");
         }
       );
@@ -151,7 +151,7 @@ router.post("/reset-password", async (req, res, next) => {
     if (!user) throw new Error("User not found");
 
     // create reset token based on date and user data
-    const today = getTodayDate(new Date());
+    const today = dayjs().format();
     const hashedDate = Buffer.from(today).toString("base64");
 
     // hashing user data with secret salt
@@ -195,7 +195,7 @@ router.get(
         "base64"
       ).toString("utf8");
       const requestedDate = dayjs(requestedDateString);
-      const now = dayjs(new Date());
+      const now = dayjs();
       const timeSince = now.diff(requestedDate, "hours");
       // 1 hour expiration
       if (timeSince > 1) {
@@ -211,7 +211,7 @@ router.get(
 
       const generatedHash = generateResetToken(user, requestedDateString);
 
-      console.log(req.params.hash, generatedHash);
+      console.log("hashes:", req.params.hash, generatedHash);
       if (req.params.hash !== generatedHash) {
         throw new Error("Link is not valid.");
       }
