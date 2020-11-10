@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const slugify = require("../utils/slugify");
 const { linkSchema } = require("./links-model");
 const regex = /^[a-zA-Z0-9À-Ÿ-_]+( [a-zA-Z0-9À-Ÿ-_]+)*$/;
+
+// disable in prod
+mongoose.set("debug", true);
+
 // https://medium.com/swlh/crud-operations-on-mongodb-tree-data-structure-f5afaeca1550
 const topicSchema = new mongoose.Schema({
   title: {
@@ -44,8 +48,30 @@ const topicSchema = new mongoose.Schema({
   ],
 });
 
-// compound index to ensure unique value for the same user , to be setup directly in prod
-// topicSchema.index({ user: 1, title: 1 }, { unique: true, sparse: true });
+// compound index to ensure unique value for the same user , can be disabled in prod with {autoindex: false}.
+// Ignoring null values: https://stackoverflow.com/questions/35755628/unique-index-in-mongodb-3-2-ignoring-null-values
+
+topicSchema.index(
+  { user: 1, title: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { title: { $type: "string" } },
+  }
+);
+topicSchema.index(
+  { user: 1, "links.description": 1 },
+  {
+    unique: true,
+    partialFilterExpression: { "links.description": { $type: "string" } },
+  }
+);
+topicSchema.index(
+  { user: 1, "links.url": 1 },
+  {
+    unique: true,
+    partialFilterExpression: { "links.url": { $type: "string" } },
+  }
+);
 
 // *** associated middlewares *** //
 // generates URL slug
@@ -55,9 +81,17 @@ topicSchema.pre("save", async function (req, res, next) {
     next();
   } catch (err) {
     console.log("Error:", err);
+    next(err)
   }
 });
-
+// Catching duplicate error, working?
+topicSchema.post("save", function (error, doc, next) {
+  if (error.name === "MongoError" && error.code === 11000) {
+    next(new Error("There was a duplicate key error"));
+  } else {
+    next(error);
+  }
+});
 // update middleware for slug, not used anymore, using save() for patch requests
 // topicSchema.pre("findOneAndUpdate", async function (next) {
 //   try {

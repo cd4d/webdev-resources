@@ -1,12 +1,4 @@
-POST http://localhost:3000/api/topics/ HTTP/1.1
-content-type: application/json
 
-{
-	"title": "Topic someuser",
-	"description": "someuse"
-}
-
-###
 
 
 // wrong topic id
@@ -19,22 +11,10 @@ POST http://localhost:3000/api/users/register HTTP/1.1
 content-type: application/json
 
 {
-	"username": "someuser7",
-	"email": "someuser7@caca.ca",
+	"username": "someuser",
+	"email": "someuser@caca.ca",
 	"password": "123456",
 	"confirmPassword":"123456"
-}
-
-###
-// Login 
-
-POST http://localhost:3000/api/users/login HTTP/1.1
-content-type: application/json
-
-{	
-	"username": "someuser666",
-	"password":"123456"
-	
 }
 
 ###
@@ -59,3 +39,27 @@ content-type: application/json
 
 {"email": "someuser6@caca.ca"}
 
+###
+// Login 
+
+POST http://localhost:3000/api/users/login HTTP/1.1
+content-type: application/json
+
+{	
+	"username": "someuser",
+	"password":"123456"
+	
+}
+
+###
+
+
+POST http://localhost:3000/api/topics/ HTTP/1.1
+content-type: application/json
+
+{
+	"title": "Topic someuser66",
+	"description": "someuser"
+}
+
+###

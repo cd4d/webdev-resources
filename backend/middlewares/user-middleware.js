@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 // is a user is logged in, pass their id in req.body.user
 const findUser = (req, res, next) => {
   if (req.session && req.session.passport && req.session.passport.user) {
-    console.log("User found", req.session.passport.user);
     req.body.user = req.session.passport.user;
     return next();
   } else {

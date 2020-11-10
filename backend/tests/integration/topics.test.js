@@ -14,6 +14,7 @@ describe("/api/topics", () => {
   let childTopicId;
   let userAdminId;
   let userId;
+  let secondUserId;
   const createUserAdmin = async () => {
     const registerUser = await User.register(
       {
@@ -45,12 +46,30 @@ describe("/api/topics", () => {
       "123456"
     );
   };
+  const createSecondUser = async () => {
+    const registerUser = await User.register(
+      {
+        _id: secondUserId,
+        username: "secondregularuser",
+        email: "secondregularuser@test.com",
+      },
+      "123456"
+    );
+  };
 
   const loginUser = async () => {
     const res = await testSession
       .post("/api/users/login")
       .set("Accept", "application/json")
       .send({ username: "regularuser", password: "123456" });
+    //cookies = res.headers["set-cookie"].pop().split(";")[0];
+    return testSession;
+  };
+  const loginSecondUser = async () => {
+    const res = await testSession
+      .post("/api/users/login")
+      .set("Accept", "application/json")
+      .send({ username: "secondregularuser", password: "123456" });
     //cookies = res.headers["set-cookie"].pop().split(";")[0];
     return testSession;
   };
@@ -89,10 +108,12 @@ describe("/api/topics", () => {
     childTopicId = new mongoose.Types.ObjectId();
     userAdminId = new mongoose.Types.ObjectId();
     userId = new mongoose.Types.ObjectId();
+    secondUserId = new mongoose.Types.ObjectId();
     linkIdOne = new mongoose.Types.ObjectId();
     linkIdTwo = new mongoose.Types.ObjectId();
     await createTopics();
     await createUser();
+    await createSecondUser();
     await createUserAdmin();
   });
   afterEach(async () => {
@@ -132,6 +153,11 @@ describe("/api/topics", () => {
     test("should return error 404 if topic not found", async () => {
       const res = await testSession.get("/api/topics/" + "wrongId");
       console.log(res.body);
+      expect(res.status).toBe(404);
+    });
+    test("should return 404 error for wrong user", async () => {
+      await loginSecondUser();
+      const res = await testSession.get("/api/topics/" + id);
       expect(res.status).toBe(404);
     });
   });
@@ -177,11 +203,66 @@ describe("/api/topics", () => {
 
       await loginUser();
     });
-    test("should return 201  from express-validator if title input  properly formatted", async () => {
+    test("should return 201  from express-validator if title input properly formatted", async () => {
       links = undefined;
       const res = await execRequest();
       expect(res.status).toBe(201);
       expect(res.body.title).toBe("validTitle");
+    });
+    test("should publish a link already published by another user", async () => {
+      await createTopics();
+      await loginSecondUser();
+      const thirdTopic = {
+        title: "Topic with duplicate link",
+        user: secondUserId,
+        description:"Duplicate link another user",
+        links: [
+          {
+            description: "some description",
+            url: "http://example.com",
+          },
+          {
+            description: "fourth description",
+            url: "http://example4.com",
+          },
+        ],
+      };
+      const res = await testSession.post("/api/topics/").send(thirdTopic);
+      expect(res.status).toBe(201);
+      expect(res.body).not.toHaveProperty("errors");
+    });
+    test.only("should return error if trying to publish a topic title already published by same user", async () => {
+      await createTopics();
+      const thirdTopic = {
+        title: "Test Topic",
+        user: userId,
+        description:"Duplicate topic title same user",
+        
+      };
+      const res = await testSession.post("/api/topics/").send(thirdTopic);
+      expect(res.status).toBe(422);
+      expect(res.body).toHaveProperty("errors");
+    });
+    test.only("should return error if trying to publish a link already published by same user", async () => {
+      await createTopics();
+      const thirdTopic = {
+        title: "Topic with duplicate link",
+        user: userId,
+        description:"Duplicate link same user",
+        links: [
+          {
+            description: "some description",
+            url: "http://example.com"
+          },
+          {
+            description: "fourth description",
+            url: "http://example4.com"
+          },
+        ],
+      };
+      const res = await testSession.post("/api/topics/").send(thirdTopic);
+      expect(res.status).toBe(422);
+      expect(res.body).toHaveProperty("errors");
     });
 
     test("should return 201  from express-validator if title, links, description input properly formatted", async () => {
@@ -195,6 +276,7 @@ describe("/api/topics", () => {
       expect(res.body.links[0]).toHaveProperty("url", "http://example.com");
       expect(res.body.description).toBe("Some description");
     });
+
     test("should return 500 error from express-validator if title input not properly formatted", async () => {
       title = {};
       const res = await execRequest();
@@ -236,7 +318,7 @@ describe("/api/topics", () => {
       expect(res.status).toBe(422);
     });
 
-    test.only("should fill ancestor and parent", async () => {
+    test("should fill ancestor and parent", async () => {
       const childTopic = {
         _id: childTopicId,
         title: "Child Topic",
@@ -259,43 +341,25 @@ describe("/api/topics", () => {
       console.log(res.body);
       expect(res.status).toBe(200);
       expect(res.body[1].ancestors).toEqual([
-        { _id: mongoose.Types.ObjectId(id).toHexString(), slug: "test-topic", title: "Test Topic" },
+        {
+          _id: mongoose.Types.ObjectId(id).toHexString(),
+          slug: "test-topic",
+          title: "Test Topic",
+        },
       ]);
     });
   });
-// TODO test
+  // TODO test
   describe("PATCH /:id", () => {
-    const id = new mongoose.Types.ObjectId();
     beforeEach(async () => {
-      const newTopic = new Topic({
-        _id: id,
-        title: "Some topic to patch",
-        description: "Some description",
-        links: [],
-      });
-      await newTopic.save();
-      const res = await testSession.patch("/api/topics/" + id).send({
-        title: "Changed topic",
-        links: [{ description: "web dev", url: "http:example.com" }],
-      });
-    });
-    test("Should return 200, updated slug for correctly formatted title update request", async () => {
-      const res = await testSession
-        .patch("/api/topics/" + id)
-        .send({ title: "Changed topic" });
-      const changedTopic = await Topic.findById(id).exec();
-      expect(res.status).toBe(200);
-      expect(changedTopic.title).toBe("Changed topic");
-      expect(changedTopic.slug).toBe("changed-topic");
-    });
-
-    test("Should return 200, updated slug and description for correctly formatted title update request", async () => {
-      const changedTopic = await Topic.findById(id).exec();
-      expect(changedTopic.title).toBe("Changed topic");
-      expect(changedTopic.slug).toBe("changed-topic");
+      await loginUser();
     });
 
     test("Should return 200, updated slug and new link for correctly formatted title update request", async () => {
+      const res = await testSession.patch("/api/topics/" + id).send({
+        title: "Changed topic",
+        links: [{ description: "web dev", url: "http://example.com" }],
+      });
       const changedTopic = await Topic.findById(id).exec();
       expect(changedTopic.title).toBe("Changed topic");
       expect(changedTopic.slug).toBe("changed-topic");
@@ -304,7 +368,7 @@ describe("/api/topics", () => {
         expect.arrayContaining([
           expect.objectContaining({
             description: "web dev",
-            url: "http:example.com",
+            url: "http://example.com",
           }),
         ])
       );
@@ -345,24 +409,31 @@ describe("/api/topics", () => {
       const firstChildTopic = await Topic.findById(childIdOne);
       done();
     });
+    test("Should return error,  for wrong user", async () => {
+      await loginSecondUser();
+      const res = await testSession.patch("/api/topics/" + id).send({
+        title: "Changed topic",
+      });
+      const changedTopic = await Topic.findById(id).exec();
+      expect(res.status).toBe(404);
+    });
   });
 
   describe("DELETE /:id", () => {
-    const id = new mongoose.Types.ObjectId();
-    beforeEach(async () => {
-      const newTopic = new Topic({
-        _id: id,
-        title: "Some topic to delete",
-        description: "Some description",
-        links: [],
-      });
-      await newTopic.save();
-    });
+    beforeEach(async () => {});
     test("should remove the selected topic", async () => {
+      await loginUser();
       const res = await testSession.delete("/api/topics/" + id);
       expect(res.status).toBe(200);
       const deletedDoc = await Topic.findById(id).exec();
       expect(deletedDoc).toBe(null);
+    });
+    test("should block delete request for wrong user", async () => {
+      await loginSecondUser();
+      const res = await testSession.delete("/api/topics/" + id);
+      expect(res.status).toBe(404);
+      const deletedDoc = await Topic.findById(id).exec();
+      expect(deletedDoc).not.toBe(null);
     });
   });
 });

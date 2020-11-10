@@ -16,6 +16,13 @@ const {
   getUserTopic,
 } = require("../middlewares/user-middleware");
 
+// catch indexing errors
+Topic.on("index", function (err) {
+  if (err) {
+    console.error(err);
+  }
+});
+
 // protected route for admin user only, display all topics
 router.get("/alltopics", checkAdmin, async (req, res, next) => {
   try {
@@ -34,12 +41,13 @@ router.get("/alltopics", checkAdmin, async (req, res, next) => {
 
 // get a single topic that must be associated with the requesting user
 router.get("/:id", findUser, async (req, res, next) => {
-  console.log(req.session);
   try {
-    
-    const topic = await getUserTopic(req.body.user, "getOneTopic", req.params.id);
+    const topic = await getUserTopic(
+      req.body.user,
+      "getOneTopic",
+      req.params.id
+    );
     if (!topic || topic instanceof Error) {
-      console.log("topic error/not found",topic);
       const error = new Error("Topic not found");
       error.statusCode = 404;
       throw error;
@@ -88,9 +96,15 @@ router.post(
     });
     try {
       let newTopic = await topic.save();
-      console.log("building ancestors");
-      if (parent) await buildAncestors(newTopic._id, parent);
-      res.status(201).send(newTopic);
+
+      if (newTopic) {
+        if (parent) await buildAncestors(newTopic._id, parent);
+        res.status(201).send(newTopic);
+      } else {
+        const error = new Error("Could not save this topic.");
+        if (!error.statusCode) error.statusCode = 409;
+        throw error;
+      }
     } catch (err) {
       if (!err.statusCode) err.statusCode = 500;
       next(err);
