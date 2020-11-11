@@ -95,7 +95,7 @@ router.post(
       user: user,
     });
     try {
-      let newTopic = await topic.save();
+      let newTopic = await topic.save((err, doc)=>{if(err){ next(err)}else{return doc} });
 
       if (newTopic) {
         if (parent) await buildAncestors(newTopic._id, parent);
@@ -156,7 +156,7 @@ router.patch(
           next(err);
         }
       }
-      await topic.save();
+      await topic.save(err=>{if(err) next(err)});
       res.send(topic);
     } catch (err) {
       if (!err.statusCode) err.statusCode = 400;

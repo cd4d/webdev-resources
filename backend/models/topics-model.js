@@ -84,14 +84,7 @@ topicSchema.pre("save", async function (req, res, next) {
     next(err)
   }
 });
-// Catching duplicate error, working?
-topicSchema.post("save", function (error, doc, next) {
-  if (error.name === "MongoError" && error.code === 11000) {
-    next(new Error("There was a duplicate key error"));
-  } else {
-    next(error);
-  }
-});
+
 // update middleware for slug, not used anymore, using save() for patch requests
 // topicSchema.pre("findOneAndUpdate", async function (next) {
 //   try {
