@@ -4,7 +4,7 @@ const { linkSchema } = require("./links-model");
 const regex = /^[a-zA-Z0-9À-Ÿ-_]+( [a-zA-Z0-9À-Ÿ-_]+)*$/;
 
 // disable in prod
-mongoose.set("debug", true);
+//mongoose.set("debug", true);
 
 // https://medium.com/swlh/crud-operations-on-mongodb-tree-data-structure-f5afaeca1550
 const topicSchema = new mongoose.Schema({
@@ -73,17 +73,38 @@ topicSchema.index(
   }
 );
 
+// Handling duplicate key error
+// https://thecodebarbarian.com/mongoose-error-handling.html
+
+const handleE11000 = function (err, res, next) {
+  if (err.name === "MongoError" && err.code === 11000) { // extracting the field where duplicate error happened at err.keyValue
+    const error = new Error(`Duplicate key error at: ${JSON.stringify(err.keyValue)}`)
+    error.statusCode = 409
+    next(error);
+
+  } else {
+    next();
+  }
+};
+
 // *** associated middlewares *** //
 // generates URL slug
 topicSchema.pre("save", async function (req, res, next) {
   try {
     this.slug = await slugify(this.title);
-    next();
+    // had to remove next() tp catch duplicate key error
+    // next()
   } catch (err) {
-    console.log("Error:", err);
-    next(err)
+    next(err);
   }
 });
+
+// Duplicate key errors, see above
+
+topicSchema.post("save", handleE11000);
+topicSchema.post("update", handleE11000);
+topicSchema.post("findOneAndUpdate", handleE11000);
+topicSchema.post("insertMany", handleE11000);
 
 // update middleware for slug, not used anymore, using save() for patch requests
 // topicSchema.pre("findOneAndUpdate", async function (next) {

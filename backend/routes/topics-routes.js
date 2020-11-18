@@ -17,11 +17,11 @@ const {
 } = require("../middlewares/user-middleware");
 
 // catch indexing errors
-Topic.on("index", function (err) {
-  if (err) {
-    console.error(err);
-  }
-});
+// Topic.on("index", function (err) {
+//   if (err) {
+//     console.error(err);
+//   }
+// });
 
 // protected route for admin user only, display all topics
 router.get("/alltopics", checkAdmin, async (req, res, next) => {
@@ -95,20 +95,13 @@ router.post(
       user: user,
     });
     try {
-      let newTopic = await topic.save((err, doc)=>{if(err){ next(err)}else{return doc} });
-
-      if (newTopic) {
-        if (parent) await buildAncestors(newTopic._id, parent);
-        res.status(201).send(newTopic);
-      } else {
-        const error = new Error("Could not save this topic.");
-        if (!error.statusCode) error.statusCode = 409;
-        throw error;
-      }
+      let newTopic = await topic.save();
+      res.status(201).send(newTopic);
     } catch (err) {
       if (!err.statusCode) err.statusCode = 500;
       next(err);
     }
+    
   }
 );
 
@@ -156,7 +149,7 @@ router.patch(
           next(err);
         }
       }
-      await topic.save(err=>{if(err) next(err)});
+      await topic.save();
       res.send(topic);
     } catch (err) {
       if (!err.statusCode) err.statusCode = 400;

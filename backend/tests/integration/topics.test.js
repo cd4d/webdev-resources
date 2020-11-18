@@ -40,6 +40,10 @@ describe("/api/topics", () => {
     return testSession;
   };
 
+  const logout = async () => {
+    const res = await testSession.get("/api/users/logout");
+  };
+
   const createUser = async () => {
     const registerUser = await User.register(
       { _id: userId, username: "regularuser", email: "regularuser@test.com" },
@@ -63,6 +67,7 @@ describe("/api/topics", () => {
       .set("Accept", "application/json")
       .send({ username: "regularuser", password: "123456" });
     //cookies = res.headers["set-cookie"].pop().split(";")[0];
+    console.log("Logged: user one");
     return testSession;
   };
   const loginSecondUser = async () => {
@@ -71,6 +76,8 @@ describe("/api/topics", () => {
       .set("Accept", "application/json")
       .send({ username: "secondregularuser", password: "123456" });
     //cookies = res.headers["set-cookie"].pop().split(";")[0];
+    console.log("Logged: user two");
+
     return testSession;
   };
 
@@ -111,14 +118,14 @@ describe("/api/topics", () => {
     secondUserId = new mongoose.Types.ObjectId();
     linkIdOne = new mongoose.Types.ObjectId();
     linkIdTwo = new mongoose.Types.ObjectId();
-    await createTopics();
+    //await createTopics();
     await createUser();
     await createSecondUser();
     await createUserAdmin();
   });
   afterEach(async () => {
     await User.collection.deleteMany();
-    await Topic.collection.deleteMany();
+    //await Topic.collection.deleteMany();
     await server.close();
   });
   afterAll(async () => {
@@ -127,6 +134,8 @@ describe("/api/topics", () => {
 
   describe("GET /:id", () => {
     beforeEach(async () => {
+      await Topic.collection.deleteMany();
+
       await loginUser();
     });
     // test("should login user", async () => {
@@ -138,9 +147,9 @@ describe("/api/topics", () => {
     //   expect(res.status).toBe(200);
     // });
     test("should return one topic for regular user", async () => {
-      // const topic = new Topic({ _id: id, title: "Test Topic", user: userId });
-      // console.log("topic", topic);
-      // await topic.save();
+      const topic = new Topic({ _id: id, title: "Test Topic", user: userId });
+      console.log("topic", topic);
+      await topic.save();
       const res = await testSession.get("/api/topics/" + id);
       //console.log("res.req", res.req);
       expect(res.status).toBe(200);
@@ -194,6 +203,7 @@ describe("/api/topics", () => {
         .send({ title: title, links: links, description: description });
     };
     beforeEach(async () => {
+      await Topic.collection.deleteMany();
       title = "validTitle";
       links = [
         { description: "some description", url: "http://example.com" },
@@ -203,19 +213,33 @@ describe("/api/topics", () => {
 
       await loginUser();
     });
+    afterEach(async () => {
+      await Topic.collection.deleteMany();
+    });
     test("should return 201  from express-validator if title input properly formatted", async () => {
       links = undefined;
       const res = await execRequest();
       expect(res.status).toBe(201);
       expect(res.body.title).toBe("validTitle");
     });
-    test("should publish a link already published by another user", async () => {
+
+    test.skip("should return error if trying to publish a topic title already published by same user", async () => {
       await createTopics();
-      await loginSecondUser();
+      const thirdTopic = {
+        title: "Test Topic",
+        user: userId,
+        description: "Duplicate topic title same user",
+      };
+      const res = await testSession.post("/api/topics/").send(thirdTopic);
+      expect(res.status).toBe(409);
+      expect(res.body).toHaveProperty("errors");
+    });
+    test.skip("should return error if trying to publish a link already published by same user", async () => {
+      await createTopics();
       const thirdTopic = {
         title: "Topic with duplicate link",
-        user: secondUserId,
-        description:"Duplicate link another user",
+        user: userId,
+        description: "Duplicate link same user",
         links: [
           {
             description: "some description",
@@ -228,40 +252,7 @@ describe("/api/topics", () => {
         ],
       };
       const res = await testSession.post("/api/topics/").send(thirdTopic);
-      expect(res.status).toBe(201);
-      expect(res.body).not.toHaveProperty("errors");
-    });
-    test.only("should return error if trying to publish a topic title already published by same user", async () => {
-      await createTopics();
-      const thirdTopic = {
-        title: "Test Topic",
-        user: userId,
-        description:"Duplicate topic title same user",
-        
-      };
-      const res = await testSession.post("/api/topics/").send(thirdTopic);
-      expect(res.status).toBe(422);
-      expect(res.body).toHaveProperty("errors");
-    });
-    test.only("should return error if trying to publish a link already published by same user", async () => {
-      await createTopics();
-      const thirdTopic = {
-        title: "Topic with duplicate link",
-        user: userId,
-        description:"Duplicate link same user",
-        links: [
-          {
-            description: "some description",
-            url: "http://example.com"
-          },
-          {
-            description: "fourth description",
-            url: "http://example4.com"
-          },
-        ],
-      };
-      const res = await testSession.post("/api/topics/").send(thirdTopic);
-      expect(res.status).toBe(422);
+      expect(res.status).toBe(409);
       expect(res.body).toHaveProperty("errors");
     });
 
@@ -349,7 +340,64 @@ describe("/api/topics", () => {
       ]);
     });
   });
-  // TODO test
+
+  describe("POST duplicate /", () => {
+    test.only("should publish a link already published by another user", async () => {
+      let thirdTopicId = new mongoose.Types.ObjectId();
+      const thirdTopic = new Topic({
+        _id: thirdTopicId,
+        title: "Topic with duplicate link",
+        user: userId,
+        description: "Duplicate link another user",
+        links: [
+          {
+            description: "testing description",
+            url: "http://example3.com",
+          },
+          {
+            description: "fourth description",
+            url: "http://example4.com",
+          },
+        ],
+      });
+      let fourthTopicId = new mongoose.Types.ObjectId();
+      const fourthTopic = {
+        _id: fourthTopicId,
+        title: "Topic with duplicate link",
+        description: "Duplicate link another user",
+        user: secondUserId,
+        links: [
+          {
+            description: "testing description",
+            url: "http://example3.com",
+          },
+          {
+            description: "fourth description",
+            url: "http://example4.com",
+          },
+        ],
+      };
+      await loginUser();
+      const thirdTopicSaved = await testSession.post("/api/topics/").set("Accept", "application/json")
+      .send(thirdTopic);
+      const res1 = await testSession.get("/api/topics/" + thirdTopicId);
+      console.log("res1", res1.body);
+      await logout();
+      await loginSecondUser();
+
+      const res = await testSession
+        .post("/api/topics/")
+        .set("Accept", "application/json")
+        .send(fourthTopic);
+
+      const res2 = await testSession.get("/api/topics/" + fourthTopicId);
+      console.log("res2", res2.body);
+
+      expect(res.status).toBe(201);
+      expect(res.body).not.toHaveProperty("errors");
+    });
+  });
+
   describe("PATCH /:id", () => {
     beforeEach(async () => {
       await loginUser();

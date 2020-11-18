@@ -6,8 +6,8 @@ import "./NavigationPath";
 import NavigationPath from "./NavigationPath";
 import AddTopic from "./AddTopic";
 
-
-
+// temp
+import fetchTopicData from "../../api/api-calls";
 
 export let displayedData = {
   topic: "web resources",
@@ -46,10 +46,7 @@ export let displayedData = {
   ],
 };
 
-
-
-export default function Main (props) {
-  
+export default function Main(props) {
   // default data to be displayed
 
   // access db if route matches, to be replaced by validation in backend
@@ -61,15 +58,18 @@ export default function Main (props) {
       props.match.params.mainTopic;
     let queryDBResult = getTopicData(props.mockDB, topic);
     // update displayedData if result
-    console.log(queryDBResult);
     if (queryDBResult !== undefined) displayedData = queryDBResult;
   }
   return (
     <div className="main content column">
-      
+      {/* Temporary buttons to test functions */}
       <AddTopic mockDB={props.mockDB} />
+      <button onClick={fetchTopicData}>Fetch topic</button>
+      {/* Navigation breadcrumbs */}
       <NavigationPath mockDB={props.mockDB} topic={displayedData.topic} />
+      {/* Title of the topic */}
       <h1>{displayedData.title}</h1>
+      {/* All the links associated with the topic */}
       <ul className="list-group list-group-flush">
         {displayLinks(displayedData)}
       </ul>

@@ -1,4 +1,7 @@
+// users topic
+GET http://localhost:3000/api/topics/ HTTP/1.1
 
+###
 
 
 // wrong topic id
@@ -46,7 +49,7 @@ POST http://localhost:3000/api/users/login HTTP/1.1
 content-type: application/json
 
 {	
-	"username": "someuser",
+	"username": "someuser2",
 	"password":"123456"
 	
 }
@@ -58,8 +61,46 @@ POST http://localhost:3000/api/topics/ HTTP/1.1
 content-type: application/json
 
 {
-	"title": "Topic someuser99",
+	"title": "Topic someuser-shared",
 	"description": "someuser"
+}
+
+###
+
+POST http://localhost:3000/api/topics/ HTTP/1.1
+content-type: application/json
+
+{
+        "title": "Topic with duplicate link",
+        "description": "Duplicate link another user",
+        "links": [
+          {
+            "description": "some description",
+            "url": "http://example.com"
+          },
+          {
+            "description": "fourth description",
+            "url": "http://example4.com"
+          }
+        ]
+      }
+
+###
+// patch duplicate
+PATCH  http://localhost:3000/api/topics/5fad651869ac675d16393f21 HTTP/1.1
+content-type: application/json
+
+{
+        "links": [
+          {
+            "description": "some description",
+            "url": "http://example.com"
+          },
+          {
+            "description": "fourth description",
+            "url": "http://example4.com"
+          }
+        ]
 }
 
 ###

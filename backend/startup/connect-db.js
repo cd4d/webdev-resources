@@ -15,7 +15,7 @@ module.exports = function () {
       useUnifiedTopology: true,
       useFindAndModify: false,
       useCreateIndex: true,
-      // disable in prod
+      // disable in prod if enabled
       //autoIndex: true,
     })
     .then(() => console.log(`Connected to ${DATABASE}...`));

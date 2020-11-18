@@ -4,7 +4,8 @@
   "description": "backend of the web resources project",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test jest --watchAll --runInBand --verbose --coverage"
+    "test": "NODE_ENV=test jest --watchAll --runInBand --verbose --coverage",
+    "nodemon": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
