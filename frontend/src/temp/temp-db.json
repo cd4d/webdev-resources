@@ -1,0 +1,135 @@
+[
+  {
+    "user": null,
+    "parent": null,
+    "_id": "5fb68d95a30f0d2873f397de",
+    "title": "topic one",
+    "links": [
+      {
+        "_id": "5fb68d95a30f0d2873f397df",
+        "description": "link one",
+        "url": "http://example1.com"
+      },
+      {
+        "_id": "5fb68d95a30f0d2873f397e0",
+        "description": "link two",
+        "url": "http://example2.com"
+      }
+    ],
+    "description": "someuser",
+    "ancestors": [],
+    "slug": "topic-one",
+    "__v": 0
+  },
+  {
+    "user": null,
+    "parent": "5fb68d95a30f0d2873f397de",
+    "_id": "5fb68dcdc0e65e2a57f084ff",
+    "title": "topic child of one",
+    "links": [
+      {
+        "_id": "5fb68dcdc0e65e2a57f08500",
+        "description": "link child one",
+        "url": "http://example11.com"
+      },
+      {
+        "_id": "5fb68dcdc0e65e2a57f08501",
+        "description": "link child two",
+        "url": "http://example22.com"
+      }
+    ],
+    "description": "child one",
+    "ancestors": [
+      {
+        "_id": "5fb68d95a30f0d2873f397de",
+        "title": "topic one",
+        "slug": "topic-one"
+      }
+    ],
+    "slug": "topic-child-of-one",
+    "__v": 0
+  },
+  {
+    "user": null,
+    "parent": "5fb68dcdc0e65e2a57f084ff",
+    "_id": "5fb68dfd2491022acf8c748e",
+    "title": "Topic subchild of one",
+    "links": [
+      {
+        "_id": "5fb68dfd2491022acf8c748f",
+        "description": "link subchild one",
+        "url": "http://example111.com"
+      },
+      {
+        "_id": "5fb68dfd2491022acf8c7490",
+        "description": "link subchild two",
+        "url": "http://example222.com"
+      }
+    ],
+    "description": "subchild of one",
+    "ancestors": [
+      {
+        "_id": "5fb68dcdc0e65e2a57f084ff",
+        "title": "topic child of one",
+        "slug": "topic-child-of-one"
+      },
+      {
+        "_id": "5fb68d95a30f0d2873f397de",
+        "title": "topic one",
+        "slug": "topic-one"
+      }
+    ],
+    "slug": "topic-subchild-of-one",
+    "__v": 0
+  },
+  {
+    "user": null,
+    "parent": null,
+    "_id": "5fb72d6379caa06a5e6df0ff",
+    "title": "topic two",
+    "links": [
+      {
+        "_id": "5fb72d6379caa06a5e6df100",
+        "description": "link three",
+        "url": "http://example3.com"
+      },
+      {
+        "_id": "5fb72d6379caa06a5e6df101",
+        "description": "link four",
+        "url": "http://example4.com"
+      }
+    ],
+    "description": "someuser",
+    "ancestors": [],
+    "slug": "topic-two",
+    "__v": 0
+  },
+  {
+    "user": null,
+    "parent": "5fb68d95a30f0d2873f397de",
+    "_id": "5fb72df179caa06a5e6df102",
+    "title": "topic another child of one",
+    "links": [
+      {
+        "_id": "5fb72df179caa06a5e6df103",
+        "description": "link another child one",
+        "url": "http://example1another1.com"
+      },
+      {
+        "_id": "5fb72df179caa06a5e6df104",
+        "description": "link another child two",
+        "url": "http://example2another2.com"
+      }
+    ],
+    "description": "another child one",
+    "ancestors": [
+      {
+        "_id": "5fb68d95a30f0d2873f397de",
+        "title": "topic one",
+        "slug": "topic-one"
+      }
+    ],
+    "slug": "topic-another-child-of-one",
+    "__v": 0
+  }
+]

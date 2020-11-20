@@ -1,0 +1,127 @@
+
+
+
+// find by topic slug
+GET http://localhost:3000/api/topics/topic-one-slug HTTP/1.1
+
+###
+
+// wrong topic id
+GET http://localhost:3000/api/topics/wrongid HTTP/1.1
+
+###
+
+content-type: application/json
+
+{	
+	"username": "someuser2",
+	"password":"123456"
+	
+}
+
+###
+
+// GET all users topic
+GET http://localhost:3000/api/topics/ HTTP/1.1
+
+###
+// POST a topic
+POST http://localhost:3000/api/topics/ HTTP/1.1
+content-type: application/json
+
+{ "_id":"5fb7e40c495784186463552f",
+	"title": "topic one",
+	"description": "someuser"
+  
+}
+
+###
+// child topic
+POST http://localhost:3000/api/topics/ HTTP/1.1
+content-type: application/json
+
+{
+	"title": "  child of one ",
+	"description": " child one ",
+  "_id":"5fb7e42b4957841864635530",
+  "parent":"5fb7e40c495784186463552f"
+}
+
+###
+// subchild topic
+POST http://localhost:3000/api/topics/ HTTP/1.1
+content-type: application/json
+
+{
+        "title": "Topic subchild of one",
+        "description": "subchild of one",
+        "_id": "5fb7e44d4957841864635531",
+        "parent": "5fb7e42b4957841864635530"
+      }
+
+###
+// sub sub child topic, shouldn't be created
+POST http://localhost:3000/api/topics/ HTTP/1.1
+content-type: application/json
+
+{
+	"title": " sub sub child of one",
+	"description": "sub sub child one ",
+  "_id": "5fb7e45f4957841864635532",
+  "parent":"5fb7e44d4957841864635531"
+  
+}
+###
+
+
+// subchild topic
+POST http://localhost:3000/api/topics/ HTTP/1.1
+content-type: application/json
+
+{
+        "title": "Topic subchild of one",
+        "description": "subchild of one",
+        "parent": "5fb73ed4784b948c65a91969",
+         "links": [
+          {
+            "description": "link subchild one",
+            "url": "http://example111.com"
+          },
+          {
+            "description": "link subchild two",
+            "url": "http://example222.com"
+          }
+        ]
+      }
+###
+// patch 
+PATCH  http://localhost:3000/api/topics/topic-one-slug HTTP/1.1
+content-type: application/json
+
+{
+        "title": "Topic renamed slug"
+}
+###
+// delete 
+DELETE  http://localhost:3000/api/topics/child-of-one HTTP/1.1
+
+
+###
+// patch change title ancesotor 
+PATCH  http://localhost:3000/api/topics/topic-one HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Renamed Topic one"
+}
+
+###
+// patch change title child 
+PATCH  http://localhost:3000/api/topics/child-of-one HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Renamed Child of Topic one"
+}
+
+###

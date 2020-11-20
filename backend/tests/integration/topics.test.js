@@ -411,7 +411,7 @@ describe("/api/topics", () => {
       const changedTopic = await Topic.findById(id).exec();
       expect(changedTopic.title).toBe("Changed topic");
       expect(changedTopic.slug).toBe("changed-topic");
-      // https:medium.com/@andrei.pfeiffer/jest-matching-objects-in-array-50fe2f4d6b98
+      // https://medium.com/@andrei.pfeiffer/jest-matching-objects-in-array-50fe2f4d6b98
       expect(changedTopic.links).toEqual(
         expect.arrayContaining([
           expect.objectContaining({

@@ -39,13 +39,32 @@ const topicSchema = new mongoose.Schema({
     default: null,
     ref: "Topic",
   },
-  ancestors: [
-    {
-      _id: { type: mongoose.Schema.Types.ObjectId, ref: "Topic", index: true },
-      title: String,
-      slug: String,
-    },
-  ],
+  ancestors: {
+    type: [
+      {
+        _id: { type: mongoose.Schema.Types.ObjectId, ref: "Topic" },
+        title: String,
+        slug: String,
+      },
+    ],
+    default: [],
+  },
+
+  children: {
+    type: [
+      {
+        _id: { type: mongoose.Schema.Types.ObjectId, ref: "Topic" },
+        title: String,
+        slug: String,
+      },
+    ],
+    default: [],
+  }, // Depth level i.e main topic(0), child topic(1), grand-child topic(2)
+  depth: {
+    type: Number,
+    max: 2,
+    default: 0,
+  },
 });
 
 // compound index to ensure unique value for the same user , can be disabled in prod with {autoindex: false}.
@@ -58,6 +77,15 @@ topicSchema.index(
     partialFilterExpression: { title: { $type: "string" } },
   }
 );
+
+topicSchema.index(
+  { user: 1, slug: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { slug: { $type: "string" } },
+  }
+);
+
 topicSchema.index(
   { user: 1, "links.description": 1 },
   {
@@ -77,22 +105,25 @@ topicSchema.index(
 // https://thecodebarbarian.com/mongoose-error-handling.html
 
 const handleE11000 = function (err, res, next) {
-  if (err.name === "MongoError" && err.code === 11000) { // extracting the field where duplicate error happened at err.keyValue
-    const error = new Error(`Duplicate key error at: ${JSON.stringify(err.keyValue)}`)
-    error.statusCode = 409
+  if (err.name === "MongoError" && err.code === 11000) {
+    // extracting the field where duplicate error happened at err.keyValue
+    const error = new Error(
+      `Duplicate key error at: ${JSON.stringify(err.keyValue)}`
+    );
+    error.statusCode = 409;
     next(error);
-
   } else {
     next();
   }
 };
 
 // *** associated middlewares *** //
-// generates URL slug
+// Generates URL slug and add depth level (main topic or subtopic)
 topicSchema.pre("save", async function (req, res, next) {
   try {
     this.slug = await slugify(this.title);
-    // had to remove next() tp catch duplicate key error
+    this.depth = this.ancestors.length;
+    // had to remove next() to catch duplicate key error
     // next()
   } catch (err) {
     next(err);

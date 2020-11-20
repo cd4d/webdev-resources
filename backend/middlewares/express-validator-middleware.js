@@ -3,6 +3,8 @@ const { body, validationResult } = require("express-validator");
 
 const topicPostValidationRules = () => {
   return [
+    // can set id for testing purposes
+    body("_id").isMongoId().optional(),
     body("title").not().isEmpty().trim().escape().isLength(2, 75).isString(),
     body("description").trim().escape().isLength(2, 255).isString(),
     body("user").trim().isMongoId().optional(),
@@ -34,7 +36,7 @@ const topicPatchValidationRules = () => {
       .isURL({ protocols: ["http", "https"], require_protocol: true }),
   ];
 };
-//  rules for POST request, all fields are required
+//  rules for Links for POST request, all fields are required
 const linkPostValidationRules = () => {
   return [
     body("topic").trim().isMongoId(),
@@ -45,7 +47,7 @@ const linkPostValidationRules = () => {
       .isURL({ protocols: ["http", "https"], require_protocol: true }),
   ];
 };
-// for PATCH request all fields are optional so user is not required to update every field
+// for Links PATCH request all fields are optional so user is not required to update every field
 const linkPatchValidationRules = () => {
   return [
     body("topic").trim().isMongoId().optional(),
@@ -58,7 +60,7 @@ const linkPatchValidationRules = () => {
   ];
 };
 
-// for PATCH request all fields are optional so user is not required to update every field
+// for Users PATCH request all fields are optional so user is not required to update every field
 const userPatchValidationRules = () => {
   return [
     body("username").trim().escape().isLength(2, 50).isString().optional(),
@@ -71,7 +73,7 @@ const userPatchValidationRules = () => {
       .optional(),
   ];
 };
-//  rules for POST request, all fields are required
+//  rules for Users POST request, all fields are required
 const userPostValidationRules = () => {
   return [
     body("username").trim().escape().isLength(2, 50).isString(),

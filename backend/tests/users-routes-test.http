@@ -1,0 +1,38 @@
+//////////// USER routes testing ////////////////
+// Register
+POST http://localhost:3000/api/users/register HTTP/1.1
+content-type: application/json
+
+{
+	"username": "someuser",
+	"email": "someuser@caca.ca",
+	"password": "123456",
+	"confirmPassword":"123456"
+}
+
+###
+// Logout 
+
+GET http://localhost:3000/api/users/logout HTTP/1.1
+
+
+###
+// RESET password working email "someuser6@caca.ca"
+
+POST http://localhost:3000/api/users/reset-password HTTP/1.1
+content-type: application/json
+
+{"email": "someuser6@caca.ca"}
+
+###
+
+// Allow password reset (emailed link)
+GET  http://localhost:3000/api/users/password-change/5fa49a8e3a3fec278c531d63/MjAyMC0xMS0wN1QxNzo1NTo0NS0wNTowMA==-6+KvflvZzGhz69+BVUAWJWYEEg9ZN1ebaWcYQEf+ZzQ= HTTP/1.1
+content-type: application/json
+
+{"email": "someuser6@caca.ca"}
+
+###
+// Login 
+
+POST http://localhost:3000/api/users/login HTTP/1.1

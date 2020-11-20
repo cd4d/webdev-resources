@@ -12,6 +12,7 @@ const linkSchema = new mongoose.Schema({
     maxlength: 255,
     required: true,
     match: regex,
+    index: true,
   },
   url: {
     type: String,

@@ -1,6 +1,6 @@
 # Notes about the project
 
-## Local settings used in development:
+## Local settings used in development
 
 ### Starting both frontend and backend in one script
 
@@ -37,6 +37,24 @@ See https://stackoverflow.com/questions/51126472/how-to-organise-file-structure-
 #### *startup/prod.js*
 - Uses **helmet** module for web security and **compression** to compress requests
 
+### Trees structure for data
+- https://medium.com/swlh/crud-operations-on-mongodb-tree-data-structure-f5afaeca1550
+
+### Error handling middleware
+- https://thecodebarbarian.com/mongoose-error-handling.html
+
+### Testing with jest
+- https://medium.com/@andrei.pfeiffer/jest-matching-objects-in-array-50fe2f4d6b98
+
+### Auth: reset password
+- https://stackoverflow.com/questions/20277020/how-to-reset-change-password-in-node-js-with-passport-js#27580553
+
+### Auth: passport
+- Use *route.use(passport.initialize())* instead of *app.use()*. [See issue](https://github.com/jaredhanson/passport/issues/51#issuecomment-418313158). 
+
 ## Frontend summary
+
+### Sidebar menu
+- https://dev.to/jsmanifest/create-a-modern-dynamic-sidebar-menu-in-react-using-recursion-36eo
 
 

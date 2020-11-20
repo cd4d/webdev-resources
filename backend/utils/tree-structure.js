@@ -1,23 +1,15 @@
 const { Topic } = require("../models/topics-model");
-
-const buildAncestors = async (id, parent_id) => {
+// Build a list of ancestor topics, returns an array
+const buildAncestors = (parentTopic) => {
+  console.log("building ancestors");
   try {
-    let parent_category = await Topic.findById(
-      { _id: parent_id },
-      "title slug ancestors"
-    ).exec();
-    if (parent_category) {
-      const { _id, title, slug } = parent_category;
-      const ancestor = [...parent_category.ancestors];
-      ancestor.unshift({ _id, title, slug });
-      // update topic by inserting ancestor
-      const topic = await Topic.findByIdAndUpdate(id, {
-        $set: { ancestors: ancestor },
-      });
-      
-    } 
+    const { _id, title, slug } = parentTopic;
+    const ancestors = [...parentTopic.ancestors];
+    ancestors.unshift({ _id, title, slug });
+    return ancestors;
   } catch (err) {
-    console.log(err.message);
+    console.log("buildAncestors error");
+    return err;
   }
 };
 

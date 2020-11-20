@@ -2,7 +2,7 @@ const mockDB = require("../DB/mockDB.json");
 
 const buildNavigationPath = (db, query) => {
   for (var i = 0; i < db.length; i++) {
-    // add traversed topic
+    // add traversed topic or reinitialize array
     const parentTopics = [];
     if (db[i].topic) {
       parentTopics.push(db[i].topic);
@@ -20,5 +20,5 @@ const buildNavigationPath = (db, query) => {
   }
 };
 
-let res = buildNavigationPath(mockDB, "passport");
+let res = buildNavigationPath(mockDB, "express2");
 console.log("Final:", res);
