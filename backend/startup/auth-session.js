@@ -1,19 +1,21 @@
 // Session handling
 
-const express = require("express");
 
 const session = require("express-session");
-// const MongoStore = require("connect-mongo")(session);
-//const connection = require("../startup/connect-db")()
+const MongoStore = require("connect-mongo")(session);
 
-//const sessionStore = new MongoStore({ mongooseConnection: connection, collection: 'sessions' })
+// change to prod db
+const sessionStore = new MongoStore({
+  url: process.env.DB_DEV,
+  collection: "sessions",
+});
 module.exports = function (app) {
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
-      //store: sessionStore
+      store: sessionStore,
     })
   );
 };

@@ -22,7 +22,7 @@ function displayLinks(topic) {
     return topic.links.map((link) => {
       return (
         <li key={uuidv4()} className="list-group-item">
-          <a href={link.url}>{link.title}</a>
+          <a href={link.url}>{link.description}</a>
         </li>
       );
     });

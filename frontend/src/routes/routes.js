@@ -1,8 +1,9 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 import Main from "../components/main/Main";
+import PageNotFound from "../components/app/PageNotFound"
 import { mockDB } from "../components/app/App";
-export default function Routes () {
+export default function Routes (props) {
   return (
     <Switch>
       <Route
@@ -20,7 +21,8 @@ export default function Routes () {
         path="/:mainTopic/:firstSubLvl/:secondSubLvl"
         render={(routeProps) => <Main {...routeProps} mockDB={mockDB} />}
       ></Route>
-      <Route path="/" render={() => <Main />}></Route>
+      <Route exact  path="/" render={() => <Main />}></Route>
+      <Route  render={() => <PageNotFound />}></Route>
     </Switch>
   );
 }

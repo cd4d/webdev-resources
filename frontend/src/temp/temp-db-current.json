@@ -1,0 +1,94 @@
+[
+    {
+      "user": null,
+      "parent": null,
+      "depth": 0,
+      "_id": "5fb7e40c495784186463552f",
+      "title": "topic one",
+      "links": [],
+      "description": "someuser",
+      "ancestors": [],
+      "children": [
+        {
+          "_id": "5fb7e44d4957841864635531",
+          "title": "Topic child of one",
+          "slug": "topic-child-of-one"
+        }
+      ],
+      "slug": "topic-one",
+      "__v": 1
+    },
+    {
+      "user": null,
+      "parent": "5fb7e42b4957841864635530",
+      "depth": 1,
+      "_id": "5fb7e44d4957841864635531",
+      "title": "Topic child of one",
+      "links": [],
+      "description": "child of one",
+      "ancestors": [
+        {
+          "_id": "5fb7e40c495784186463552f",
+          "title": "topic one",
+          "slug": "topic-one"
+        }
+      ],
+      "children": [],
+      "slug": "topic-child-of-one",
+      "__v": 0
+    },
+    {
+      "user": null,
+      "parent": null,
+      "depth": 0,
+      "_id": "5ff4e606f0d0896f9d49d315",
+      "title": "topic two",
+      "links": [],
+      "description": "topic nr two",
+      "ancestors": [],
+      "children": [
+        {
+          "_id": "5ff4e66ef0d0896f9d49d333",
+          "title": "Topic child of two",
+          "slug": "topic-child-of-two"
+        }
+      ],
+      "slug": "topic-two"
+    },
+    {
+      "user": null,
+      "parent": "5ff4e606f0d0896f9d49d315",
+      "depth": 1,
+      "_id": "5ff4e66ef0d0896f9d49d333",
+      "title": "Topic child of two",
+      "links": [],
+      "description": "child of two",
+      "ancestors": [
+        {
+          "_id": "5ff4e606f0d0896f9d49d315",
+          "title": "topic two",
+          "slug": "topic-two"
+        }
+      ],
+      "children": [],
+      "slug": "topic-child-of-two"
+    },
+    {
+      "user": null,
+      "parent": "5fb7e42b4957841864635530",
+      "depth": 1,
+      "_id": "5ff5f64228450b827c24183a",
+      "title": "Topic second child of one",
+      "links": [],
+      "description": "second child of one",
+      "ancestors": [
+        {
+          "_id": "5fb7e40c495784186463552f",
+          "title": "topic one",
+          "slug": "topic-one"
+        }
+      ],
+      "children": [],
+      "slug": "topic-second-child-of-one"
+    }
+  ]

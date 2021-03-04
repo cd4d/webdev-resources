@@ -5,8 +5,9 @@ import getTopicData, { displayLinks } from "../../utils/utils";
 import "./NavigationPath";
 import NavigationPath from "./NavigationPath";
 import AddTopic from "./AddTopic";
+import { v4 as uuidv4 } from "uuid";
 
-import { fetchTopicData} from "../../api/api-calls";
+import { fetchTopicData } from "../../api/api-calls";
 
 export let defaultData = {
   // default data to be displayed
@@ -55,28 +56,24 @@ export default function Main(props) {
       props.match.params.secondSubLvl ||
       props.match.params.firstSubLvl ||
       props.match.params.mainTopic;
-    // query DB
-    // Grab requested topic at its nested level. see routes file
-    //let queryDBResult = getTopicData(props.mockDB, topic);
-
-    // update displayedData if result
-    //if (queryDBResult !== undefined) displayedData = queryDBResult;
   }
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetchTopicData(topic);
-      console.log(response);
-      setData(response);
+      if (topic) {
+        // defaultData used if no topic chosen (main page, first loading)
+        const response = await fetchTopicData(topic);
+        setData(response);
+      }
     };
     fetchData();
   }, [topic]);
-  // access db if route matches, to be replaced by validation in backend
- 
-  console.log("data:", data);
-  let displayedData =""
+
+  // console.log("data:", data);
+  // console.log("topic:", topic);
+  let displayedData = "";
   // check if data is array(many topics) or not (one topic)
-  Array.isArray(data) ? displayedData = data[0] : displayedData = data
+  Array.isArray(data) ? (displayedData = data[0]) : (displayedData = data);
   return (
     <div className="main content column">
       {/* Temporary buttons to test functions */}
@@ -84,9 +81,24 @@ export default function Main(props) {
       {/* TODO Navigation breadcrumbs */}
       {/* <NavigationPath mockDB={props.mockDB} topic={displayedData} /> */}
       {/* Title of the topic */}
-      <h1>{displayedData.title}</h1>
+      <h1>{data.title}</h1>
       {/* All the links associated with the topic */}
-      <ul className="list-group list-group-flush">{displayLinks(displayedData.links)}</ul>
+      <ul className="list-group list-group-flush">
+        {data.links.map((link) => {
+          return (
+            <li key={uuidv4()} className="list-group-item">
+              <a href={link.url}>{link.description}</a>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
+
+// query mockDB
+// Grab requested topic at its nested level. see routes file
+//let queryDBResult = getTopicData(props.mockDB, topic);
+
+// update displayedData if result
+//if (queryDBResult !== undefined) displayedData = queryDBResult;

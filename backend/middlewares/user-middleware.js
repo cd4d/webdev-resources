@@ -2,7 +2,7 @@ const { User } = require("../models/users-model");
 const { Topic } = require("../models/topics-model");
 const mongoose = require("mongoose");
 
-// is a user is logged in, pass their id in req.body.user
+// is a user is logged in, pass their id as req.body.user
 const findUser = (req, res, next) => {
   if (req.session && req.session.passport && req.session.passport.user) {
     req.body.user = req.session.passport.user;

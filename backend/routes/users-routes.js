@@ -82,8 +82,13 @@ router.post("/login", (req, res, next) => {
         { lastLogin: dayjs().format() },
         (err) => {
           if (err) res.status(500).send("Cannot login");
-          
-          res.status(200).send("User logged in.");
+
+          res
+            .status(200)
+            .send({
+              loggedUser: req.body.username,
+              message: "User logged in.",
+            });
         }
       );
     });
@@ -222,6 +227,23 @@ router.get(
     }
   }
 );
+
+// get current user for frontend, only username & email. null by default
+router.get("/current", findUser, async (req, res, next) => {
+  try {
+    console.log("req body", req.body);
+    const currentUser = await User.findById(req.body.user, {
+      _id: 0,
+      username: 1,
+      email: 1,
+    });
+
+    res.send({ currentUser });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 404;
+    next(err);
+  }
+});
 
 router.get("/:id", async (req, res, next) => {
   try {
