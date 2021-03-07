@@ -3,7 +3,12 @@ import mockDB from "../../DB/mockDB.json";
 import Header from "../header/Header";
 import Sidebar from "../sidebar/Sidebar";
 import Routes from "../../routes/routes";
-import { fetchUserTopics, fetchUser, loginUser } from "../../api/api-calls";
+import {
+  fetchUserTopics,
+  fetchCurrentUser,
+  loginUser,
+  logoutUser,
+} from "../../api/api-calls";
 
 import "./App.css"; // keep last for CSS order
 // export const mockDB = [
@@ -14,23 +19,37 @@ import "./App.css"; // keep last for CSS order
 // ];
 
 function App() {
-  // get list of topics
+  // list of topics
   const [data, setData] = useState([]);
-  // get current user
   const [user, setUser] = useState(null);
 
-  // change user when logged in
+  //  login and setting current user
   async function handleLogin(userCredentials) {
     const response = await loginUser(userCredentials);
-    console.log("logged user", response.loggedUser);
-    setUser(response.loggedUser);
-    // if (user) {
-    //   const userData = await fetchUserTopics();
-    //   setData(userData);
-    // }
-
-    // console.log("user:", user, " data:", data);
+    if (response) {
+      console.log("logged user", response.loggedUser);
+      setUser(response.loggedUser);
+    }
   }
+
+  // logout user
+  async function handleLogout() {
+    const response = await logoutUser();
+    if (response) {
+      setUser(null);
+    }
+  }
+  // get current user at start
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const response = await fetchCurrentUser();
+      console.log("current user", response);
+      if (response.currentUser) {
+        setUser(response.currentUser.username);
+      }
+    };
+    getCurrentUser();
+  }, []);
 
   // get the current user's topics  when user changes
   useEffect(() => {
@@ -39,7 +58,6 @@ function App() {
       console.log("app response", response);
       setData(response);
     };
-
     fetchData();
   }, [user]);
 
@@ -48,12 +66,13 @@ function App() {
       <Header
         mockDB={mockDB}
         handleLogin={(userCredentials) => handleLogin(userCredentials)}
+        handleLogout={handleLogout}
         user={user ? user : "no user"}
       />
       <div className="lower">
-        <Sidebar topics={data} />
+        <Sidebar topics={data} user={user} />
 
-        <Routes topics={data} user={user} />
+        <Routes topics={data} />
       </div>
     </>
   );

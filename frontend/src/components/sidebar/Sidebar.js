@@ -3,13 +3,13 @@ import "./sidebar.css";
 import { v4 as uuidv4 } from "uuid";
 import { NavLink } from "react-router-dom";
 // https://dev.to/jsmanifest/create-a-modern-dynamic-sidebar-menu-in-react-using-recursion-36eo
-
-
-function SidebarItem(data) {
-  return data.topics.map((topic) => (
+// https://stackoverflow.com/questions/59495416/react-link-using-react-router-in-sidebar-when-clicked-multiple-times-causes-ur
+function SidebarItem(props) {
+  let topics = props.topics;
+  return topics.map((topic) => (
     <li key={uuidv4()}>
-      {/* Top levels, render if item has children elements */}
-      {topic.children.length !== 0 && (
+      {/* Top levels, render if item has no parent elements */}
+      {!topic.parent && (
         <>
           <NavLink to={`${topic.slug}`}>{topic.title}</NavLink>
           {/* Renders the children elements. */}
@@ -17,7 +17,7 @@ function SidebarItem(data) {
             {topic.children.map((child) => (
               <li key={uuidv4()}>
                 {" "}
-                <NavLink to={`${topic.slug}/${child.slug}`}>
+                <NavLink to={`/${topic.slug}/${child.slug}`}>
                   {child.title}
                 </NavLink>
               </li>
@@ -29,7 +29,7 @@ function SidebarItem(data) {
   ));
 }
 
-export default function Sidebar(props) {
+function Sidebar(props) {
   return (
     <>
       <input type="checkbox" id="mobile-menu-checkbox" />
@@ -44,6 +44,7 @@ export default function Sidebar(props) {
   );
 }
 
+export default React.memo(Sidebar);
 // OLD
 // function SidebarItem(item) {
 //  return (

@@ -97,6 +97,7 @@ router.post("/login", (req, res, next) => {
 
 router.get("/logout", function (req, res) {
   req.logout();
+  res.clearCookie('connect.sid');
   res.send("Logged out.");
   // res.redirect('/');
 });

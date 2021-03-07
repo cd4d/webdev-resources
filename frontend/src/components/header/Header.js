@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from "uuid";
 import "./header.css";
 export default function Header(props) {
   // TODO login user
-  const [userName, setUserName] = useState();
 
   return (
     <div className="header-container top">
@@ -20,12 +19,31 @@ export default function Header(props) {
         onSubmit={(e) => {
           e.preventDefault();
           props.handleLogin({
+            username: "rtytrhtrh",
+            password: "45277",
+          });
+        }}
+      >
+        <button type="submit">wrongLogin</button>
+      </form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          props.handleLogin({
             username: "someuser",
             password: "123456",
           });
         }}
       >
         <button type="submit">login</button>
+      </form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          props.handleLogout();
+        }}
+      >
+        <button type="submit">logout</button>
       </form>
       User: {props.user}
     </div>

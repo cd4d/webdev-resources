@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./main.css";
 //import Lorem from "./tests/lorem"
 import getTopicData, { displayLinks } from "../../utils/utils";
@@ -6,8 +6,6 @@ import "./NavigationPath";
 import NavigationPath from "./NavigationPath";
 import AddTopic from "./AddTopic";
 import { v4 as uuidv4 } from "uuid";
-
-import { fetchTopicData } from "../../api/api-calls";
 
 export let defaultData = {
   // default data to be displayed
@@ -48,32 +46,38 @@ export let defaultData = {
 };
 
 export default function Main(props) {
-  const [data, setData] = useState(defaultData);
-  let topic = "";
+  let currentTopic = "";
+  const topics = props.topics;
   if (Object.keys(props).length !== 0 && props.match.params) {
     console.log("Setting topic:", props.match.params);
-    topic =
+    currentTopic =
       props.match.params.secondSubLvl ||
       props.match.params.firstSubLvl ||
       props.match.params.mainTopic;
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (topic) {
-        // defaultData used if no topic chosen (main page, first loading)
-        const response = await fetchTopicData(topic);
-        setData(response);
-      }
-    };
-    fetchData();
-  }, [topic]);
-
-  // console.log("data:", data);
-  // console.log("topic:", topic);
+  console.log("topics:", topics);
+  console.log("currentTopic:", currentTopic);
   let displayedData = "";
+  let currentTitle = "";
+  let currentLinks = [];
   // check if data is array(many topics) or not (one topic)
-  Array.isArray(data) ? (displayedData = data[0]) : (displayedData = data);
+  Array.isArray(topics)
+    ? (displayedData = topics[0])
+    : (displayedData = currentTopic);
+  // if a topic is selected, displays its details
+  if (currentTopic) {
+    for (let topic of topics) {
+      if (topic.slug === currentTopic) {
+        currentTitle = topic.title;
+        currentLinks = topic.links;
+      }
+    }
+  } else if (topics && topics.length > 0){
+     currentTitle = topics[0].title;
+     currentLinks = topics[0].links;
+  }
+
   return (
     <div className="main content column">
       {/* Temporary buttons to test functions */}
@@ -81,10 +85,10 @@ export default function Main(props) {
       {/* TODO Navigation breadcrumbs */}
       {/* <NavigationPath mockDB={props.mockDB} topic={displayedData} /> */}
       {/* Title of the topic */}
-      <h1>{data.title}</h1>
+      <h1>{currentTitle}</h1>
       {/* All the links associated with the topic */}
       <ul className="list-group list-group-flush">
-        {data.links.map((link) => {
+        {currentLinks.map((link) => {
           return (
             <li key={uuidv4()} className="list-group-item">
               <a href={link.url}>{link.description}</a>

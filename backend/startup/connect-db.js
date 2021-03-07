@@ -18,6 +18,6 @@ module.exports = function () {
       // disable in prod if enabled
       //autoIndex: true,
     })
-    .then(() => console.log("Connected to ${DATABASE}..."))
+    .then(() => console.log(`Connected to ${DATABASE}...`))
     .catch((err) => console.log("Could not connect to database."));
 };

@@ -1,6 +1,5 @@
 // Session handling
 
-
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 
@@ -16,6 +15,7 @@ module.exports = function (app) {
       resave: false,
       saveUninitialized: false,
       store: sessionStore,
+      cookie: { sameSite: "strict" },
     })
   );
 };
