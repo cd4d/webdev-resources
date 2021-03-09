@@ -3,6 +3,8 @@ import mockDB from "../../DB/mockDB.json";
 import Header from "../header/Header";
 import Sidebar from "../sidebar/Sidebar";
 import Routes from "../../routes/routes";
+import { useHistory } from "react-router-dom";
+
 import {
   fetchUserTopics,
   fetchCurrentUser,
@@ -22,12 +24,14 @@ function App() {
   // list of topics
   const [data, setData] = useState([]);
   const [user, setUser] = useState(null);
+  // useHistory from react-router for redirection
+  const history = useHistory();
 
   //  login and setting current user
   async function handleLogin(userCredentials) {
     const response = await loginUser(userCredentials);
+    console.log("response is:", response);
     if (response) {
-      console.log("logged user", response.loggedUser);
       setUser(response.loggedUser);
     }
   }
@@ -36,7 +40,9 @@ function App() {
   async function handleLogout() {
     const response = await logoutUser();
     if (response) {
+      setData([]);
       setUser(null);
+      history.push("/");
     }
   }
   // get current user at start
@@ -49,7 +55,7 @@ function App() {
       }
     };
     getCurrentUser();
-  }, []);
+  }, [user]);
 
   // get the current user's topics  when user changes
   useEffect(() => {
@@ -58,7 +64,9 @@ function App() {
       console.log("app response", response);
       setData(response);
     };
-    fetchData();
+    if (user) {
+      fetchData();
+    }
   }, [user]);
 
   return (
@@ -70,9 +78,13 @@ function App() {
         user={user ? user : "no user"}
       />
       <div className="lower">
-        <Sidebar topics={data} user={user} />
+        {user && <Sidebar topics={data} user={user} />}
 
-        <Routes topics={data} />
+        <Routes
+          topics={user && data}
+          handleLogin={(userCredentials) => handleLogin(userCredentials)}
+          handleLogout={handleLogout}
+        />
       </div>
     </>
   );

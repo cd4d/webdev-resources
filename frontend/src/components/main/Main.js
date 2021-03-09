@@ -66,7 +66,7 @@ export default function Main(props) {
     ? (displayedData = topics[0])
     : (displayedData = currentTopic);
   // if a topic is selected, displays its details
-  if (currentTopic) {
+  if (topics && currentTopic) {
     for (let topic of topics) {
       if (topic.slug === currentTopic) {
         currentTitle = topic.title;
