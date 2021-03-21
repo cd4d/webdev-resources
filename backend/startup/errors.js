@@ -6,10 +6,8 @@ module.exports = function (app) {
     const status = err.statusCode || 500;
     const message = err.message;
     logger.error(
-      `${status} - ${message} - ${req.originalUrl} - ${
-        req.method
-      } - ${req.ip}`
+      `${status} - ${message} - ${req.originalUrl} - ${req.method} - ${req.ip}`
     );
-    res.status(status).send(message);
+    res.status(status).send({ status: status, message: message });
   });
 };

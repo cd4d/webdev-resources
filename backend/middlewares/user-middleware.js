@@ -37,7 +37,7 @@ const checkAdmin = async (req, res, next) => {
   }
 };
 
-// not a middleware, function that checks if the topic requested belongs to the right user, or default 'null' user
+// not a middleware, function that checks if the topic requested belongs to the right user and returns it, or default 'null' user
 // requestType can be 'getOneTopic' or 'getAllTopics'.
 const getUserTopic = async (
   userId,
@@ -47,10 +47,13 @@ const getUserTopic = async (
 ) => {
   try {
     if (requestType === "getOneTopic") {
-      const topic = await Topic.findOne({ slug: topicSlug, user: userId });
+      const topic = await Topic.findOne(
+        { slug: topicSlug, user: userId },
+        { user: 0, __v: 0 }
+      );
       return topic;
     } else if (requestType === "getAllTopics") {
-      const topics = await Topic.find({ user: userId });
+      const topics = await Topic.find({ user: userId }, { user: 0, __v: 0 });
       return topics;
     }
   } catch (err) {

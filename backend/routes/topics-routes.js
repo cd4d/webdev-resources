@@ -186,6 +186,8 @@ router.patch(
       // Update the title and slug in children and ancestors elements
       if (updates.includes("title")) {
         try {
+          // modify slug in topic
+          topic.slug = slugify(topic.title);
           await Topic.updateMany(
             { "ancestors._id": mongoose.Types.ObjectId(topic._id) },
             {
@@ -232,35 +234,38 @@ router.delete("/:topicSlug", findUser, async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-
-    const deletedTopic = await Topic.findByIdAndDelete(topic._id);
-
+    console.log(topic);
     // Delete the topic from ancestors and/or children elements
     try {
-      // change depth level for children topics
+      // change depth level for children topics, remove ancestors and parent
       await Topic.updateMany(
-        { "ancestors._id": mongoose.Types.ObjectId(deletedTopic._id) },
+        { "ancestors._id": mongoose.Types.ObjectId(topic._id) },
         {
-          $pull: { ancestors: { _id: deletedTopic._id } },
+          $pull: { ancestors: { _id: topic._id } },
+          $set: { parent: null },
           $inc: { depth: -1 },
         }
       );
       await Topic.updateMany(
-        { "children._id": mongoose.Types.ObjectId(deletedTopic._id) },
+        { "children._id": mongoose.Types.ObjectId(topic._id) },
         {
-          $pull: { children: { _id: deletedTopic._id } },
+          $pull: { children: { _id: topic._id } },
         }
       );
     } catch (err) {
       if (!err.statusCode) err.statusCode = 400;
       next(err);
     }
+    const deletedTopic = await Topic.findByIdAndDelete(topic._id);
+
     res.send(deletedTopic);
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
     next(err);
   }
 });
+
+// OLD;
 // patching by ID, not used by frontend
 // router.patch(
 //   "/:id",

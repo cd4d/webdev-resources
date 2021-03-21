@@ -13,7 +13,7 @@ const topicPostValidationRules = () => {
     body("links.*.url")
       .trim()
       .isLength(10, 255)
-      .isURL({ protocols: ["http", "https"], require_protocol: true }),
+      .isURL({ protocols: ["http", "https"], require_protocol: false }),
   ];
 };
 const topicPatchValidationRules = () => {
@@ -66,11 +66,7 @@ const userPatchValidationRules = () => {
     body("username").trim().escape().isLength(2, 50).isString().optional(),
     body("password").escape().isLength(5, 1024).isString().optional(),
     body("confirmPassword").escape().isLength(5, 1024).isString().optional(),
-    body("email")
-      .trim()
-      .isLength(5, 255)
-      .isEmail()
-      .optional(),
+    body("email").trim().isLength(5, 255).isEmail().optional(),
   ];
 };
 //  rules for Users POST request, all fields are required
@@ -79,19 +75,13 @@ const userPostValidationRules = () => {
     body("username").trim().escape().isLength(2, 50).isString(),
     body("password").escape().isLength(5, 1024).isString(),
     body("confirmPassword").escape().isLength(5, 1024).isString(),
-    body("email")
-      .trim()
-      .isLength(5, 255)
-      .isEmail()
-
+    body("email").trim().isLength(5, 255).isEmail(),
   ];
 };
 const userLoginValidationRules = () => {
   return [
     body("username").trim().escape().isLength(2, 50).isString(),
-    body("password").escape().isLength(5, 1024).isString()
-   
-
+    body("password").escape().isLength(5, 1024).isString(),
   ];
 };
 

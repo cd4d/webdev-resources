@@ -6,27 +6,31 @@ import { NavLink } from "react-router-dom";
 // https://stackoverflow.com/questions/59495416/react-link-using-react-router-in-sidebar-when-clicked-multiple-times-causes-ur
 function SidebarItem(props) {
   let topics = props.topics;
-  return topics.map((topic) => (
-    <li key={uuidv4()}>
-      {/* Top levels, render if item has no parent elements */}
-      {!topic.parent && (
-        <>
-          <NavLink to={`${topic.slug}`}>{topic.title}</NavLink>
-          {/* Renders the children elements. */}
-          <ul>
-            {topic.children.map((child) => (
-              <li key={uuidv4()}>
-                {" "}
-                <NavLink to={`/${topic.slug}/${child.slug}`}>
-                  {child.title}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-    </li>
-  ));
+  if (Array.isArray(props.topics) && props.topics.length !== 0) {
+    return topics.map((topic) => (
+      <li key={uuidv4()}>
+        {/* Top levels, render if item has no parent elements */}
+        {!topic.parent && (
+          <>
+            <NavLink to={`${topic.slug}`}>{topic.title}</NavLink>
+            {/* Renders the children elements. */}
+            <ul>
+              {topic.children.map((child) => (
+                <li key={uuidv4()}>
+                  {" "}
+                  <NavLink to={`/${topic.slug}/${child.slug}`}>
+                    {child.title}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </li>
+    ));
+  } else {
+    return <>No topics</>;
+  }
 }
 
 function Sidebar(props) {
@@ -34,17 +38,21 @@ function Sidebar(props) {
     <>
       <input type="checkbox" id="mobile-menu-checkbox" />
       <div className="sidebar column">
-        <nav className="content">
-          <ul className="sidebar-items">
-            <SidebarItem {...props} />
-          </ul>
-        </nav>
+        {!props.isLoading ? (
+          <nav className="content">
+            <ul className="sidebar-items">
+              <SidebarItem {...props} />
+            </ul>
+          </nav>
+        ) : (
+          <>Loading...</>
+        )}
       </div>
     </>
   );
 }
 
-export default React.memo(Sidebar);
+export default Sidebar;
 // OLD
 // function SidebarItem(item) {
 //  return (

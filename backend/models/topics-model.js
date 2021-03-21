@@ -62,7 +62,7 @@ const topicSchema = new mongoose.Schema({
   }, // Depth level i.e main topic(0), child topic(1), grand-child topic(2)
   depth: {
     type: Number,
-    max: 2,
+    max: 1,
     default: 0,
   },
 });
@@ -118,10 +118,12 @@ const handleE11000 = function (err, res, next) {
 };
 
 // *** associated middlewares *** //
-// Generates URL slug and add depth level (main topic or subtopic)
+// Slugify moved to frontend. add depth level (main topic or subtopic)
 topicSchema.pre("save", async function (req, res, next) {
   try {
-    this.slug = await slugify(this.title);
+    if (!this.slug) {
+      this.slug = await slugify(this.title);
+    }
     this.depth = this.ancestors.length;
     // had to remove next() to catch duplicate key error
     // next()

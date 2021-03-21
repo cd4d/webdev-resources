@@ -3,9 +3,13 @@ import Modal from "react-modal";
 import "./modal.css";
 Modal.setAppElement("#root");
 
-export default function AddTopic(props) {
+export default function EditTopic(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [newTopic, setNewTopic] = useState({ title: "", description: "" });
+  const [topic, setTopic] = useState({
+    title: props.displayedTopic.title,
+    description: props.displayedTopic.description,
+    slug: props.displayedTopic.slug,
+  });
   function openModal() {
     setIsOpen(true);
   }
@@ -15,27 +19,27 @@ export default function AddTopic(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    const response = props.addNewTopic(newTopic);
+    console.log("topics submitted: ", topic);
+    const response = props.editDisplayedTopic(topic, null);
     props.triggerUpdate();
     setIsOpen(false);
   }
   function handleChange(e) {
     const { name, value } = e.target;
     if (name === "title") {
-      setNewTopic((prevState) => {
+      setTopic((prevState) => {
         return { ...prevState, title: value };
       });
     }
     if (name === "description") {
-      setNewTopic((prevState) => {
+      setTopic((prevState) => {
         return { ...prevState, description: value };
       });
     }
   }
   return (
     <>
-      <button onClick={openModal}>Add Topic</button>
+      <button onClick={openModal}>Edit Topic</button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -59,7 +63,7 @@ export default function AddTopic(props) {
           </label>
 
           <br />
-          <button>Add topic</button>
+          <button>Edit topic</button>
         </form>
       </Modal>
     </>

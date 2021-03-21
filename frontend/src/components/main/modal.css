@@ -1,3 +1,22 @@
+.Modal {
+  border: 1px solid;
+  margin: 20%;
+  padding: 20px;
+  background: white;
+}
+.deleteTopicmodal {
+  max-width: 70%;
+  max-height: 50%;
+}
+
 #button-close-modal {
-    float:right;
+  float: right;
+}
+
+
+
+.required::after {
+  content: " *";
+  color: red;
+  display: inline;
 }

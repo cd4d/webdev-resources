@@ -3,3 +3,6 @@
   padding: 1rem;
 }
 
+.error-msg {
+  color: red;
+}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./login.css";
-import { useHistory, Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 export default function Login(props) {
   const history = useHistory();
@@ -31,7 +31,6 @@ export default function Login(props) {
             password: inputPassword,
           });
            history.push("/");
-          //<Redirect to="/"/>
         }}
       >
         <input
