@@ -48,7 +48,7 @@ const getUserTopic = async (
   try {
     if (requestType === "getOneTopic") {
       const topic = await Topic.findOne(
-        { slug: topicSlug, user: userId },
+        { _id: topicId, user: userId },
         { user: 0, __v: 0 }
       );
       return topic;

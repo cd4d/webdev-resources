@@ -40,12 +40,13 @@ router.get("/alltopics", checkAdmin, async (req, res, next) => {
 });
 
 // get a single topic that must be associated with the requesting user
-router.get("/:topicSlug", findUser, async (req, res, next) => {
+router.get("/:topicId", findUser, async (req, res, next) => {
   try {
     const topic = await getUserTopic(
       req.body.user,
       "getOneTopic",
-      req.params.topicSlug
+      "",
+      req.params.topicId
     );
     if (!topic || topic instanceof Error) {
       const error = new Error("Topic not found");
@@ -153,7 +154,7 @@ router.post(
 );
 
 router.patch(
-  "/:topicSlug",
+  "/:topicId",
   checkAllowedUpdates(["title", "links", "description"]),
   topicPatchValidationRules(),
   validate,
@@ -169,7 +170,8 @@ router.patch(
       topic = await getUserTopic(
         req.body.user,
         "getOneTopic",
-        req.params.topicSlug
+        "",
+        req.params.topicId
       );
 
       if (!topic || typeof topic !== "object") {
@@ -220,13 +222,14 @@ router.patch(
   }
 );
 
-router.delete("/:topicSlug", findUser, async (req, res, next) => {
+router.delete("/:topicId", findUser, async (req, res, next) => {
   // user authorization
   try {
     const topic = await getUserTopic(
       req.body.user,
       "getOneTopic",
-      req.params.topicSlug
+      "",
+      req.params.topicId
     );
 
     if (!topic) {

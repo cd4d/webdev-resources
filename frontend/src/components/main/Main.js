@@ -6,7 +6,7 @@ import "./main.css";
 // import displayLinks from "../../utils/utils";
 import "./NavigationPath";
 import NavigationPath from "./NavigationPath";
-import AddTopic from "./AddTopic";
+import CreateTopic from "./CreateTopic";
 import DeleteTopic from "./DeleteTopic";
 import EditTopic from "./EditTopic";
 import AddLinks from "./AddLinks";
@@ -53,6 +53,7 @@ export let defaultData = {
 export default function Main(props) {
   // default blank data
   let displayedTopic = { title: "", slug: "", links: [], _id: "" };
+
   const [errorMsg, setErrorMsg] = useState(null);
   const topics = props.topics;
 
@@ -63,7 +64,7 @@ export default function Main(props) {
     topics.length !== 0
   ) {
     displayedTopic = topics[0];
-    // set displayed topic to one in URL
+    // set displayed topic to the one in URL
   } else if (Object.keys(props.match.params).length !== 0) {
     displayedTopic.slug =
       props.match.params.firstSubLvl || props.match.params.mainTopic;
@@ -74,11 +75,18 @@ export default function Main(props) {
     for (let topic of topics) {
       if (topic.slug === displayedTopic.slug) {
         displayedTopic = topic;
+        // setDisplayedTopic(topic);
       }
     }
   } else if (topics && topics.length > 0) {
     displayedTopic = topics[0];
+    // setDisplayedTopic(topics[0]);
   }
+
+  // Error handling
+  useEffect(() => {
+    props.error && setErrorMsg(props.error);
+  }, [props.error]);
 
   function flushError() {
     setErrorMsg(null);
@@ -99,10 +107,6 @@ export default function Main(props) {
     ));
   }
 
-  useEffect(() => {
-    props.error && setErrorMsg(props.error);
-  }, [props.error]);
-
   const noUserLoggedIn = <>Login or register to build your lists of links.</>;
 
   // render logged in user content
@@ -112,8 +116,8 @@ export default function Main(props) {
     }
     return (
       <>
-        <AddTopic
-          addNewTopic={props.addNewTopic}
+        <CreateTopic
+          createNewTopic={props.createNewTopic}
           triggerUpdate={props.triggerUpdate}
           flushError={flushError}
         />
@@ -140,6 +144,10 @@ export default function Main(props) {
         )}
         {/* Title of the topic */}
         <h1>{displayedTopic ? displayedTopic.title : "No topics"}</h1>
+        {/* description of the topic */}
+        {displayedTopic && (
+          <p className="topic-description">{displayedTopic.description}</p>
+        )}
 
         {/* Error message  */}
         {errorMsg && <p className="error-msg">{errorMsg.statusText}</p>}

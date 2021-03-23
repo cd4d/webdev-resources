@@ -5,34 +5,43 @@ Modal.setAppElement("#root");
 
 export default function EditTopic(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [topic, setTopic] = useState({
-    title: props.displayedTopic.title,
-    description: props.displayedTopic.description,
-    slug: props.displayedTopic.slug,
-  });
+  const [editedTopic, setEditedTopic] = useState(null);
+
   function openModal() {
+    props.flushError();
+
     setIsOpen(true);
   }
   function closeModal() {
     setIsOpen(false);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    console.log("topics submitted: ", topic);
-    const response = props.editDisplayedTopic(topic, null);
+    // don't send a request if fields are blank
+    if (!editedTopic) {
+      return closeModal();
+    }
+    console.log("topic to edit: ", editedTopic);
+
+    const response = await props.editDisplayedTopic(
+      props.displayedTopic._id,
+      editedTopic,
+      "editTopic"
+    );
+
     props.triggerUpdate();
-    setIsOpen(false);
   }
+
   function handleChange(e) {
     const { name, value } = e.target;
     if (name === "title") {
-      setTopic((prevState) => {
+      setEditedTopic((prevState) => {
         return { ...prevState, title: value };
       });
     }
     if (name === "description") {
-      setTopic((prevState) => {
+      setEditedTopic((prevState) => {
         return { ...prevState, description: value };
       });
     }
@@ -49,8 +58,10 @@ export default function EditTopic(props) {
         <button onClick={closeModal} id="button-close-modal">
           close
         </button>
-        <h2>Hello</h2>
-        <div>I am a modal</div>
+        <h2>
+          Edit topic:{" "}
+          {props.displayedTopic && `"${props.displayedTopic.title}"`}
+        </h2>
         <form onSubmit={handleSubmit}>
           <label>
             Title

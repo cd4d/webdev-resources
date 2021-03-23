@@ -10,6 +10,24 @@ const axiosConnection = axios.create({
   baseURL: API_SERVER,
 });
 
+function handleError(error) {
+  if (error.response) {
+    console.log("api-call error response: ", error.response);
+    // client received an error response (5xx, 4xx)
+    return error.response;
+  } else if (error.request) {
+    // client never received a response, or request never left
+    console.log("api-call error request: ", error.request);
+
+    return error.request;
+  } else {
+    // anything else
+    console.log("api-call error else: ", error);
+
+    return error;
+  }
+}
+
 // get current user
 export async function fetchCurrentUser() {
   const response = await axiosConnection("/api/users/current");
@@ -26,8 +44,7 @@ export async function loginUser(credentials) {
     console.log("login Response:", response);
     return response.data;
   } catch (error) {
-    console.log(error);
-    return null;
+    return handleError(error);
   }
 }
 
@@ -37,7 +54,7 @@ export async function logoutUser() {
     // console.log("logout Response:", response);
     return response.data;
   } catch (error) {
-    return null;
+    return handleError(error);
   }
 }
 
@@ -47,7 +64,7 @@ export async function fetchUserTopics() {
     // console.log("User topics Response:", response);
     return response.data;
   } catch (error) {
-    return null;
+    return handleError(error);
   }
 }
 export async function fetchTopicData(topic) {
@@ -56,61 +73,48 @@ export async function fetchTopicData(topic) {
     // console.log("Topic Response:", response);
     return response.data;
   } catch (error) {
-    return null;
+    return handleError(error);
   }
 }
 // add topic and generate url slug
-export async function addTopic(topic) {
+export async function createTopic(topic) {
   try {
     if (topic) {
       topic.slug = slugify(topic.title);
     }
     const response = await axiosConnection.post("/api/topics/", topic);
     // console.log("New Topic Response:", response);
-    return response.data;
+    return { data: response.data, status: response.status };
   } catch (error) {
-    return null;
+    return handleError(error);
   }
 }
 
-// modify topic and  url slug
-export async function editTopic(topicSlug, changedData) {
-  console.log(topicSlug);
+// modify topic
+export async function editTopic(topicId, changedData) {
+  console.log(topicId);
 
   try {
-    if (topicSlug) {
+    if (topicId) {
       const response = await axiosConnection.patch(
-        "/api/topics/" + topicSlug,
+        "/api/topics/" + topicId,
         changedData
       );
       console.log("Edit Topic Response:", response);
-      return {data: response.data, status: response.status};
+      return { data: response.data, status: response.status };
     }
   } catch (error) {
-    if (error.response) {
-      console.log("api-call error response: ", error.response);
-      // client received an error response (5xx, 4xx)
-      return error.response;
-    } else if (error.request) {
-      // client never received a response, or request never left
-      console.log("api-call error request: ", error.request);
-
-      return error.request;
-    } else {
-      // anything else
-      console.log("api-call error else: ", error);
-
-      return error;
-    }
+    return handleError(error);
   }
 }
 
-export async function deleteTopic(topicSlug) {
+export async function deleteTopic(topicId) {
   try {
-    const response = await axiosConnection.delete("/api/topics/" + topicSlug);
+    console.log("topic to delete:", topicId);
+    const response = await axiosConnection.delete("/api/topics/" + topicId);
     console.log("Delete Topic Response:", response);
     return response.data;
   } catch (error) {
-    return null;
+    handleError(error);
   }
 }

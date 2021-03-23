@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import "./modal.css";
 import "./main.css";
-import linksReducer from "../../utils/utils";
 Modal.setAppElement("#root");
 
 export default function AddLinks(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const existingLinks = props.displayedTopic.links;
-  const [newLink, setNewLink] = useState({ url: "", description: "" });
+  const [newLink, setNewLink] = useState();
   const [errorMsg, setErrorMsg] = useState(null);
 
   function openModal() {
@@ -22,6 +21,10 @@ export default function AddLinks(props) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    // don't send a request if fields are blank
+    if (!newLink) {
+      return closeModal();
+    }
     let response;
     // append links at end of existing links array
     console.log("existingLinks: ", existingLinks);
@@ -48,10 +51,6 @@ export default function AddLinks(props) {
         console.log("error: ", err);
         return err;
       }
-    if (response) console.log(response);
-    if (response && response.status === 409) {
-      console.log("props error:", props.error);
-    }
   }
 
   function handleChange(e) {

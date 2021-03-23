@@ -3,22 +3,27 @@ import Modal from "react-modal";
 import "./modal.css";
 Modal.setAppElement("#root");
 
-export default function AddTopic(props) {
+export default function CreateTopic(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [newTopic, setNewTopic] = useState({ title: "", description: "" });
+  const [newTopic, setNewTopic] = useState();
   function openModal() {
+    props.flushError();
     setIsOpen(true);
   }
   function closeModal() {
     setIsOpen(false);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    // don't send a request if fields are blank
+    if (!newTopic) {
+      return closeModal();
+    }
+    console.log("topic to add: ", newTopic);
 
-    const response = props.addNewTopic(newTopic);
+    const response = await props.createNewTopic(newTopic);
     props.triggerUpdate();
-    setIsOpen(false);
   }
   function handleChange(e) {
     const { name, value } = e.target;
@@ -35,7 +40,7 @@ export default function AddTopic(props) {
   }
   return (
     <>
-      <button onClick={openModal}>Add Topic</button>
+      <button onClick={openModal}>Create Topic</button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -45,21 +50,25 @@ export default function AddTopic(props) {
         <button onClick={closeModal} id="button-close-modal">
           close
         </button>
-        <h2>Hello</h2>
-        <div>I am a modal</div>
+        <h2>Create topic</h2>
         <form onSubmit={handleSubmit}>
-          <label>
+          <label className="required">
             Title
-            <input name="title" type="text" onChange={handleChange} />
+            <input name="title" type="text" onChange={handleChange} required />
           </label>
           <br />
-          <label>
+          <label className="required">
             Description
-            <input name="description" type="text" onChange={handleChange} />
+            <input
+              name="description"
+              type="text"
+              onChange={handleChange}
+              required
+            />
           </label>
 
           <br />
-          <button>Add topic</button>
+          <button>Create topic</button>
         </form>
       </Modal>
     </>

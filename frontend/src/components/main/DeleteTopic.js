@@ -5,7 +5,7 @@ Modal.setAppElement("#root");
 
 export default function DeleteTopic(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
-  let topicToDelete = props.displayedTopic
+  let topicToDelete = props.displayedTopic;
   function openModal() {
     setIsOpen(true);
   }
@@ -15,9 +15,8 @@ export default function DeleteTopic(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    props.deleteCurrentTopic(topicToDelete);
-    props.triggerUpdate()
-    setIsOpen(false);
+    props.deleteCurrentTopic(topicToDelete._id);
+    props.triggerUpdate();
   }
 
   return (
@@ -32,7 +31,10 @@ export default function DeleteTopic(props) {
         <button onClick={closeModal} id="button-close-modal">
           close
         </button>
-        <h2>Delete topic: "{props.displayedTopic.title}"?</h2>
+        <h2>
+          Delete topic:{" "}
+          {props.displayedTopic && `"${props.displayedTopic.title}"?`}
+        </h2>
         <form onSubmit={handleSubmit}>
           <button>Yes</button>
         </form>

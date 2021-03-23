@@ -10,7 +10,7 @@ import {
   fetchCurrentUser,
   loginUser,
   logoutUser,
-  addTopic,
+  createTopic,
   deleteTopic,
   editTopic,
 } from "../../api/api-calls";
@@ -109,28 +109,39 @@ function App() {
   }
 
   // add topic and redirect to it
-  async function addNewTopic(newTopic) {
-    const response = await addTopic(newTopic);
-    if (response) {
+  async function createNewTopic(newTopic) {
+    const response = await createTopic(newTopic);
+    // error handling
+    if (response && response.status >= 400) {
+      console.log("error status not 200");
+
+      setError({
+        status: response.status,
+        statusText: response.statusText,
+        operation: "editTopic",
+      });
+      setIsLoading(false);
+      return response;
+    } else if (response) {
       triggerUpdate();
       history.push("/" + newTopic.slug);
     }
   }
   // delete topic
-  async function deleteCurrentTopic(topic) {
-    const response = await deleteTopic(topic.slug);
+  async function deleteCurrentTopic(topicId) {
+    const response = await deleteTopic(topicId);
     triggerUpdate();
     history.push("/");
   }
 
-  // edit topic- add link - delete link
+  // edit topic - add link - delete link
   async function editDisplayedTopic(topic, payload, operation = null) {
     console.log("editing current topic, topic:", topic);
 
     console.log("editing current topic, payload:", payload);
     console.log("editing current topic, operation:", operation);
     let changedData = payload;
-    let topicToUpdate = topic.slug;
+    let topicToUpdate = topic._id;
     switch (operation) {
       case "addLink":
         setIsLoading(true);
@@ -142,7 +153,7 @@ function App() {
 
           const response = await editTopic(topicToUpdate, updatedLinks);
           if (response && response.status !== 200) {
-            // console.log("error response :", response);
+            console.log("error status not 200");
             setError({
               status: response.status,
               statusText: response.statusText,
@@ -164,7 +175,9 @@ function App() {
 
         try {
           const existingLinks = topic.links;
-          const updatedLinks = { links: existingLinks.filter(link => link._id !== changedData._id) };
+          const updatedLinks = {
+            links: existingLinks.filter((link) => link._id !== changedData._id),
+          };
 
           const response = await editTopic(topicToUpdate, updatedLinks);
           if (response && response.status !== 200) {
@@ -183,6 +196,33 @@ function App() {
         }
         triggerUpdate();
         setIsLoading(false);
+
+        break;
+      case "editTopic":
+        // this case takes the id of the topic
+        setIsLoading(true);
+        try {
+          const response = await editTopic(topic, payload);
+          // error handling
+          if (response && response.status !== 200) {
+            console.log("error status not 200");
+            setError({
+              status: response.status,
+              statusText: response.statusText,
+              operation: "editTopic",
+            });
+            setIsLoading(false);
+            return response;
+          }
+          if (response && response.status === 200) {
+            setIsLoading(false);
+            triggerUpdate();
+            history.push("/" + response.data.slug);
+          }
+        } catch (err) {
+          console.log("error updating data :", err);
+          setError(err);
+        }
 
         break;
       default:
@@ -210,7 +250,7 @@ function App() {
           isLoading={isLoading}
           handleLogin={(userCredentials) => handleLogin(userCredentials)}
           handleLogout={handleLogout}
-          addNewTopic={addNewTopic}
+          createNewTopic={createNewTopic}
           deleteCurrentTopic={deleteCurrentTopic}
           triggerUpdate={triggerUpdate}
           editDisplayedTopic={editDisplayedTopic}

@@ -4,7 +4,7 @@ import "./modal.css";
 Modal.setAppElement("#root");
 
 export default function DeleteLink(props) {
-  console.log(props);
+  //console.log(props);
   const [deleteLinkClicked, setDeleteLinkClicked] = useState(false);
 
   let topicToEdit = props.displayedTopic;
