@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { Link } from "react-router-dom";
 
 import "./main.css";
 //import Lorem from "./tests/lorem"
@@ -57,6 +58,13 @@ export default function Main(props) {
   const [errorMsg, setErrorMsg] = useState(null);
   const topics = props.topics;
 
+  // message to display if no user logged in, passed to components
+  const noUserLoggedIn = (
+    <>
+      Functionality locked to prevent abuse.{" "}
+      <Link to="/register">Register</Link> (no email required) to use the app.
+    </>
+  );
   // no topic in url (homepage), set displayed topic to first topic
   if (
     Object.keys(props.match.params).length === 0 &&
@@ -75,26 +83,36 @@ export default function Main(props) {
     for (let topic of topics) {
       if (topic.slug === displayedTopic.slug) {
         displayedTopic = topic;
-        // setDisplayedTopic(topic);
       }
     }
   } else if (topics && topics.length > 0) {
     displayedTopic = topics[0];
-    // setDisplayedTopic(topics[0]);
   }
 
   // Error handling
-  useEffect(() => {
-    props.error && setErrorMsg(props.error);
-  }, [props.error]);
 
   function flushError() {
     setErrorMsg(null);
   }
+  useEffect(() => {
+    flushError();
+  }, []);
+  // Error message
+  useEffect(() => {
+    if (props.error) {
+      switch (props.error.status) {
+        case 409:
+          setErrorMsg(`${props.error.on} already exists in database.`);
+          break;
+        default:
+          setErrorMsg(props.error.statusText);
+      }
+    }
+  }, [props.error]);
 
   function displayLinks(currentTopicLinks) {
     return currentTopicLinks.map((link) => (
-      <li key={uuidv4()} id={link._id} className="list-group-item">
+      <li key={uuidv4()} id={link._id} className="link-line">
         <a href={link.url}>{link.description}</a>{" "}
         <DeleteLink
           editDisplayedTopic={props.editDisplayedTopic}
@@ -102,12 +120,12 @@ export default function Main(props) {
           currentLink={link}
           triggerUpdate={props.triggerUpdate}
           flushError={flushError}
+          noUserLoggedIn={noUserLoggedIn}
+          user={props.user}
         />
       </li>
     ));
   }
-
-  const noUserLoggedIn = <>Login or register to build your lists of links.</>;
 
   // render logged in user content
   function renderUserLoggedIn() {
@@ -116,65 +134,83 @@ export default function Main(props) {
     }
     return (
       <>
-        <CreateTopic
-          createNewTopic={props.createNewTopic}
-          triggerUpdate={props.triggerUpdate}
-          flushError={flushError}
-        />
-        {topics.length !== 0 && (
-          <>
-            <DeleteTopic
-              deleteCurrentTopic={props.deleteCurrentTopic}
-              displayedTopic={displayedTopic}
-              triggerUpdate={props.triggerUpdate}
-              flushError={flushError}
-            />
-            <EditTopic
-              editDisplayedTopic={props.editDisplayedTopic}
-              displayedTopic={displayedTopic}
-              triggerUpdate={props.triggerUpdate}
-              flushError={flushError}
-            />
-          </>
-        )}
+        <nav>
+          <CreateTopic
+            createNewTopic={props.createNewTopic}
+            triggerUpdate={props.triggerUpdate}
+            flushError={flushError}
+            noUserLoggedIn={noUserLoggedIn}
+          />
+          {topics.length !== 0 && (
+            <>
+              <DeleteTopic
+                deleteCurrentTopic={props.deleteCurrentTopic}
+                displayedTopic={displayedTopic}
+                triggerUpdate={props.triggerUpdate}
+                flushError={flushError}
+                noUserLoggedIn={noUserLoggedIn}
+              />
+              <EditTopic
+                editDisplayedTopic={props.editDisplayedTopic}
+                displayedTopic={displayedTopic}
+                triggerUpdate={props.triggerUpdate}
+                flushError={flushError}
+                noUserLoggedIn={noUserLoggedIn}
+              />
+            </>
+          )}
+        </nav>
 
         {/* Navigation breadcrumbs */}
-        {displayedTopic && (
+        {displayedTopic && displayedTopic.depth > 0 && (
           <NavigationPath topics={topics} currentTopic={displayedTopic} />
         )}
         {/* Title of the topic */}
-        <h1>{displayedTopic ? displayedTopic.title : "No topics"}</h1>
+        <h1 className="topic-title">
+          {displayedTopic ? displayedTopic.title : "No topics"}
+        </h1>
         {/* description of the topic */}
         {displayedTopic && (
-          <p className="topic-description">{displayedTopic.description}</p>
+          <span className="topic-description">
+            {displayedTopic.description}
+          </span>
         )}
 
         {/* Error message  */}
-        {errorMsg && <p className="error-msg">{errorMsg.statusText}</p>}
+        {errorMsg && <p className="error-msg">{errorMsg}</p>}
 
         {/* add link */}
-        <AddLinks
-          editDisplayedTopic={props.editDisplayedTopic}
-          displayedTopic={displayedTopic}
-          triggerUpdate={props.triggerUpdate}
-          error={props.error}
-          flushError={flushError}
-        />
+        {topics.length !== 0 && (
+          <AddLinks
+            editDisplayedTopic={props.editDisplayedTopic}
+            displayedTopic={displayedTopic}
+            triggerUpdate={props.triggerUpdate}
+            error={props.error}
+            flushError={flushError}
+            noUserLoggedIn={noUserLoggedIn}
+          />
+        )}
 
         {/* All the links associated with the topic, each with delete logic */}
-        <ul className="list-group list-group-flush">
-          {displayedTopic && displayedTopic.links.length !== 0 ? (
-            displayLinks(displayedTopic.links)
-          ) : (
-            <p>No links provided.</p>
-          )}
-        </ul>
+
+        {displayedTopic && displayedTopic.links.length !== 0 ? (
+          <ul className="links-list">{displayLinks(displayedTopic.links)}</ul>
+        ) : (
+          <p>No links provided.</p>
+        )}
       </>
     );
   }
   return (
     <div className="main content column">
-      {props.user ? renderUserLoggedIn() : noUserLoggedIn}
+      {props.error && props.error.on === "register" && (
+        <p className="error-msg">Registration failed.</p>
+      )}
+      {props.error && props.error.on === "login" && (
+        <p className="error-msg">Login failed.</p>
+      )}
+      {/* {props.user ? renderUserLoggedIn() : noUserLoggedIn} */}
+      {renderUserLoggedIn()}
     </div>
   );
 }

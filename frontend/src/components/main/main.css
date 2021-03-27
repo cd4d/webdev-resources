@@ -1,8 +1,84 @@
 .main {
-  background-color: lightblue;
+  /* background-color: lightblue; */
   padding: 1rem;
 }
 
 .error-msg {
   color: red;
+}
+
+.links-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+.link-line {
+  display: flex;
+  justify-content: space-between;
+  flex-basis: 100%;
+  margin-top: 0.5rem;
+}
+/* Buttons */
+
+.btn {
+  display: inline-block;
+  border-radius: 10px;
+  border: 1px solid grey;
+
+  color: #eeeeee;
+  box-shadow: 2px 2px 5px grey;
+  text-align: center;
+  font-size: 1rem;
+  padding: 0.55rem 1rem;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.btn-create-topic {
+  /* background-color: lightgreen; */
+  color: DodgerBlue;
+}
+.btn-edit-topic {
+  /* background-color: wheat; */
+  color: DodgerBlue;
+}
+.btn-delete-topic {
+  background-color: tomato;
+  color: white;
+}
+
+.btn-delete-link,
+.btn-confirm-cancel {
+  background-color: transparent;
+  border: none;
+  margin-left: 0.5rem;
+}
+
+.btn-confirm-cancel {
+  padding: 0;
+}
+
+.confirm-delete-link {
+  color: MediumSeaGreen;
+}
+
+.cancel-delete-link {
+  color: tomato;
+}
+
+/* Blank space to fill the space taken by confirm button for deleting links */
+.blank-space {
+  width: 26px;
+  display: inline-block;
+}
+
+.topic-title {
+  margin-bottom: 0.5rem;
+}
+
+.topic-description {
+  padding: 0 0 0.5rem 0;
 }

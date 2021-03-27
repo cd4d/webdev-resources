@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./login.css";
 import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Login(props) {
   const history = useHistory();
@@ -17,7 +18,7 @@ export default function Login(props) {
   }
 
   return (
-    <>
+    <div className="container-center">
       <h3 className="login-title">Login</h3>
       <form
         className="login-form"
@@ -30,9 +31,11 @@ export default function Login(props) {
             username: inputUsername,
             password: inputPassword,
           });
-           history.push("/");
+          history.push("/");
         }}
       >
+        <label className="required">Username</label>
+
         <input
           className="login-input"
           label="username"
@@ -41,6 +44,8 @@ export default function Login(props) {
           value={inputUsername}
           onChange={handleChange}
         ></input>
+        <label className="required">Password</label>
+
         <input
           className="login-input"
           type="password"
@@ -50,8 +55,12 @@ export default function Login(props) {
           value={inputPassword}
           onChange={handleChange}
         ></input>
-        <button type="submit">Login</button>
+        <Link to="/reset-password">Forgot password</Link>
+        <br />
+        <button id="btn-login" type="submit">
+          Login
+        </button>
       </form>
-    </>
+    </div>
   );
 }

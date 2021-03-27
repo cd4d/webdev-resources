@@ -8,7 +8,7 @@ import "./header.css";
 export default function Header(props) {
   return (
     <div className="header-container top">
-    {/* only display mobile menu if there are topics */}
+      {/* only display mobile menu if there are topics */}
       {props.topics && props.topics.length !== 0 ? (
         <label htmlFor="mobile-menu-checkbox">Menu</label>
       ) : (
@@ -21,7 +21,7 @@ export default function Header(props) {
       <div className="user-container">
         {props.user ? (
           <>
-            {props.user}
+            Welcome, <span className="username-header">{props.user}</span>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -33,11 +33,14 @@ export default function Header(props) {
           </>
         ) : (
           <>
-            <p>No user</p>
-            <Link to="/login">login</Link>
+            <p>
+              <em>No user logged in.</em>
+            </p>
+            <Link to="/login">Login</Link> /{" "}
+            <Link to="/register">Register</Link>
           </>
         )}
-        <form
+        {/* <form
           onSubmit={(e) => {
             e.preventDefault();
             props.handleLogin({ username: "someuser", password: "123456" });
@@ -52,7 +55,7 @@ export default function Header(props) {
           }}
         >
           <button type="submit">login no topics</button>
-        </form>
+        </form> */}
       </div>
     </div>
   );

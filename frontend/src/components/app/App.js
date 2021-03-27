@@ -9,13 +9,17 @@ import {
   fetchUserTopics,
   fetchCurrentUser,
   loginUser,
+  registerUser,
   logoutUser,
   createTopic,
   deleteTopic,
   editTopic,
+  resetPassword,
 } from "../../api/api-calls";
 
-import "./App.css"; // keep last for CSS order
+// keep last for CSS order
+import "./icons.css";
+import "./App.css";
 
 function App() {
   // list of topics
@@ -33,7 +37,17 @@ function App() {
   async function handleLogin(userCredentials) {
     const response = await loginUser(userCredentials);
     console.log("response is:", response);
-    if (response) {
+    if (response && response.status >= 400) {
+      setError({
+        status: response.status,
+        statusText: response.statusText,
+        operation: "login",
+        on: "login",
+      });
+      setIsLoading(false);
+      return response;
+    }
+    if (response && response.status === 200) {
       setUser(response.loggedUser);
     }
   }
@@ -47,6 +61,38 @@ function App() {
       history.push("/");
     }
   }
+  // register user
+  async function handleRegister(userCredentials) {
+    const response = await registerUser(userCredentials);
+    console.log("response is:", response);
+    if (response && response.status >= 400) {
+      setError({
+        status: response.status,
+        statusText: response.statusText,
+        operation: "register",
+        on: "register",
+        errors: response.data.errors,
+      });
+      setIsLoading(false);
+      return response;
+    }
+    if (response && response.status === 200) {
+      setUser(response.loggedUser);
+    }
+  }
+
+  // reset user password
+  async function handleResetPassword(email) {
+    const response = await resetPassword(email);
+    console.log("response in app for reset pw: ", response);
+    if (response && response.resetLink) {
+      return { resetLink: response.resetLink };
+    }
+    if (response && response.status) {
+      return { status: response.status, statusText: response.statusText };
+    }
+  }
+
   // get current user at start
   useEffect(() => {
     const getCurrentUser = async () => {
@@ -70,9 +116,8 @@ function App() {
       }
       setIsLoading(false);
     };
-    if (user) {
-      fetchData();
-    }
+
+    fetchData();
   }, [user, updated]);
 
   // update the data from current topic when it's edited
@@ -84,7 +129,7 @@ function App() {
   //       console.log("changedData: ", changedData);
 
   //       const response = await editTopic(topicToUpdate, changedData);
-  //       if (response && response.status !== 200) {
+  //       if (response && response.status >= 400) {
   //         console.log("error response :", response);
 
   //         setError({
@@ -113,12 +158,11 @@ function App() {
     const response = await createTopic(newTopic);
     // error handling
     if (response && response.status >= 400) {
-      console.log("error status not 200");
-
       setError({
         status: response.status,
         statusText: response.statusText,
-        operation: "editTopic",
+        operation: "createTopic",
+        on: "Topic",
       });
       setIsLoading(false);
       return response;
@@ -152,12 +196,13 @@ function App() {
           const updatedLinks = { links: existingLinks.concat(changedData) };
 
           const response = await editTopic(topicToUpdate, updatedLinks);
-          if (response && response.status !== 200) {
+          if (response && response.status >= 400) {
             console.log("error status not 200");
             setError({
               status: response.status,
               statusText: response.statusText,
               operation: "addLink",
+              on: "Link",
             });
             setIsLoading(false);
             return response;
@@ -180,12 +225,13 @@ function App() {
           };
 
           const response = await editTopic(topicToUpdate, updatedLinks);
-          if (response && response.status !== 200) {
+          if (response && response.status >= 400) {
             // console.log("error response :", response);
             setError({
               status: response.status,
               statusText: response.statusText,
               operation: "deleteLink",
+              on: "Link",
             });
             setIsLoading(false);
             return response;
@@ -204,12 +250,13 @@ function App() {
         try {
           const response = await editTopic(topic, payload);
           // error handling
-          if (response && response.status !== 200) {
+          if (response && response.status >= 400) {
             console.log("error status not 200");
             setError({
               status: response.status,
               statusText: response.statusText,
               operation: "editTopic",
+              on: "Topic",
             });
             setIsLoading(false);
             return response;
@@ -241,15 +288,17 @@ function App() {
       />
       <div className="lower">
         {/* only show sidebar if a user is logged in */}
-        {user && <Sidebar topics={data} user={user} isLoading={isLoading} />}
+        {<Sidebar topics={data} user={user} isLoading={isLoading} />}
 
         <Routes
-          topics={user && data}
+          topics={data}
           user={user}
           //pass data if there's a user logged in
           isLoading={isLoading}
           handleLogin={(userCredentials) => handleLogin(userCredentials)}
           handleLogout={handleLogout}
+          handleRegister={handleRegister}
+          handleResetPassword={handleResetPassword}
           createNewTopic={createNewTopic}
           deleteCurrentTopic={deleteCurrentTopic}
           triggerUpdate={triggerUpdate}

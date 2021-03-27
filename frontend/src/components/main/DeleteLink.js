@@ -6,9 +6,15 @@ Modal.setAppElement("#root");
 export default function DeleteLink(props) {
   //console.log(props);
   const [deleteLinkClicked, setDeleteLinkClicked] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
 
   let topicToEdit = props.displayedTopic;
-
+  function openModal() {
+    setIsOpen(true);
+  }
+  function closeModal() {
+    setIsOpen(false);
+  }
   useEffect(() => {
     setDeleteLinkClicked(false);
   }, []);
@@ -25,13 +31,42 @@ export default function DeleteLink(props) {
   return (
     <>
       {!deleteLinkClicked ? (
-        <button onClick={changeDeleteLinkClicked}>Delete Link</button>
+        <div>
+          <span className="blank-space"></span>
+          <button
+            className="btn-delete-link"
+            onClick={props.user ? changeDeleteLinkClicked : openModal}
+          >
+            <span className="gg-trash" title="Delete link"></span>
+          </button>
+        </div>
       ) : (
-        <>
-          <button onClick={deleteLink}>Yes</button>
-          <button onClick={changeDeleteLinkClicked}>No</button>
-        </>
-      )}
+        <div className="confirm-cancel-container">
+          <button
+            onClick={deleteLink}
+            className="btn-confirm-cancel confirm-delete-link"
+          >
+            <span className="gg-check-r" title="Confirm"></span>
+          </button>
+          <button
+            onClick={changeDeleteLinkClicked}
+            className="btn-confirm-cancel cancel-delete-link"
+          >
+            <span className="gg-close-o" title="Cancel"></span>
+          </button>
+        </div>
+      )}{" "}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Example Modal"
+        className="Modal addTopicModal"
+      >
+        <button onClick={closeModal} id="button-close-modal">
+          close
+        </button>
+        {props.noUserLoggedIn}
+      </Modal>
     </>
   );
 }

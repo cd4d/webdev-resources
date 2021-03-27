@@ -1,0 +1,64 @@
+import React, { useState, useEffect } from "react";
+import "./login.css";
+import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { loginUser } from "../../api/api-calls";
+
+export default function Login(props) {
+  const history = useHistory();
+
+  const [inputEmail, setEmail] = useState("");
+  const [generatedLink, setGeneratedLink] = useState(null);
+  const [error, setError] = useState(null);
+  function handleChange(e) {
+    setEmail(e.target.value);
+  }
+  useEffect(() => {
+    setError(null);
+  }, [generatedLink]);
+  useEffect(() => {
+    setGeneratedLink(null);
+  }, [error]);
+  return (
+    <div>
+      <h3 className="login-title">Reset password</h3>
+      <form
+        className="login-form"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const response = await props.handleResetPassword({
+            email: inputEmail,
+          });
+          if (response.resetLink) {
+            setGeneratedLink(response.resetLink);
+          }
+          if (response.status) {
+            setError(response);
+          }
+        }}
+      >
+        <input
+          className="login-input"
+          label="email"
+          id="email"
+          placeholder="email"
+          value={inputEmail}
+          onChange={handleChange}
+        ></input>
+
+        <br />
+        <button type="submit">Reset password</button>
+      </form>
+      <div>
+        {generatedLink && (
+          <p>
+            In a real world application, a dedicated email service would send a
+            reset password. This generated link would be working:{" "}
+            {generatedLink}
+          </p>
+        )}
+        {error && <p>Email was not found.</p>}
+      </div>
+    </div>
+  );
+}

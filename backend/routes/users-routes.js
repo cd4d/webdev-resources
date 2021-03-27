@@ -52,7 +52,8 @@ router.post(
             // const error = new Error("Error at registration.");
             // error.statusCode = 400;
             // throw error;
-            res.status(400).send("Error at registration.");
+            console.log(err);
+            res.status(400).send(err);
           } else {
             passport.authenticate("local")(req, res, () => {
               res.status(200).send("User successfully registered.");
@@ -83,12 +84,10 @@ router.post("/login", (req, res, next) => {
         (err) => {
           if (err) res.status(500).send("Cannot login");
 
-          res
-            .status(200)
-            .send({
-              loggedUser: req.body.username,
-              message: "User logged in.",
-            });
+          res.status(200).send({
+            loggedUser: req.body.username,
+            message: "User logged in.",
+          });
         }
       );
     });
@@ -97,7 +96,7 @@ router.post("/login", (req, res, next) => {
 
 router.get("/logout", function (req, res) {
   req.logout();
-  res.clearCookie('connect.sid');
+  res.clearCookie("connect.sid");
   res.send("Logged out.");
   // res.redirect('/');
 });

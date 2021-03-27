@@ -1,7 +1,10 @@
 import React from "react";
 import { Switch, Route, useHistory } from "react-router-dom";
 import Main from "../components/main/Main";
-import Login from "../components/login/Login";
+import Login from "../components/user/Login";
+import Register from "../components/user/Register";
+
+import ResetPassword from "../components/user/ResetPassword";
 import PageNotFound from "../components/app/PageNotFound";
 import { mockDB } from "../components/app/App";
 export default function Routes(appProps) {
@@ -16,12 +19,25 @@ export default function Routes(appProps) {
           appProps.user ? (
             history.push("/")
           ) : (
-            <Login
-              {...routeProps}
-              {...appProps}
-            />
+            <Login {...routeProps} {...appProps} />
           )
         }
+      ></Route>
+      <Route
+        exact
+        path="/register"
+        render={(routeProps) =>
+          appProps.user ? (
+            history.push("/")
+          ) : (
+            <Register {...routeProps} {...appProps} />
+          )
+        }
+      ></Route>
+      <Route
+        exact
+        path="/reset-password"
+        render={(routeProps) => <ResetPassword {...routeProps} {...appProps} />}
       ></Route>
       <Route
         exact
@@ -31,12 +47,7 @@ export default function Routes(appProps) {
       <Route
         exact
         path="/:mainTopic/:firstSubLvl"
-        render={(routeProps) => (
-          <Main
-            {...routeProps}
-            {...appProps}
-          />
-        )}
+        render={(routeProps) => <Main {...routeProps} {...appProps} />}
       ></Route>
 
       <Route

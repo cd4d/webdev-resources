@@ -12,13 +12,13 @@ function SidebarItem(props) {
         {/* Top levels, render if item has no parent elements */}
         {!topic.parent && (
           <>
-            <NavLink to={`${topic.slug}`}>{topic.title}</NavLink>
+            <NavLink to={`${topic.slug}`} className="link-sidebar main-topic">{topic.title}</NavLink>
             {/* Renders the children elements. */}
             <ul>
               {topic.children.map((child) => (
                 <li key={uuidv4()}>
                   {" "}
-                  <NavLink to={`/${topic.slug}/${child.slug}`}>
+                  <NavLink to={`/${topic.slug}/${child.slug}`} className="link-sidebar child-topic">
                     {child.title}
                   </NavLink>
                 </li>

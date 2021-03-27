@@ -15,8 +15,3 @@
 
 
 
-.required::after {
-  content: " *";
-  color: red;
-  display: inline;
-}

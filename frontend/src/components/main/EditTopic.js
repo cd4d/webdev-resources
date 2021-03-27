@@ -6,7 +6,27 @@ Modal.setAppElement("#root");
 export default function EditTopic(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [editedTopic, setEditedTopic] = useState(null);
+  const userLoggedIn = (
+    <>
+      <h2>
+        Edit topic: {props.displayedTopic && `"${props.displayedTopic.title}"`}
+      </h2>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Title
+          <input name="title" type="text" onChange={handleChange} />
+        </label>
+        <br />
+        <label>
+          Description
+          <input name="description" type="text" onChange={handleChange} />
+        </label>
 
+        <br />
+        <button>Edit topic</button>
+      </form>
+    </>
+  );
   function openModal() {
     props.flushError();
 
@@ -48,7 +68,9 @@ export default function EditTopic(props) {
   }
   return (
     <>
-      <button onClick={openModal}>Edit Topic</button>
+      <button className="btn btn-edit-topic" onClick={openModal}>
+        Edit Topic
+      </button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -58,24 +80,8 @@ export default function EditTopic(props) {
         <button onClick={closeModal} id="button-close-modal">
           close
         </button>
-        <h2>
-          Edit topic:{" "}
-          {props.displayedTopic && `"${props.displayedTopic.title}"`}
-        </h2>
-        <form onSubmit={handleSubmit}>
-          <label>
-            Title
-            <input name="title" type="text" onChange={handleChange} />
-          </label>
-          <br />
-          <label>
-            Description
-            <input name="description" type="text" onChange={handleChange} />
-          </label>
 
-          <br />
-          <button>Edit topic</button>
-        </form>
+        {props.user ? userLoggedIn : props.noUserLoggedIn}
       </Modal>
     </>
   );

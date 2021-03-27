@@ -38,9 +38,37 @@ export default function CreateTopic(props) {
       });
     }
   }
+
+  const userLoggedIn = (
+    <>
+      <h2>Create topic</h2>
+      <form onSubmit={handleSubmit}>
+        <label className="required">
+          Title
+          <input name="title" type="text" onChange={handleChange} required />
+        </label>
+        <br />
+        <label className="required">
+          Description
+          <input
+            name="description"
+            type="text"
+            onChange={handleChange}
+            required
+          />
+        </label>
+
+        <br />
+        <button>Create topic</button>
+      </form>
+    </>
+  );
+
   return (
     <>
-      <button onClick={openModal}>Create Topic</button>
+      <button className="btn btn-create-topic" onClick={openModal}>
+        Create Topic
+      </button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -50,26 +78,7 @@ export default function CreateTopic(props) {
         <button onClick={closeModal} id="button-close-modal">
           close
         </button>
-        <h2>Create topic</h2>
-        <form onSubmit={handleSubmit}>
-          <label className="required">
-            Title
-            <input name="title" type="text" onChange={handleChange} required />
-          </label>
-          <br />
-          <label className="required">
-            Description
-            <input
-              name="description"
-              type="text"
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <br />
-          <button>Create topic</button>
-        </form>
+        {props.user ? userLoggedIn : props.noUserLoggedIn}
       </Modal>
     </>
   );

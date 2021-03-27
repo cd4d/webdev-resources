@@ -27,6 +27,19 @@ body {
   align-items: center;
 }
 
+.required::after {
+  content: " *";
+  color: red;
+  display: inline;
+}
+
+.container-center {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+}
+
 /* Media queries  */
 @media (max-width: 505px) {
   .ribbon {
@@ -69,4 +82,21 @@ body {
     font-size: 80%;
     line-height: 1;
   }
+}
+
+a,
+a:visited {
+  color: DodgerBlue;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline dotted;
+}
+
+li {
+  list-style-type: none;
 }

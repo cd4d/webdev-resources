@@ -9,7 +9,39 @@ export default function AddLinks(props) {
   const existingLinks = props.displayedTopic.links;
   const [newLink, setNewLink] = useState();
   const [errorMsg, setErrorMsg] = useState(null);
+  const userLoggedIn = (
+    <>
+      {" "}
+      <h2>Add link</h2>
+      <form onSubmit={handleSubmit}>
+        <label className="required">
+          Url
+          <input
+            name="url"
+            type="URL"
+            onChange={handleChange}
+            placeholder="Must start with http(s)"
+            required
+          />
+        </label>
+        <br />
+        <label className="required">
+          Description
+          <input
+            name="description"
+            type="text"
+            onChange={handleChange}
+            required
+          />
+        </label>
 
+        <br />
+        {errorMsg && <p className="error-msg">{errorMsg}</p>}
+
+        <button>Submit link</button>
+      </form>
+    </>
+  );
   function openModal() {
     props.flushError();
     setIsOpen(true);
@@ -79,35 +111,8 @@ export default function AddLinks(props) {
         <button onClick={closeModal} id="button-close-modal">
           close
         </button>
-        <h2>Hello</h2>
-        <div>I am a modal</div>
-        <form onSubmit={handleSubmit}>
-          <label className="required">
-            Url
-            <input
-              name="url"
-              type="URL"
-              onChange={handleChange}
-              placeholder="Must start with http(s)"
-              required
-            />
-          </label>
-          <br />
-          <label className="required">
-            Description
-            <input
-              name="description"
-              type="text"
-              onChange={handleChange}
-              required
-            />
-          </label>
 
-          <br />
-          {errorMsg && <p className="error-msg">{errorMsg}</p>}
-
-          <button>Submit link</button>
-        </form>
+        {props.user ? userLoggedIn : props.noUserLoggedIn}
       </Modal>
     </>
   );

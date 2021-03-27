@@ -42,7 +42,7 @@ export async function loginUser(credentials) {
       credentials
     );
     console.log("login Response:", response);
-    return response.data;
+    return response;
   } catch (error) {
     return handleError(error);
   }
@@ -52,6 +52,34 @@ export async function logoutUser() {
   try {
     const response = await axiosConnection(API_SERVER + "/api/users/logout");
     // console.log("logout Response:", response);
+    return response.data;
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+
+export async function registerUser(credentials) {
+  try {
+    const response = await axiosConnection.post(
+      "/api/users/register",
+      credentials
+    );
+    console.log("register Response:", response);
+    return response;
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+
+export async function resetPassword(email) {
+  try {
+    const response = await axios.post(
+      API_SERVER + "/api/users/reset-password",
+      email
+    );
+    console.log("reset pw response: ", response);
     return response.data;
   } catch (error) {
     return handleError(error);
