@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./register.css";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -13,6 +13,11 @@ export default function Login(props) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState(null);
   let errorType = "";
+
+  useEffect(() => {
+    setErrorMsg(null);
+  }, []);
+
   function handleChange(e) {
     if (e.target.id === "username") {
       setUsername(e.target.value);
@@ -46,34 +51,44 @@ export default function Login(props) {
             email: inputEmail,
             password: inputPassword,
             confirmPassword: confirmPassword,
-          });
+          }); // see sample-response.js
           // Successfully registered, login the user
           if (response) {
             console.log("register response: ", response);
-            if (response.status === 200) {
-              const loggedUser = props.handleLogin({
+            if (response.status === 200 || response.statusText === "OK") {
+              return props.handleLogin({
                 username: inputUsername,
                 password: inputPassword,
               });
             }
             // Error in registration, display message
-            if (response.status >= 400) {
-              // invalid password/username
-              if (
-                response.data.errors &&
-                Array.isArray(response.data.errors) &&
-                response.data.errors[0].param
-              ) {
-                errorType =
-                  "Could not register: invalid " +
-                  response.data.errors[0].param;
-              }
+            switch (response.status) {
+              // invalid password/username/email
+              case 422:
+                const invalidValues = response.data.errors
+                  .map((e) => e.param)
+                  .join(", ");
+                errorType = "Could not register: invalid " + invalidValues;
+                break;
               // email/username already exists
-              if (typeof response.data === "object" && response.data !== null) {
-                errorType = response.data.message;
-              }
-              return setErrorMsg(errorType);
+              case 409:
+                const duplicateValues = response.data.on.join(", ");
+                errorType = `These are already registered: ${duplicateValues}.`;
+                break;
+              default:
+                errorType = "Error at registration.";
+                break;
             }
+            return setErrorMsg(errorType);
+            // if (response.status >= 400) {
+            //   // invalid password/username/email
+
+            //   // email/username already exists
+            //   // if (typeof response.data === "object" && response.data !== null) {
+            //   //   errorType = response.data.message;
+            //   // }
+
+            // }
           }
         }}
       >

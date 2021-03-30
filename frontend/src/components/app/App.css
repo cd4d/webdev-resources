@@ -28,7 +28,7 @@ body {
 }
 
 .required::after {
-  content: " *";
+  content: " * ";
   color: red;
   display: inline;
 }

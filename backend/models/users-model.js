@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const passportLocalMongoose = require("passport-local-mongoose");
+const handleDuplicate = require("../middlewares/duplicate-error-middleware");
+
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -47,24 +49,11 @@ userSchema.index(
 // Handling duplicate key error
 // https://thecodebarbarian.com/mongoose-error-handling.html
 
-const handleE11000 = function (err, res, next) {
-  if (err.name === "MongoError" && err.code === 11000) {
-    // extracting the field where duplicate error happened at err.keyValue
-    const error = new Error(
-      `Duplicate key error at: ${JSON.stringify(err.keyValue)}`
-    );
-    error.statusCode = 409;
-    next(error);
-  } else {
-    next();
-  }
-};
-
 // Duplicate key errors, see above
 
-userSchema.post("save", handleE11000);
-userSchema.post("update", handleE11000);
-userSchema.post("findOneAndUpdate", handleE11000);
+userSchema.post("save", handleDuplicate);
+userSchema.post("update", handleDuplicate);
+userSchema.post("findOneAndUpdate", handleDuplicate);
 
 userSchema.plugin(passportLocalMongoose);
 const User = mongoose.model("User", userSchema);

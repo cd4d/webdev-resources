@@ -15,8 +15,8 @@ module.exports = function () {
       useUnifiedTopology: true,
       useFindAndModify: false,
       useCreateIndex: true,
-      // disable in prod if enabled
-      //autoIndex: true,
+      // https://stackoverflow.com/questions/14342708/mongoose-indexing-in-production-code
+      autoIndex: true,
     })
     .then(() => console.log(`Connected to ${DATABASE}...`))
     .catch((err) => console.log("Could not connect to database."));

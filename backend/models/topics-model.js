@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const slugify = require("../utils/slugify");
 const { linkSchema } = require("./links-model");
+const handleDuplicate = require("../middlewares/duplicate-error-middleware")
 const regex = /^[a-zA-Z0-9À-Ÿ-_]+( [a-zA-Z0-9À-Ÿ-_]+)*$/;
 
 // disable in prod
@@ -104,18 +105,7 @@ topicSchema.index(
 // Handling duplicate key error
 // https://thecodebarbarian.com/mongoose-error-handling.html
 
-const handleE11000 = function (err, res, next) {
-  if (err.name === "MongoError" && err.code === 11000) {
-    // extracting the field where duplicate error happened at err.keyValue
-    const error = new Error(
-      `Duplicate key error at: ${JSON.stringify(err.keyValue)}`
-    );
-    error.statusCode = 409;
-    next(error);
-  } else {
-    next();
-  }
-};
+
 
 // *** associated middlewares *** //
 // Slugify moved to frontend. add depth level (main topic or subtopic)
@@ -134,10 +124,10 @@ topicSchema.pre("save", async function (req, res, next) {
 
 // Duplicate key errors, see above
 
-topicSchema.post("save", handleE11000);
-topicSchema.post("update", handleE11000);
-topicSchema.post("findOneAndUpdate", handleE11000);
-topicSchema.post("insertMany", handleE11000);
+topicSchema.post("save", handleDuplicate);
+topicSchema.post("update", handleDuplicate);
+topicSchema.post("findOneAndUpdate", handleDuplicate);
+topicSchema.post("insertMany", handleDuplicate);
 
 // update middleware for slug, not used anymore, using save() for patch requests
 // topicSchema.pre("findOneAndUpdate", async function (next) {

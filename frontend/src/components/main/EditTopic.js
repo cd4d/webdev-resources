@@ -12,25 +12,40 @@ export default function EditTopic(props) {
         Edit topic: {props.displayedTopic && `"${props.displayedTopic.title}"`}
       </h2>
       <form onSubmit={handleSubmit}>
-        <label>
-          Title
-          <input name="title" type="text" onChange={handleChange} />
-        </label>
-        <br />
-        <label>
-          Description
-          <input name="description" type="text" onChange={handleChange} />
-        </label>
+        <ul>
+          <li>
+            <label htmlFor="edit-topic-title" className="label-form">
+              Title
+            </label>
+            <input
+              id="edit-topic-title"
+              className="input-form"
+              name="title"
+              type="text"
+              onChange={handleChange}
+            />
+          </li>
+          <li>
+            <label htmlFor="edit-topic-description" className="label-form ">
+              Description
+            </label>
+            <input
+              id="edit-topic-description"
+              className="input-form"
+              name="description"
+              type="text"
+              onChange={handleChange}
+            />
+          </li>
+        </ul>
 
-        <br />
         <button>Edit topic</button>
       </form>
     </>
   );
   function openModal() {
-    props.flushError();
-
     setIsOpen(true);
+    props.flushAppError();
   }
   function closeModal() {
     setIsOpen(false);
@@ -44,13 +59,9 @@ export default function EditTopic(props) {
     }
     console.log("topic to edit: ", editedTopic);
 
-    const response = await props.editDisplayedTopic(
-      props.displayedTopic._id,
-      editedTopic,
-      "editTopic"
-    );
-
-    props.triggerUpdate();
+    const response = await props
+      .editDisplayedTopic(props.displayedTopic._id, editedTopic, "editTopic")
+      .then(closeModal());
   }
 
   function handleChange(e) {

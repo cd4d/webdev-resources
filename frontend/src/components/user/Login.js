@@ -8,6 +8,10 @@ export default function Login(props) {
 
   const [inputUsername, setUsername] = useState("");
   const [inputPassword, setpassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  let errorType = "";
+
   function handleChange(e) {
     if (e.target.id === "username") {
       setUsername(e.target.value);
@@ -22,15 +26,20 @@ export default function Login(props) {
       <h3 className="login-title">Login</h3>
       <form
         className="login-form"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
           console.log("user:", inputUsername);
           console.log("pw:", inputPassword);
 
-          props.handleLogin({
+          const response = await props.handleLogin({
             username: inputUsername,
             password: inputPassword,
           });
+          if (response && response.status >= 400) {
+            errorType = `Login failed.`;
+            return setErrorMsg(errorType);
+          }
+
           history.push("/");
         }}
       >
@@ -61,6 +70,7 @@ export default function Login(props) {
           Login
         </button>
       </form>
+      {errorMsg && <p className="error-msg">{errorMsg}</p>}
     </div>
   );
 }

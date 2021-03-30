@@ -3,7 +3,7 @@ import mockDB from "../../DB/mockDB.json";
 import Header from "../header/Header";
 import Sidebar from "../sidebar/Sidebar";
 import Routes from "../../routes/routes";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 
 import {
   fetchUserTopics,
@@ -27,8 +27,6 @@ function App() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
-  // const [changedData, setChangedData] = useState(null);
-  // const [topicToUpdate, setTopicToUpdate] = useState(null);
   const [error, setError] = useState(null);
   // useHistory from react-router for redirection
   const history = useHistory();
@@ -44,7 +42,6 @@ function App() {
         operation: "login",
         on: "login",
       });
-      setIsLoading(false);
       return response;
     }
     if (response && response.status === 200) {
@@ -58,7 +55,7 @@ function App() {
     if (response) {
       setData([]);
       setUser(null);
-      history.push("/");
+      <Redirect to="/" />;
     }
   }
   // register user
@@ -120,49 +117,25 @@ function App() {
     fetchData();
   }, [user, updated]);
 
-  // update the data from current topic when it's edited
-  // useEffect(() => {
-  //   const updateData = async () => {
-  //     setIsLoading(true);
-  //     try {
-  //       console.log("topicToUpdate: ", topicToUpdate);
-  //       console.log("changedData: ", changedData);
-
-  //       const response = await editTopic(topicToUpdate, changedData);
-  //       if (response && response.status >= 400) {
-  //         console.log("error response :", response);
-
-  //         setError({
-  //           status: response.status,
-  //           statusText: response.statusText,
-  //         });
-  //         return response;
-  //       }
-  //       setIsLoading(false);
-  //     } catch (err) {
-  //       console.log("error updating data :", err);
-  //       setError(err);
-  //       setIsLoading(false);
-  //     }
-  //   };
-  //   updateData();
-  // }, [topicToUpdate, changedData]);
-
   function triggerUpdate() {
     setError(null);
     setUpdated((prevState) => !prevState);
   }
 
-  // add topic and redirect to it
+  function flushAppError() {
+    setError(null);
+  }
+  // create topic and redirect to it
   async function createNewTopic(newTopic) {
     const response = await createTopic(newTopic);
     // error handling
     if (response && response.status >= 400) {
+      console.log("error in app.js: ", response);
       setError({
         status: response.status,
         statusText: response.statusText,
         operation: "createTopic",
-        on: "Topic",
+        on: "topic",
       });
       setIsLoading(false);
       return response;
@@ -184,16 +157,15 @@ function App() {
 
     console.log("editing current topic, payload:", payload);
     console.log("editing current topic, operation:", operation);
-    let changedData = payload;
     let topicToUpdate = topic._id;
     switch (operation) {
       case "addLink":
         setIsLoading(true);
         try {
           console.log("topicToUpdate: ", topicToUpdate);
-          console.log("changedData: ", changedData);
+          console.log("payload: ", payload);
           const existingLinks = topic.links;
-          const updatedLinks = { links: existingLinks.concat(changedData) };
+          const updatedLinks = { links: existingLinks.concat(payload) };
 
           const response = await editTopic(topicToUpdate, updatedLinks);
           if (response && response.status >= 400) {
@@ -202,7 +174,7 @@ function App() {
               status: response.status,
               statusText: response.statusText,
               operation: "addLink",
-              on: "Link",
+              on: "link",
             });
             setIsLoading(false);
             return response;
@@ -221,7 +193,7 @@ function App() {
         try {
           const existingLinks = topic.links;
           const updatedLinks = {
-            links: existingLinks.filter((link) => link._id !== changedData._id),
+            links: existingLinks.filter((link) => link._id !== payload._id),
           };
 
           const response = await editTopic(topicToUpdate, updatedLinks);
@@ -231,7 +203,7 @@ function App() {
               status: response.status,
               statusText: response.statusText,
               operation: "deleteLink",
-              on: "Link",
+              on: "link",
             });
             setIsLoading(false);
             return response;
@@ -246,22 +218,22 @@ function App() {
         break;
       case "editTopic":
         // this case takes the id of the topic
-        setIsLoading(true);
+        //setIsLoading(true);
         try {
           const response = await editTopic(topic, payload);
           // error handling
           if (response && response.status >= 400) {
-            console.log("error status not 200");
+            console.log("error status not 200 ", response);
             setError({
               status: response.status,
               statusText: response.statusText,
               operation: "editTopic",
-              on: "Topic",
+              on: "topic",
             });
             setIsLoading(false);
             return response;
-          }
-          if (response && response.status === 200) {
+          } else if (response && response.status === 200) {
+            console.log("can edit response: ", response);
             setIsLoading(false);
             triggerUpdate();
             history.push("/" + response.data.slug);
@@ -304,6 +276,7 @@ function App() {
           triggerUpdate={triggerUpdate}
           editDisplayedTopic={editDisplayedTopic}
           error={error}
+          flushAppError={flushAppError}
         />
       </div>
     </>
@@ -312,3 +285,31 @@ function App() {
 
 export default App;
 export { mockDB };
+
+// update the data from current topic when it's edited
+// useEffect(() => {
+//   const updateData = async () => {
+//     setIsLoading(true);
+//     try {
+//       console.log("topicToUpdate: ", topicToUpdate);
+//       console.log("changedData: ", changedData);
+
+//       const response = await editTopic(topicToUpdate, changedData);
+//       if (response && response.status >= 400) {
+//         console.log("error response :", response);
+
+//         setError({
+//           status: response.status,
+//           statusText: response.statusText,
+//         });
+//         return response;
+//       }
+//       setIsLoading(false);
+//     } catch (err) {
+//       console.log("error updating data :", err);
+//       setError(err);
+//       setIsLoading(false);
+//     }
+//   };
+//   updateData();
+// }, [topicToUpdate, changedData]);

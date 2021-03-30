@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route, useHistory } from "react-router-dom";
+import { Switch, Route, useHistory, Redirect } from "react-router-dom";
 import Main from "../components/main/Main";
 import Login from "../components/user/Login";
 import Register from "../components/user/Register";
@@ -15,20 +15,20 @@ export default function Routes(appProps) {
       <Route
         exact
         path="/login"
-        render={(routeProps) =>
-          appProps.user ? (
-            history.push("/")
+        render={(routeProps) => {
+          return appProps.user ? (
+            <Redirect to="/" />
           ) : (
             <Login {...routeProps} {...appProps} />
-          )
-        }
+          );
+        }}
       ></Route>
       <Route
         exact
         path="/register"
         render={(routeProps) =>
           appProps.user ? (
-            history.push("/")
+            <Redirect to="/" />
           ) : (
             <Register {...routeProps} {...appProps} />
           )

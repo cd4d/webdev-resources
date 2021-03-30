@@ -37,23 +37,21 @@ router.post(
   userPostValidationRules(),
   validate,
   async (req, res, next) => {
+    // password confirm
+    if (req.body.password !== req.body.confirmPassword) {
+      const error = new Error("Passwords don't match.");
+      error.statusCode = 400;
+      throw error;
+    }
     try {
-      // password confirm
-      if (req.body.password !== req.body.confirmPassword) {
-        const error = new Error("Passwords don't match.");
-        error.statusCode = 400;
-        throw error;
-      }
       await User.register(
         { username: req.body.username, email: req.body.email },
         req.body.password,
         (err, user) => {
           if (err) {
-            // const error = new Error("Error at registration.");
-            // error.statusCode = 400;
-            // throw error;
-            console.log(err);
-            res.status(400).send(err);
+            console.log("user-routes error: ", err);
+            if (!err.statusCode) err.statusCode = 409;
+            return next(err);
           } else {
             passport.authenticate("local")(req, res, () => {
               res.status(200).send("User successfully registered.");
@@ -82,7 +80,7 @@ router.post("/login", (req, res, next) => {
         { username: req.body.username },
         { lastLogin: dayjs().format() },
         (err) => {
-          if (err) res.status(500).send("Cannot login");
+          if (err) return next(err);
 
           res.status(200).send({
             loggedUser: req.body.username,
@@ -108,6 +106,7 @@ router.patch(
   validate,
   findUser,
   async (req, res, next) => {
+    console.log("request: ", req.body);
     // grab the list of updated fields, filtering for user
     let updatedData = {};
     for (let [key, value] of Object.entries(req.body)) {
@@ -161,7 +160,7 @@ router.post("/reset-password", async (req, res, next) => {
 
     // hashing user data with secret salt
     const userHash = generateResetToken(user, today);
-    // TODO: send link by email
+    // TO IMPLEMENT MAYBE: send link by email
     const resetLink = new URL(
       req.protocol +
         "://" +

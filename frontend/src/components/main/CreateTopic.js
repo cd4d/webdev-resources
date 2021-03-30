@@ -7,8 +7,8 @@ export default function CreateTopic(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [newTopic, setNewTopic] = useState();
   function openModal() {
-    props.flushError();
     setIsOpen(true);
+    props.flushAppError();
   }
   function closeModal() {
     setIsOpen(false);
@@ -22,8 +22,8 @@ export default function CreateTopic(props) {
     }
     console.log("topic to add: ", newTopic);
 
-    const response = await props.createNewTopic(newTopic);
-    props.triggerUpdate();
+    const response = props.createNewTopic(newTopic).then(closeModal());
+    //props.triggerUpdate();
   }
   function handleChange(e) {
     const { name, value } = e.target;
@@ -43,22 +43,38 @@ export default function CreateTopic(props) {
     <>
       <h2>Create topic</h2>
       <form onSubmit={handleSubmit}>
-        <label className="required">
-          Title
-          <input name="title" type="text" onChange={handleChange} required />
-        </label>
-        <br />
-        <label className="required">
-          Description
-          <input
-            name="description"
-            type="text"
-            onChange={handleChange}
-            required
-          />
-        </label>
+        <ul>
+          <li>
+            <label htmlFor="title" className="label-form required">
+              Title
+            </label>
+            <input
+              className="input-form"
+              name="title"
+              id="title"
+              type="text"
+              onChange={handleChange}
+              required
+            />
+          </li>
+          <li>
+            <label
+              htmlFor="create-topic-description"
+              className="label-form required"
+            >
+              Description{" "}
+            </label>{" "}
+            <input
+              className="input-form"
+              name="description"
+              id="create-topic-description"
+              type="text"
+              onChange={handleChange}
+              required
+            />
+          </li>
+        </ul>
 
-        <br />
         <button>Create topic</button>
       </form>
     </>

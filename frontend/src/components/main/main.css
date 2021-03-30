@@ -82,3 +82,21 @@
 .topic-description {
   padding: 0 0 0.5rem 0;
 }
+
+/* Forms */
+
+form li {
+  margin-top: 0.7rem;
+}
+.label-form {
+  /* Uniform size & alignment */
+  display: inline-block;
+  width: 100px;
+  text-align: left;
+  margin-right: 0.4rem;
+}
+.input-form {
+  /* Uniform text field size */
+  width: 300px;
+  box-sizing: border-box;
+}

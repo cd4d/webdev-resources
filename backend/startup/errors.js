@@ -8,6 +8,6 @@ module.exports = function (app) {
     logger.error(
       `${status} - ${message} - ${req.originalUrl} - ${req.method} - ${req.ip}`
     );
-    res.status(status).send({ status: status, message: message });
+    res.status(status).send({ ...err, status: status, message: message });
   });
 };

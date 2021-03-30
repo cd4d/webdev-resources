@@ -20,6 +20,8 @@ export default function DeleteTopic(props) {
   );
   function openModal() {
     setIsOpen(true);
+    props.flushAppError()
+
   }
   function closeModal() {
     setIsOpen(false);
@@ -27,8 +29,7 @@ export default function DeleteTopic(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    props.deleteCurrentTopic(topicToDelete._id);
-    props.triggerUpdate();
+    props.deleteCurrentTopic(topicToDelete._id).then(props.triggerUpdate());
   }
 
   return (
