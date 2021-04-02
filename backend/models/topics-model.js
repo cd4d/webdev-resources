@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const slugify = require("../utils/slugify");
 const { linkSchema } = require("./links-model");
-const handleDuplicate = require("../middlewares/duplicate-error-middleware")
+const handleDuplicate = require("../middlewares/duplicate-error-middleware");
 const regex = /^[a-zA-Z0-9À-Ÿ-_]+( [a-zA-Z0-9À-Ÿ-_]+)*$/;
 
 // disable in prod
@@ -29,7 +29,10 @@ const topicSchema = new mongoose.Schema({
     trim: true,
     match: regex,
   }, // embedding the links schema defined in the links-model file
-  links: [linkSchema],
+  links: {
+    type: [linkSchema],
+    validate: [(v) => v.length <= 30, "Max. 30 links per topic"],
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     default: null,
@@ -88,10 +91,10 @@ topicSchema.index(
 );
 
 topicSchema.index(
-  { user: 1, "links.description": 1 },
+  { user: 1, "links.summary": 1 },
   {
     unique: true,
-    partialFilterExpression: { "links.description": { $type: "string" } },
+    partialFilterExpression: { "links.summary": { $type: "string" } },
   }
 );
 topicSchema.index(
@@ -104,8 +107,6 @@ topicSchema.index(
 
 // Handling duplicate key error
 // https://thecodebarbarian.com/mongoose-error-handling.html
-
-
 
 // *** associated middlewares *** //
 // Slugify moved to frontend. add depth level (main topic or subtopic)

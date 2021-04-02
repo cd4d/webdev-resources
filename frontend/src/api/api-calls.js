@@ -58,20 +58,18 @@ export async function logoutUser() {
   }
 }
 
-
 export async function registerUser(credentials) {
   try {
     const response = await axiosConnection.post(
       "/api/users/register",
       credentials
     );
-    console.log("register Response:", response);
+    console.log("registered Response:", response);
     return response;
   } catch (error) {
     return handleError(error);
   }
 }
-
 
 export async function resetPassword(email) {
   try {
@@ -129,6 +127,36 @@ export async function editTopic(topicId, changedData) {
         changedData
       );
       console.log("Edit Topic Response:", response);
+      return { data: response.data, status: response.status };
+    }
+  } catch (error) {
+    return handleError(error);
+  }
+}
+export async function createLink(newLink) {
+  //console.log(linkId);
+
+  try {
+    if (newLink) {
+      const response = await axiosConnection.post("/api/links/", newLink);
+      console.log("Create Link Response:", response);
+      return { data: response.data, status: response.status };
+    }
+  } catch (error) {
+    return handleError(error);
+  }
+}
+// modify link
+export async function editLink(linkId, changedData) {
+  //console.log(linkId);
+
+  try {
+    if (linkId) {
+      const response = await axiosConnection.patch(
+        "/api/links/" + linkId,
+        changedData
+      );
+      console.log("Edit Link Response:", response);
       return { data: response.data, status: response.status };
     }
   } catch (error) {

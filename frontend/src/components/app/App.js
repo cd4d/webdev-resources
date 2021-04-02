@@ -14,6 +14,8 @@ import {
   createTopic,
   deleteTopic,
   editTopic,
+  createLink,
+  editLink,
   resetPassword,
 } from "../../api/api-calls";
 
@@ -159,34 +161,36 @@ function App() {
     console.log("editing current topic, operation:", operation);
     let topicToUpdate = topic._id;
     switch (operation) {
-      case "addLink":
-        setIsLoading(true);
-        try {
-          console.log("topicToUpdate: ", topicToUpdate);
-          console.log("payload: ", payload);
-          const existingLinks = topic.links;
-          const updatedLinks = { links: existingLinks.concat(payload) };
+      // case "addLink":
+      //   setIsLoading(true);
+      //   try {
+      //     console.log("topicToUpdate: ", topicToUpdate);
+      //     console.log("payload: ", payload);
+      //     const existingLinks = topic.links;
+      //     const updatedLinks = { links: existingLinks.concat(payload) };
 
-          const response = await editTopic(topicToUpdate, updatedLinks);
-          if (response && response.status >= 400) {
-            console.log("error status not 200");
-            setError({
-              status: response.status,
-              statusText: response.statusText,
-              operation: "addLink",
-              on: "link",
-            });
-            setIsLoading(false);
-            return response;
-          }
-        } catch (err) {
-          console.log("error updating data :", err);
-          setError(err);
-        }
-        triggerUpdate();
-        setIsLoading(false);
+      //     const response = await editTopic(topicToUpdate, updatedLinks);
+      //     if (response && response.status >= 400) {
+      //       console.log("error status not 200: ", response);
+      //       let newError = {
+      //         status: response.status,
+      //         statusText: response.statusText,
+      //         operation: "addLink",
+      //         on: "link",
+      //       }; // error if too many links
+      //       if (response.data) newError.message = response.data.message;
+      //       setError(newError);
+      //       setIsLoading(false);
+      //       return response;
+      //     }
+      //   } catch (err) {
+      //     console.log("error updating data :", err);
+      //     setError(err);
+      //   }
+      //   triggerUpdate();
+      //   setIsLoading(false);
 
-        break;
+      //   break;
       case "deleteLink":
         setIsLoading(true);
 
@@ -249,6 +253,51 @@ function App() {
         break;
     }
   }
+  // create link
+  async function createNewLink(linkId) {
+    try {
+      const response = await createLink(linkId);
+      if (response && response.status >= 400) {
+        console.log("error status not 200: ", response);
+        let newError = {
+          status: response.status,
+          statusText: response.statusText,
+          operation: "editLink",
+          on: "link",
+        };
+        setError(newError);
+        setIsLoading(false);
+        return response;
+      }
+    } catch (err) {
+      console.log("error updating data :", err);
+      setError(err);
+    }
+    triggerUpdate();
+  }
+  // edit link
+  async function editCurrentLink(linkId) {
+    try {
+      const response = await editLink(linkId);
+      if (response && response.status >= 400) {
+        console.log("error status not 200: ", response);
+        let newError = {
+          status: response.status,
+          statusText: response.statusText,
+          operation: "editLink",
+          on: "link",
+        };
+        setError(newError);
+        setIsLoading(false);
+        return response;
+      }
+    } catch (err) {
+      console.log("error updating data :", err);
+      setError(err);
+    }
+    triggerUpdate();
+  }
+
   return (
     <>
       <Header
@@ -257,10 +306,18 @@ function App() {
         handleLogin={(userCredentials) => handleLogin(userCredentials)}
         handleLogout={handleLogout}
         user={user ? user : null}
+        flushAppError={flushAppError}
       />
       <div className="lower">
         {/* only show sidebar if a user is logged in */}
-        {<Sidebar topics={data} user={user} isLoading={isLoading} />}
+        {
+          <Sidebar
+            topics={data}
+            user={user}
+            isLoading={isLoading}
+            flushAppError={flushAppError}
+          />
+        }
 
         <Routes
           topics={data}
@@ -275,6 +332,9 @@ function App() {
           deleteCurrentTopic={deleteCurrentTopic}
           triggerUpdate={triggerUpdate}
           editDisplayedTopic={editDisplayedTopic}
+          createLink={createLink}
+          editCurrentLink={editCurrentLink}
+          editLink={editLink}
           error={error}
           flushAppError={flushAppError}
         />

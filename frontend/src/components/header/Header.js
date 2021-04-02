@@ -15,7 +15,7 @@ export default function Header(props) {
         ""
       )}
 
-      <Link to="/" key={uuidv4()}>
+      <Link to="/" key={uuidv4()} onClick={props.flushAppError}>
         <img className="logo" src={logo} alt="logo" />
       </Link>
       <div className="user-container">
@@ -25,6 +25,7 @@ export default function Header(props) {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
+                props.flushAppError();
                 props.handleLogout();
               }}
             >
@@ -36,8 +37,13 @@ export default function Header(props) {
             <p>
               <em>No user logged in.</em>
             </p>
-            <Link to="/login">Login</Link> /{" "}
-            <Link to="/register">Register</Link>
+            <Link to="/login" onClick={props.flushAppError}>
+              Login
+            </Link>{" "}
+            /{" "}
+            <Link to="/register" onClick={props.flushAppError}>
+              Register
+            </Link>
           </>
         )}
         {/* <form

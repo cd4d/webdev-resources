@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
 
 import "./main.css";
@@ -11,51 +10,70 @@ import CreateTopic from "./CreateTopic";
 import DeleteTopic from "./DeleteTopic";
 import EditTopic from "./EditTopic";
 import AddLinks from "./AddLinks";
-import DeleteLink from "./DeleteLink";
+import DisplayLinks from "./DisplayLinks";
 
-export let defaultData = {
-  // default data to be displayed
-  slug: "web-resources",
-  title: "Web resources",
-  links: [
-    {
-      description:
-        "Web Development - Online Courses, Classes, Training, Tutorials on Lynda",
-      url:
-        "https://www.lynda.com/Web-Development-training-tutorials/1471-0.html",
-    },
-    {
-      description: "webdev: reddit for web developers",
-      url: "https://www.reddit.com/r/webdev/",
-    },
-    {
-      description:
-        "How I became a web developer in under 7 months – and how you can too",
-      url:
-        "https://www.freecodecamp.org/news/how-i-became-a-web-developer-in-under-7-months-and-how-you-can-too/",
-    },
-    {
-      description: "API Marketplace - Free Public & Open Rest APIs | RapidAPI",
-      url: "https://rapidapi.com/",
-    },
+// export let defaultData = {
+//   // default data to be displayed
+//   slug: "web-resources",
+//   title: "Web resources",
+//   links: [
+//     {
+//       description:
+//         "Web Development - Online Courses, Classes, Training, Tutorials on Lynda",
+//       url:
+//         "https://www.lynda.com/Web-Development-training-tutorials/1471-0.html",
+//     },
+//     {
+//       description: "webdev: reddit for web developers",
+//       url: "https://www.reddit.com/r/webdev/",
+//     },
+//     {
+//       description:
+//         "How I became a web developer in under 7 months – and how you can too",
+//       url:
+//         "https://www.freecodecamp.org/news/how-i-became-a-web-developer-in-under-7-months-and-how-you-can-too/",
+//     },
+//     {
+//       description: "API Marketplace - Free Public & Open Rest APIs | RapidAPI",
+//       url: "https://rapidapi.com/",
+//     },
 
-    {
-      description:
-        "cdnjs - The #1 free and open source CDN built to make life easier for developers",
-      url: "https://cdnjs.com/",
-    },
-    {
-      description: "Frontend Mentor | Challenges",
-      url: "https://www.frontendmentor.io/challenges",
-    },
-  ],
-};
+//     {
+//       description:
+//         "cdnjs - The #1 free and open source CDN built to make life easier for developers",
+//       url: "https://cdnjs.com/",
+//     },
+//     {
+//       description: "Frontend Mentor | Challenges",
+//       url: "https://www.frontendmentor.io/challenges",
+//     },
+//   ],
+// };
 
 export default function Main(props) {
   // default blank data
   let displayedTopic = { title: "", slug: "", links: [], _id: "" };
-
+  const [displayedError, setDisplayedError] = useState(null);
   const topics = props.topics;
+
+  // display error or flush it
+  useEffect(() => {
+    const displayLinkError = function () {
+      if (props.error && props.error.on === "link") {
+        if (props.error.status === 409)
+          setDisplayedError(
+            <p className="error-msg">Link already exists in another topic.</p>
+          );
+        else if (props.error.message) {
+          setDisplayedError(
+            <p className="error-msg">{`Error adding link: ${props.error.message}`}</p>
+          );
+        }
+      }
+    };
+    if (!props.error) setDisplayedError(null);
+    displayLinkError();
+  }, [props.error]);
 
   // message to display if no user logged in, passed to components
   const noUserLoggedIn = (
@@ -87,22 +105,6 @@ export default function Main(props) {
     }
   } else if (topics && topics.length > 0) {
     displayedTopic = topics[0];
-  }
-
-  function displayLinks(currentTopicLinks) {
-    return currentTopicLinks.map((link) => (
-      <li key={uuidv4()} id={link._id} className="link-line">
-        <a href={link.url}>{link.description}</a>{" "}
-        <DeleteLink
-          editDisplayedTopic={props.editDisplayedTopic}
-          displayedTopic={displayedTopic}
-          currentLink={link}
-          triggerUpdate={props.triggerUpdate}
-          noUserLoggedIn={noUserLoggedIn}
-          user={props.user}
-        />
-      </li>
-    ));
   }
 
   // render logged in user content
@@ -166,6 +168,7 @@ export default function Main(props) {
         {topics.length !== 0 && (
           <AddLinks
             editDisplayedTopic={props.editDisplayedTopic}
+            createLink={props.createLink}
             displayedTopic={displayedTopic}
             triggerUpdate={props.triggerUpdate}
             error={props.error}
@@ -176,11 +179,21 @@ export default function Main(props) {
         )}
 
         {/* All the links associated with the topic, each with delete logic */}
-        {props.error && props.error.on === "link" && (
-          <p className="error-msg">Link already exists in another topic.</p>
-        )}
+        {displayedError}
+
         {displayedTopic && displayedTopic.links.length !== 0 ? (
-          <ul className="links-list">{displayLinks(displayedTopic.links)}</ul>
+          <ul className="links-list">
+            {
+              <DisplayLinks
+                editDisplayedTopic={props.editDisplayedTopic}
+                editLink={props.editLink}
+                displayedTopic={displayedTopic}
+                triggerUpdate={props.triggerUpdate}
+                noUserLoggedIn={noUserLoggedIn}
+                user={props.user}
+              />
+            }
+          </ul>
         ) : (
           <p>No links provided.</p>
         )}
@@ -189,28 +202,14 @@ export default function Main(props) {
   }
   return (
     <div className="main content column">
-      {/* {props.error && props.error.on === "register" && (
+      {props.error && props.error.on === "register" && (
         <p className="error-msg">Registration failed.</p>
-      )} */}
-      {/* {props.error && props.error.on === "login" && (
+      )}{" "}
+      {props.error && props.error.on === "login" && (
         <p className="error-msg">Login failed.</p>
-      )} */}
+      )}
       {/* {props.user ? renderUserLoggedIn() : noUserLoggedIn} */}
       {renderUserLoggedIn()}
     </div>
   );
 }
-
-// OLD
-// let displayedData = "";
-
-// // check if data is array(many topics) or not (one topic)
-// Array.isArray(topics)
-//   ? (displayedData = topics[0])
-//   : (displayedData = currentTopic);
-// query mockDB
-// Grab requested topic at its nested level. see routes file
-//let queryDBResult = getTopicData(props.mockDB, topic);
-
-// update displayedData if result
-//if (queryDBResult !== undefined) displayedData = queryDBResult;

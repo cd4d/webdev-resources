@@ -9,14 +9,11 @@
 
 .links-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  width: 40%;
+  padding-left: 0;
 }
-.link-line {
-  display: flex;
-  justify-content: space-between;
-  flex-basis: 100%;
-  margin-top: 0.5rem;
-}
+
 /* Buttons */
 
 .btn {
@@ -49,7 +46,9 @@
   background-color: tomato;
   color: white;
 }
-
+.btn-add-link {
+  padding: 0;
+}
 .btn-delete-link,
 .btn-confirm-cancel {
   background-color: transparent;
@@ -67,6 +66,41 @@
 
 .cancel-delete-link {
   color: tomato;
+}
+
+.pagination-buttons-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.btn-pagination {
+  padding: 0;
+}
+
+/* Link preview */
+.link-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+.img-link-preview {
+  max-width: 100%;
+}
+.link-preview-left {
+  flex-basis: 60%;
+  flex-direction: column;
+  display: flex;
+  justify-content: space-between;
+}
+.link-preview-url {
+}
+.link-preview-buttons {
+  padding-bottom: 0.5rem;
+}
+.link-preview-right {
+  flex-basis: 35%;
 }
 
 /* Blank space to fill the space taken by confirm button for deleting links */

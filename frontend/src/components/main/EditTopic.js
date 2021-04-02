@@ -22,6 +22,8 @@ export default function EditTopic(props) {
               className="input-form"
               name="title"
               type="text"
+              maxLength="40"
+              placeholder="40 characters max."
               onChange={handleChange}
             />
           </li>
@@ -33,6 +35,8 @@ export default function EditTopic(props) {
               id="edit-topic-description"
               className="input-form"
               name="description"
+              maxLength="50"
+              placeholder="50 characters max."
               type="text"
               onChange={handleChange}
             />
@@ -92,7 +96,8 @@ export default function EditTopic(props) {
           close
         </button>
 
-        {props.user ? userLoggedIn : props.noUserLoggedIn}
+        {/* {props.user ? userLoggedIn : props.noUserLoggedIn} */}
+        {userLoggedIn}
       </Modal>
     </>
   );

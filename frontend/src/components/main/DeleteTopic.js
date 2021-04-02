@@ -46,7 +46,8 @@ export default function DeleteTopic(props) {
         <button onClick={closeModal} id="button-close-modal">
           close
         </button>
-        {props.user ? userLoggedIn : props.noUserLoggedIn}
+         {/* {props.user ? userLoggedIn : props.noUserLoggedIn} */}
+         {userLoggedIn}
       </Modal>
     </>
   );

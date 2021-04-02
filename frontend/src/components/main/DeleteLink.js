@@ -31,17 +31,19 @@ export default function DeleteLink(props) {
   return (
     <>
       {!deleteLinkClicked ? (
-        <div>
+        <>
           <span className="blank-space"></span>
           <button
             className="btn-delete-link"
-            onClick={props.user ? changeDeleteLinkClicked : openModal}
+            onClick={changeDeleteLinkClicked}
+
+            // onClick={props.user ? changeDeleteLinkClicked : openModal}
           >
             <span className="gg-trash" title="Delete link"></span>
           </button>
-        </div>
+        </>
       ) : (
-        <div className="confirm-cancel-container">
+        <span className="confirm-cancel-container">
           <button
             onClick={deleteLink}
             className="btn-confirm-cancel confirm-delete-link"
@@ -54,7 +56,7 @@ export default function DeleteLink(props) {
           >
             <span className="gg-close-o" title="Cancel"></span>
           </button>
-        </div>
+        </span>
       )}{" "}
       <Modal
         isOpen={modalIsOpen}
@@ -65,7 +67,7 @@ export default function DeleteLink(props) {
         <button onClick={closeModal} id="button-close-modal">
           close
         </button>
-        {props.noUserLoggedIn}
+        {/* {props.noUserLoggedIn} */}
       </Modal>
     </>
   );

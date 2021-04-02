@@ -9,6 +9,8 @@ export default function AddLinks(props) {
   const existingLinks = props.displayedTopic.links;
   const [newLink, setNewLink] = useState();
   const [errorMsg, setErrorMsg] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const userLoggedIn = (
     <>
       <h2>Add link</h2>
@@ -31,14 +33,16 @@ export default function AddLinks(props) {
           </li>
           <li>
             {" "}
-            <label htmlFor="add-link-description" className="label-form  required">
-              Description
+            <label htmlFor="add-link-summary" className="label-form  required">
+              Summary
             </label>
             <input
               className="input-form"
-              id="add-link-description"
-              name="description"
+              id="add-link-summary"
+              name="summary"
               type="text"
+              maxLength="50"
+              placeholder="50 characters max."
               onChange={handleChange}
               required
             />
@@ -47,7 +51,7 @@ export default function AddLinks(props) {
 
         <br />
         {errorMsg && <p className="error-msg">{errorMsg}</p>}
-
+        {isLoading && <p>Loading...</p>}
         <button>Submit link</button>
       </form>
     </>
@@ -62,31 +66,34 @@ export default function AddLinks(props) {
   }
 
   async function handleSubmit(e) {
+    setIsLoading(true);
     e.preventDefault();
     // don't send a request if fields are blank
     if (!newLink) {
       return closeModal();
     }
     // append links at end of existing links array
-    console.log("existingLinks: ", existingLinks);
-    console.log("newLink: ", newLink);
+    // console.log("existingLinks: ", existingLinks);
+    // console.log("newLink: ", newLink);
     // check if link already exists
     if (
       existingLinks.some(
-        (link) =>
-          link.description === newLink.description || link.url === newLink.url
+        (link) => link.summary === newLink.summary || link.url === newLink.url
       )
     ) {
-      console.log("existing url in same topic");
-      setErrorMsg("URL or description already in this topic.");
+      //console.log("existing url in same topic");
+      setErrorMsg("URL or summary already in this topic.");
       return null;
-    } else console.log("displayed topic: ", props.displayedTopic);
+    }
+    // else console.log("displayed topic: ", props.displayedTopic);
     const response = await props
-      .editDisplayedTopic(props.displayedTopic, newLink, "addLink")
+      .createLink({ topic: props.displayedTopic, ...newLink })
       .catch((err) => {
         console.log("error: ", err);
         return err;
       });
+    props.triggerUpdate();
+    setIsLoading(false);
   }
 
   function handleChange(e) {
@@ -96,16 +103,18 @@ export default function AddLinks(props) {
         return { ...prevState, url: value };
       });
     }
-    if (name === "description") {
+    if (name === "summary") {
       setNewLink((prevState) => {
-        return { ...prevState, description: value };
+        return { ...prevState, summary: value };
       });
     }
   }
 
   return (
     <>
-      <button onClick={openModal}>Add link</button>
+      <button className="btn-add-link" onClick={openModal}>
+        Add link
+      </button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -116,7 +125,8 @@ export default function AddLinks(props) {
           close
         </button>
 
-        {props.user ? userLoggedIn : props.noUserLoggedIn}
+        {/* {props.user ? userLoggedIn : props.noUserLoggedIn} */}
+        {userLoggedIn}
       </Modal>
     </>
   );

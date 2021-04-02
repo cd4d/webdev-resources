@@ -54,6 +54,8 @@ export default function CreateTopic(props) {
               id="title"
               type="text"
               onChange={handleChange}
+              maxLength="40"
+              placeholder="40 characters max."
               required
             />
           </li>
@@ -69,6 +71,8 @@ export default function CreateTopic(props) {
               name="description"
               id="create-topic-description"
               type="text"
+              maxLength="50"
+              placeholder="50 characters max."
               onChange={handleChange}
               required
             />
@@ -94,7 +98,8 @@ export default function CreateTopic(props) {
         <button onClick={closeModal} id="button-close-modal">
           close
         </button>
-        {props.user ? userLoggedIn : props.noUserLoggedIn}
+        {/* {props.user ? userLoggedIn : props.noUserLoggedIn} */}
+        {userLoggedIn}
       </Modal>
     </>
   );

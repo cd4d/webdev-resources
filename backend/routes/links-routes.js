@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const { Topic } = require("../models/topics-model");
-const { Link } = require("../models/links-model");
 const {
   linkPatchValidationRules,
   linkPostValidationRules,
@@ -14,7 +13,8 @@ const {
   checkAdmin,
   getUserTopic,
 } = require("../middlewares/user-middleware");
-
+const { getLinkPreview } = require("../utils/get-link-preview");
+const linkPreviewGenerator = require("link-preview-generator");
 router.get("/", async (req, res, next) => {
   try {
     const allLinks = await Topic.find({ links: { $exists: true, $ne: [] } });
@@ -60,7 +60,7 @@ router.get("/link/:linkId", findUser, async (req, res, next) => {
         (el) => el._id.toString() === req.params.linkId
       );
       if (!link) throw new Error("Link not found");
-      
+
       res.send(link);
     } else {
       const error = new Error("Link requested not found");
@@ -75,22 +75,30 @@ router.get("/link/:linkId", findUser, async (req, res, next) => {
 
 router.post(
   "/",
-  linkPostValidationRules(),
-  validate,
+
   findUser,
   async (req, res, next) => {
     if (req.body.topic) {
       const topic = req.body.topic;
+      let linkProvided = req.body;
+      //console.log("link req.body: ", req.body);
+      // To disable?: too slow. Get open graph preview
+      const openGraphData = await getLinkPreview(
+        req.body.url
+      ).catch((err) => {});
+      if (openGraphData) {
+        linkProvided = { ...req.body, ...openGraphData };
+      }
+
       try {
         const newLink = await Topic.findOneAndUpdate(
           { _id: topic, user: req.body.user },
-          { $addToSet: { links: req.body } },
+          { $addToSet: { links: linkProvided } },
           { new: true }
         );
         if (!newLink) throw new Error("Link not found");
         res.send(newLink);
       } catch (err) {
-        //res.status(400).send(err);
         console.log("error post link");
         if (!err.statusCode) err.statusCode = 404;
         next(err);
@@ -101,7 +109,7 @@ router.post(
 
 router.patch(
   "/:linkId",
-  checkAllowedUpdates(["topic", "url", "description"]),
+  checkAllowedUpdates(["topic", "url", "summary"]),
   linkPatchValidationRules(),
   validate,
   findUser,
@@ -119,8 +127,18 @@ router.patch(
     }
 
     // append 'links.$.' in front of updated data i.e links.$.title : req.body.title
+    let newData = req.body;
     let updatedData = {};
-    for (let [key, value] of Object.entries(req.body)) {
+    let openGraphData = null;
+    // update open graph data if url updated
+    if (req.body.url) {
+      const response = await getLinkPreview(req.body.url).catch((err) => {});
+      if (response) {
+        newData = { ...req.body, ...response };
+      }
+    }
+    console.log("edit link openGraphData: ", openGraphData);
+    for (let [key, value] of Object.entries(newData)) {
       updatedData["links.$." + key] = value;
     } // adding the _id field
     updatedData["links.$._id"] = req.params.linkId;
@@ -133,7 +151,7 @@ router.patch(
           updatedData,
           { new: true }
         );
-      if (!updatedLink) throw new Error("Link was not updated");
+        if (!updatedLink) throw new Error("Link was not updated");
 
         res.send(updatedLink);
       } catch (err) {

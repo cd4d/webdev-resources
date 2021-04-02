@@ -50,8 +50,28 @@ body {
 }
 
 @media (max-width: 767px) {
+  .topic-title {
+    font-size: medium;
+  }
+  .topic-description {
+    font-size: small;
+  }
+  /* width of links container */
+  .links-list {
+    margin-top: 0;
+    width: 85%;
+    font-size: smaller;
+  }
+  /* shorten top margin of  link boxes */
+  .link-container {
+    margin-top: 0.9rem;
+  }
   #mobile-menu-checkbox {
     display: none;
+  }
+  /* reduce link-preview image size */
+  .link-preview-right {
+    flex-basis: 30%;
   }
   /* toggle mobile menu */
   label[for="mobile-menu-checkbox"] {
