@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { Link } from "react-router-dom";
+
 import EditLink from "./EditLink";
 import logo from "../../static/logo-webresources.png";
 
@@ -48,11 +50,13 @@ export default function DisplayLinks(props) {
         </div>
       </div>
       <div className="link-preview-right">
-        <img
-          className="img-link-preview"
-          src={link.openGraphImage ? link.openGraphImage : logo}
-          alt={link.summary}
-        />
+        <a href={link.url}>
+          <img
+            className="img-link-preview"
+            src={link.openGraphImage ? link.openGraphImage : logo}
+            alt={link.summary}
+          />
+        </a>
       </div>
     </li>
   ));

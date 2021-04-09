@@ -46,7 +46,7 @@ export default function Login(props) {
             return setErrorMsg("Password and confirmation do not match.");
           }
           // Register the user
-          const response = await props.handleRegister({
+          const response = await props.registerUser({
             username: inputUsername,
             email: inputEmail,
             password: inputPassword,
@@ -54,7 +54,7 @@ export default function Login(props) {
           }); // see sample-response.js
           // Successfully registered, login the user
           if (response) {
-            console.log("register response: ", response);
+            // console.log("register response: ", response);
             if (response.status === 200 || response.statusText === "OK") {
               return props.handleLogin({
                 username: inputUsername,
@@ -72,23 +72,13 @@ export default function Login(props) {
                 break;
               // email/username already exists
               case 409:
-                const duplicateValues = response.data.on.join(", ");
-                errorType = `These are already registered: ${duplicateValues}.`;
+                errorType = "Username or email already in use.";
                 break;
               default:
                 errorType = "Error at registration.";
                 break;
             }
             return setErrorMsg(errorType);
-            // if (response.status >= 400) {
-            //   // invalid password/username/email
-
-            //   // email/username already exists
-            //   // if (typeof response.data === "object" && response.data !== null) {
-            //   //   errorType = response.data.message;
-            //   // }
-
-            // }
           }
         }}
       >

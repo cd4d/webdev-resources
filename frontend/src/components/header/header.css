@@ -17,6 +17,11 @@
 #mobile-menu-checkbox {
   display: none;
 }
+#site-title,
+.login-register-links {
+  color: blueviolet;
+}
+
 .logo {
   max-width: 100px;
   width: 100%;
@@ -30,5 +35,3 @@
 .username-header {
   font-weight: bold;
 }
-
-

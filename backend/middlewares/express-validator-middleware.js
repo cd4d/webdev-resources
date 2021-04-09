@@ -81,7 +81,13 @@ const linkPatchValidationRules = () => {
 // for Users PATCH request all fields are optional so user is not required to update every field
 const userPatchValidationRules = () => {
   return [
-    body("username").trim().escape().isLength(2, 50).isString().optional(),
+    body("username")
+      .trim()
+      .escape()
+      .isLength(2, 50)
+      .isString()
+      .optional()
+      .isAlpha(),
     body("password").escape().isLength(5, 1024).isString().optional(),
     body("confirmPassword").escape().isLength(5, 1024).isString().optional(),
     body("email").trim().isLength(5, 255).isEmail().optional(),
@@ -90,7 +96,7 @@ const userPatchValidationRules = () => {
 //  rules for Users POST request, all fields are required
 const userPostValidationRules = () => {
   return [
-    body("username").trim().escape().isLength(2, 50).isString(),
+    body("username").trim().escape().isLength(2, 50).isString().isAlpha(),
     body("password").escape().isLength(5, 1024).isString(),
     body("confirmPassword").escape().isLength(5, 1024).isString(),
     body("email").trim().isLength(5, 255).isEmail(),
@@ -98,7 +104,7 @@ const userPostValidationRules = () => {
 };
 const userLoginValidationRules = () => {
   return [
-    body("username").trim().escape().isLength(2, 50).isString(),
+    body("username").trim().escape().isLength(2, 50).isString().isAlpha(),
     body("password").escape().isLength(5, 1024).isString(),
   ];
 };

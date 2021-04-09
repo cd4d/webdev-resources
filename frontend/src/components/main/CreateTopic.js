@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import "./modal.css";
+import { useHistory } from "react-router-dom";
+
 Modal.setAppElement("#root");
 
 export default function CreateTopic(props) {
+  const history = useHistory();
+
   const [modalIsOpen, setIsOpen] = useState(false);
   const [newTopic, setNewTopic] = useState();
   function openModal() {
@@ -22,8 +26,7 @@ export default function CreateTopic(props) {
     }
     console.log("topic to add: ", newTopic);
 
-    const response = props.createNewTopic(newTopic).then(closeModal());
-    //props.triggerUpdate();
+    const response = props.handleCreateTopic(newTopic).then(closeModal());
   }
   function handleChange(e) {
     const { name, value } = e.target;

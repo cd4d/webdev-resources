@@ -21,11 +21,23 @@ export default function DeleteLink(props) {
   function changeDeleteLinkClicked() {
     setDeleteLinkClicked((prevState) => !prevState);
   }
-  function deleteLink() {
+  async function handleDelete() {
     setDeleteLinkClicked(true);
-
-    props.editDisplayedTopic(topicToEdit, props.currentLink, "deleteLink");
-    props.triggerUpdate();
+    if (props.user) {
+      await props.handleDeleteLink({
+        topicId: topicToEdit._id,
+        linkId: props.currentLink._id,
+      });
+      props.triggerUpdate();
+    } else {
+      props.handleDeleteLink(
+        {
+          topic: props.displayedTopic,
+          linkId: props.currentLink._id
+        },
+        "deleteLink"
+      );
+    }
   }
 
   return (
@@ -45,7 +57,7 @@ export default function DeleteLink(props) {
       ) : (
         <span className="confirm-cancel-container">
           <button
-            onClick={deleteLink}
+            onClick={handleDelete}
             className="btn-confirm-cancel confirm-delete-link"
           >
             <span className="gg-check-r" title="Confirm"></span>

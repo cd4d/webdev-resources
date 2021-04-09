@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./login.css";
-import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { loginUser } from "../../api/api-calls";
 
-export default function Login(props) {
-  const history = useHistory();
-
+export default function ResetPassword(props) {
   const [inputEmail, setEmail] = useState("");
   const [generatedLink, setGeneratedLink] = useState(null);
   const [error, setError] = useState(null);
@@ -15,10 +10,9 @@ export default function Login(props) {
   }
   useEffect(() => {
     setError(null);
-  }, [generatedLink]);
-  useEffect(() => {
     setGeneratedLink(null);
-  }, [error]);
+  }, [inputEmail]);
+
   return (
     <div>
       <h3 className="login-title">Reset password</h3>
@@ -26,14 +20,15 @@ export default function Login(props) {
         className="login-form"
         onSubmit={async (e) => {
           e.preventDefault();
-          const response = await props.handleResetPassword({
+          const response = await props.resetPassword({
             email: inputEmail,
           });
+          console.log(response);
           if (response.resetLink) {
             setGeneratedLink(response.resetLink);
           }
-          if (response.status) {
-            setError(response);
+          if (response.status && response.status === 404) {
+            setError(response.statusText);
           }
         }}
       >

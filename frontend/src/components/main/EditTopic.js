@@ -64,7 +64,7 @@ export default function EditTopic(props) {
     console.log("topic to edit: ", editedTopic);
 
     const response = await props
-      .editDisplayedTopic(props.displayedTopic._id, editedTopic, "editTopic")
+      .handleEditTopic(props.displayedTopic._id, editedTopic)
       .then(closeModal());
   }
 

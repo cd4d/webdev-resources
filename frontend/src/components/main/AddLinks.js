@@ -86,13 +86,28 @@ export default function AddLinks(props) {
       return null;
     }
     // else console.log("displayed topic: ", props.displayedTopic);
-    const response = await props
-      .createLink({ topic: props.displayedTopic, ...newLink })
-      .catch((err) => {
-        console.log("error: ", err);
-        return err;
+    if (props.user) {
+      const response = await props.handleCreateLink({
+        topic: props.displayedTopic,
+        ...newLink,
       });
-    props.triggerUpdate();
+      if (response.status !== 200) {
+        props.handleError(response);
+        setIsOpen(false);
+      } else {
+        props.triggerUpdate();
+      }
+    } else {
+      props.handleCreateLink(
+        {
+          topic: props.displayedTopic,
+          ...newLink,
+        },
+        "createLink"
+      );
+      setIsOpen(false);
+    }
+
     setIsLoading(false);
   }
 
@@ -112,7 +127,7 @@ export default function AddLinks(props) {
 
   return (
     <>
-      <button className="btn-add-link" onClick={openModal}>
+      <button className="btn btn-add-link" onClick={openModal}>
         Add link
       </button>
       <Modal

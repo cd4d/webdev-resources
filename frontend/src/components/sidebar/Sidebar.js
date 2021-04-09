@@ -19,21 +19,23 @@ function SidebarItem(props) {
             >
               {topic.title}
             </NavLink>
-            {/* Renders the children elements. */}
-            <ul>
-              {topic.children.map((child) => (
-                <li key={uuidv4()}>
-                  {" "}
-                  <NavLink
-                    to={`/${topic.slug}/${child.slug}`}
-                    className="link-sidebar child-topic"
-                    onClick={props.flushAppError}
-                  >
-                    {child.title}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
+            {/* Renders the children elements, if any. */}
+            {topic.children && (
+              <ul>
+                {topic.children.map((child) => (
+                  <li key={uuidv4()}>
+                    {" "}
+                    <NavLink
+                      to={`/${topic.slug}/${child.slug}`}
+                      className="link-sidebar child-topic"
+                      onClick={props.flushAppError}
+                    >
+                      {child.title}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            )}
           </>
         )}
       </li>

@@ -56,33 +56,30 @@ export default function Main(props) {
   const [displayedError, setDisplayedError] = useState(null);
   const topics = props.topics;
 
-  // display error or flush it
+  // display error on link/topic or flush it
   useEffect(() => {
-    const displayLinkError = function () {
-      if (props.error && props.error.on === "link") {
+    const displayError = function () {
+      if (props.error && props.error.on) {
         if (props.error.status === 409)
           setDisplayedError(
-            <p className="error-msg">Link already exists in another topic.</p>
+            <p className="error-msg">
+              {props.error.on} already exists in database.
+            </p>
           );
         else if (props.error.message) {
           setDisplayedError(
-            <p className="error-msg">{`Error adding link: ${props.error.message}`}</p>
+            <p className="error-msg">{`Error adding ${props.error.on}: ${props.error.message}`}</p>
           );
+        } else {
+          <p className="error-msg">Error adding ${props.error.on}</p>;
         }
       }
     };
     if (!props.error) setDisplayedError(null);
-    displayLinkError();
+    displayError();
   }, [props.error]);
 
-  // message to display if no user logged in, passed to components
-  const noUserLoggedIn = (
-    <>
-      Functionality locked to prevent abuse.{" "}
-      <Link to="/register">Register</Link> (fake email works) to add your own
-      links.
-    </>
-  );
+ 
   // no topic in url (homepage), set displayed topic to first topic
   if (
     Object.keys(props.match.params).length === 0 &&
@@ -98,6 +95,7 @@ export default function Main(props) {
 
   // if a topic is selected, displays its details
   if (topics && displayedTopic) {
+    // console.log(topics);
     for (let topic of topics) {
       if (topic.slug === displayedTopic.slug) {
         displayedTopic = topic;
@@ -113,30 +111,30 @@ export default function Main(props) {
       return <>Loading...</>;
     }
     return (
-      <>
+      <div className="main-container">
         <nav>
           <CreateTopic
-            createNewTopic={props.createNewTopic}
+            handleCreateTopic={props.handleCreateTopic}
             triggerUpdate={props.triggerUpdate}
-            noUserLoggedIn={noUserLoggedIn}
+            // noUserLoggedIn={noUserLoggedIn}
             user={props.user}
             flushAppError={props.flushAppError}
           />
           {topics.length !== 0 && (
             <>
+              <EditTopic
+                handleEditTopic={props.handleEditTopic}
+                displayedTopic={displayedTopic}
+                triggerUpdate={props.triggerUpdate}
+                // noUserLoggedIn={noUserLoggedIn}
+                user={props.user}
+                flushAppError={props.flushAppError}
+              />
               <DeleteTopic
                 deleteCurrentTopic={props.deleteCurrentTopic}
                 displayedTopic={displayedTopic}
                 triggerUpdate={props.triggerUpdate}
-                noUserLoggedIn={noUserLoggedIn}
-                user={props.user}
-                flushAppError={props.flushAppError}
-              />
-              <EditTopic
-                editDisplayedTopic={props.editDisplayedTopic}
-                displayedTopic={displayedTopic}
-                triggerUpdate={props.triggerUpdate}
-                noUserLoggedIn={noUserLoggedIn}
+                // noUserLoggedIn={noUserLoggedIn}
                 user={props.user}
                 flushAppError={props.flushAppError}
               />
@@ -159,22 +157,22 @@ export default function Main(props) {
           </span>
         )}
 
-        {/* Error message  */}
-        {props.error && props.error.on === "topic" && (
+        {/* Error message on topic */}
+        {/* {props.error && props.error.on === "topic" && (
           <p className="error-msg">Topic already exists.</p>
-        )}
+        )} */}
 
         {/* add link */}
         {topics.length !== 0 && (
           <AddLinks
-            editDisplayedTopic={props.editDisplayedTopic}
-            createLink={props.createLink}
+            handleCreateLink={props.handleCreateLink}
             displayedTopic={displayedTopic}
             triggerUpdate={props.triggerUpdate}
             error={props.error}
-            noUserLoggedIn={noUserLoggedIn}
+            // noUserLoggedIn={noUserLoggedIn}
             user={props.user}
             flushAppError={props.flushAppError}
+            handleError={props.handleError}
           />
         )}
 
@@ -185,11 +183,11 @@ export default function Main(props) {
           <ul className="links-list">
             {
               <DisplayLinks
-                editDisplayedTopic={props.editDisplayedTopic}
-                editLink={props.editLink}
+                editCurrentLink={props.editCurrentLink}
+                handleDeleteLink={props.handleDeleteLink}
                 displayedTopic={displayedTopic}
                 triggerUpdate={props.triggerUpdate}
-                noUserLoggedIn={noUserLoggedIn}
+                // noUserLoggedIn={noUserLoggedIn}
                 user={props.user}
               />
             }
@@ -197,19 +195,21 @@ export default function Main(props) {
         ) : (
           <p>No links provided.</p>
         )}
-      </>
+      </div>
     );
   }
   return (
     <div className="main content column">
-      {props.error && props.error.on === "register" && (
-        <p className="error-msg">Registration failed.</p>
-      )}{" "}
-      {props.error && props.error.on === "login" && (
-        <p className="error-msg">Login failed.</p>
-      )}
       {/* {props.user ? renderUserLoggedIn() : noUserLoggedIn} */}
       {renderUserLoggedIn()}
     </div>
   );
 }
+ // Locking guest user, not implemented
+  // const noUserLoggedIn = (
+  //   <>
+  //     Functionality locked to prevent abuse.{" "}
+  //     <Link to="/register">Register</Link> (fake email works) to add your own
+  //     links.
+  //   </>
+  // );

@@ -43,9 +43,21 @@ export default function EditLink(props) {
       return closeModal();
     }
     console.log("topic to edit: ", editedLink);
-
-    const response = await props.editLink(props.currentLink._id, editedLink);
-    props.triggerUpdate();
+    if (props.user) {
+      const response = await props.editCurrentLink(
+        props.currentLink._id,
+        editedLink
+      );
+    } else {
+      props.editCurrentLink(
+        {
+          topic: props.displayedTopic,
+          linkId: props.currentLink._id,
+          newData: editedLink,
+        },
+        "editLink"
+      );
+    }
     setIsLoading(false);
   }
 
@@ -99,7 +111,7 @@ export default function EditLink(props) {
           <button>Submit</button>
         </form>{" "}
       </Modal>{" "}
-      <button onClick={openModal}>Edit topic</button>
+      <span className="gg-pen" title="Edit link" onClick={openModal}></span>
     </>
   );
 }

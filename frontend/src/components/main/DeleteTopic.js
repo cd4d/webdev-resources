@@ -20,8 +20,7 @@ export default function DeleteTopic(props) {
   );
   function openModal() {
     setIsOpen(true);
-    props.flushAppError()
-
+    props.flushAppError();
   }
   function closeModal() {
     setIsOpen(false);
@@ -29,7 +28,10 @@ export default function DeleteTopic(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    props.deleteCurrentTopic(topicToDelete._id).then(props.triggerUpdate());
+    props
+      .deleteCurrentTopic(topicToDelete._id)
+      .then(props.triggerUpdate())
+      .then(closeModal());
   }
 
   return (
@@ -46,8 +48,8 @@ export default function DeleteTopic(props) {
         <button onClick={closeModal} id="button-close-modal">
           close
         </button>
-         {/* {props.user ? userLoggedIn : props.noUserLoggedIn} */}
-         {userLoggedIn}
+        {/* {props.user ? userLoggedIn : props.noUserLoggedIn} */}
+        {userLoggedIn}
       </Modal>
     </>
   );

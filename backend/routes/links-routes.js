@@ -15,6 +15,14 @@ const {
 } = require("../middlewares/user-middleware");
 const { getLinkPreview } = require("../utils/get-link-preview");
 const linkPreviewGenerator = require("link-preview-generator");
+
+// build linkpreview for guest user
+
+router.get("/link-preview", async (req, res, next) => {
+  const response = await getLinkPreview(req.body.url).catch((err) => {});
+  response && res.send(response);
+});
+
 router.get("/", async (req, res, next) => {
   try {
     const allLinks = await Topic.find({ links: { $exists: true, $ne: [] } });
@@ -73,40 +81,53 @@ router.get("/link/:linkId", findUser, async (req, res, next) => {
   }
 });
 
-router.post(
-  "/",
+router.post("/", findUser, async (req, res, next) => {
+  if (req.body.topic) {
+    const topic = req.body.topic;
+    let linkProvided = req.body;
+    //console.log("link req.body: ", req.body);
+    //  Get open graph preview
+    const openGraphData = await getLinkPreview(req.body.url).catch((err) => {});
+    if (openGraphData) {
+      linkProvided = { ...req.body, ...openGraphData };
+    }
 
-  findUser,
-  async (req, res, next) => {
-    if (req.body.topic) {
-      const topic = req.body.topic;
-      let linkProvided = req.body;
-      //console.log("link req.body: ", req.body);
-      // To disable?: too slow. Get open graph preview
-      const openGraphData = await getLinkPreview(
-        req.body.url
-      ).catch((err) => {});
-      if (openGraphData) {
-        linkProvided = { ...req.body, ...openGraphData };
-      }
-
-      try {
-        const newLink = await Topic.findOneAndUpdate(
-          { _id: topic, user: req.body.user },
-          { $addToSet: { links: linkProvided } },
-          { new: true }
-        );
-        if (!newLink) throw new Error("Link not found");
-        res.send(newLink);
-      } catch (err) {
-        console.log("error post link");
-        if (!err.statusCode) err.statusCode = 404;
-        next(err);
-      }
+    try {
+      const newLink = await Topic.findOneAndUpdate(
+        { _id: topic, user: req.body.user },
+        { $addToSet: { links: linkProvided } },
+        { new: true }
+      );
+      if (!newLink) throw new Error("Link not found");
+      res.send(newLink);
+    } catch (err) {
+      console.log("error post link");
+      if (!err.statusCode) err.statusCode = 404;
+      next(err);
     }
   }
-);
+});
 
+// delete link, topic id must be provided in body as well
+router.delete("/", findUser, async (req, res, next) => {
+  try {
+    const deletedLink = await Topic.findOneAndUpdate(
+      {
+        _id: req.body.topicId,
+        "links._id": req.body.linkId,
+        user: req.body.user,
+      },
+      { $pull: { links: { _id: req.body.linkId } } },
+      { new: true }
+    );
+    if (!deletedLink) throw new Error("Link not found");
+    res.send(deletedLink);
+  } catch (err) {
+    console.log("error deleting link");
+    if (!err.statusCode) err.statusCode = 404;
+    next(err);
+  }
+});
 router.patch(
   "/:linkId",
   checkAllowedUpdates(["topic", "url", "summary"]),

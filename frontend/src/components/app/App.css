@@ -50,12 +50,23 @@ body {
 }
 
 @media (max-width: 767px) {
+  .header-container {
+    font-size: small;
+  }
+  #site-title {
+    font-size: 1.2rem;
+  }
   .topic-title {
     font-size: medium;
   }
   .topic-description {
     font-size: small;
   }
+
+  .user-container {
+    margin-right: 10%;
+  }
+
   /* width of links container */
   .links-list {
     margin-top: 0;
@@ -104,11 +115,14 @@ body {
   }
 }
 
-a,
-a:visited {
+.sidebar-items a,
+.sidebar-items a:visited {
   color: DodgerBlue;
 }
-
+.main-container a,
+.main-container a:visited {
+  color: DodgerBlue;
+}
 a {
   text-decoration: none;
 }

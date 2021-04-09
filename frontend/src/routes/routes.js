@@ -49,14 +49,13 @@ export default function Routes(appProps) {
         path="/:mainTopic/:firstSubLvl"
         render={(routeProps) => <Main {...routeProps} {...appProps} />}
       ></Route>
-
       <Route
         exact
         path="/"
         render={(routeProps) => <Main {...routeProps} {...appProps} />}
       ></Route>
-
-      <Route render={() => <PageNotFound />}></Route>
+      {/* TODO 404 error */}
+      <Route path="*" component={PageNotFound}></Route>
     </Switch>
   );
 }

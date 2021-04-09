@@ -3,14 +3,21 @@
   padding: 1rem;
 }
 
+.main-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
 .error-msg {
   color: red;
+}
+.error-msg:first-letter {
+  text-transform: capitalize;
 }
 
 .links-list {
   display: flex;
   flex-direction: column;
-  width: 40%;
   padding-left: 0;
 }
 
@@ -18,11 +25,10 @@
 
 .btn {
   display: inline-block;
-  border-radius: 10px;
-  border: 1px solid grey;
+  border: 1px solid blueviolet;
+  background-color: transparent;
 
-  color: #eeeeee;
-  box-shadow: 2px 2px 5px grey;
+  color: blueviolet;
   text-align: center;
   font-size: 1rem;
   padding: 0.55rem 1rem;
@@ -33,27 +39,40 @@
   cursor: pointer;
   margin: 5px;
 }
+.btn:hover {
+  background-color: blueviolet;
+  color: #eee;
+}
 
 .btn-create-topic {
   /* background-color: lightgreen; */
-  color: DodgerBlue;
 }
 .btn-edit-topic {
   /* background-color: wheat; */
-  color: DodgerBlue;
 }
 .btn-delete-topic {
-  background-color: tomato;
-  color: white;
+  border: 1px solid tomato;
+  color: tomato;
 }
+
+.btn-delete-topic:hover {
+  border: 1px solid #eee;
+  background-color: tomato;
+  color: #eee;
+}
+
 .btn-add-link {
-  padding: 0;
+  /* padding: 0; */
 }
 .btn-delete-link,
 .btn-confirm-cancel {
   background-color: transparent;
   border: none;
   margin-left: 0.5rem;
+}
+
+.confirm-cancel-container {
+  display: flex;
 }
 
 .btn-confirm-cancel {
@@ -79,6 +98,15 @@
   padding: 0;
 }
 
+.edit-link {
+  cursor: pointer;
+  color: blueviolet;
+}
+
+.edit-link:hover {
+  /* border-bottom: 1px dotted; */
+}
+
 /* Link preview */
 .link-container {
   display: flex;
@@ -86,7 +114,8 @@
   margin-top: 2rem;
 }
 .img-link-preview {
-  max-width: 100%;
+  max-width: 100px;
+  max-height: 120px;
 }
 .link-preview-left {
   flex-basis: 60%;
@@ -94,9 +123,12 @@
   display: flex;
   justify-content: space-between;
 }
-.link-preview-url {
+.link-preview-summary {
+  margin-bottom: 1rem;
 }
 .link-preview-buttons {
+  display: flex;
+  justify-content: space-between;
   padding-bottom: 0.5rem;
 }
 .link-preview-right {

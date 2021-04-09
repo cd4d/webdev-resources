@@ -10,11 +10,12 @@ const axiosConnection = axios.create({
   baseURL: API_SERVER,
 });
 
-function handleError(error) {
+function returnError(error, context) {
   if (error.response) {
-    console.log("api-call error response: ", error.response);
+    const returnedError = { ...error.response, ...context };
+    console.log("api-call error response: ", returnedError);
     // client received an error response (5xx, 4xx)
-    return error.response;
+    return returnedError;
   } else if (error.request) {
     // client never received a response, or request never left
     console.log("api-call error request: ", error.request);
@@ -30,21 +31,23 @@ function handleError(error) {
 
 // get current user
 export async function fetchCurrentUser() {
-  const response = await axiosConnection("/api/users/current");
-  //console.log("user Response:", response);
-  return response.data;
+  try {
+    const response = await axiosConnection("/api/users/current");
+    return response.data;
+  } catch (error) {
+    return returnError(error, { operation: "getUser", on: "user" });
+  }
 }
-// user credentials
+// login user credentials
 export async function loginUser(credentials) {
   try {
     const response = await axiosConnection.post(
       "/api/users/login",
       credentials
     );
-    console.log("login Response:", response);
     return response;
   } catch (error) {
-    return handleError(error);
+    return returnError(error, { operation: "loginUser", on: "user" });
   }
 }
 
@@ -54,7 +57,7 @@ export async function logoutUser() {
     // console.log("logout Response:", response);
     return response.data;
   } catch (error) {
-    return handleError(error);
+    return returnError(error, { operation: "logoutUser", on: "user" });
   }
 }
 
@@ -64,10 +67,9 @@ export async function registerUser(credentials) {
       "/api/users/register",
       credentials
     );
-    console.log("registered Response:", response);
     return response;
   } catch (error) {
-    return handleError(error);
+    return returnError(error, { operation: "registerUser", on: "user" });
   }
 }
 
@@ -80,7 +82,7 @@ export async function resetPassword(email) {
     console.log("reset pw response: ", response);
     return response.data;
   } catch (error) {
-    return handleError(error);
+    return returnError(error, { operation: "resetPassword", on: "user" });
   }
 }
 
@@ -90,7 +92,7 @@ export async function fetchUserTopics() {
     // console.log("User topics Response:", response);
     return response.data;
   } catch (error) {
-    return handleError(error);
+    return returnError(error, { operation: "getUser", on: "user" });
   }
 }
 export async function fetchTopicData(topic) {
@@ -99,7 +101,7 @@ export async function fetchTopicData(topic) {
     // console.log("Topic Response:", response);
     return response.data;
   } catch (error) {
-    return handleError(error);
+    return returnError(error, { operation: "getTopic", on: "topic" });
   }
 }
 // add topic and generate url slug
@@ -112,7 +114,7 @@ export async function createTopic(topic) {
     // console.log("New Topic Response:", response);
     return { data: response.data, status: response.status };
   } catch (error) {
-    return handleError(error);
+    return returnError(error, { operation: "createTopic", on: "topic" });
   }
 }
 
@@ -130,9 +132,11 @@ export async function editTopic(topicId, changedData) {
       return { data: response.data, status: response.status };
     }
   } catch (error) {
-    return handleError(error);
+    return returnError(error, { operation: "editTopic", on: "topic" });
   }
 }
+
+// add link
 export async function createLink(newLink) {
   //console.log(linkId);
 
@@ -143,9 +147,26 @@ export async function createLink(newLink) {
       return { data: response.data, status: response.status };
     }
   } catch (error) {
-    return handleError(error);
+    return returnError(error, { operation: "createLink", on: "link" });
   }
 }
+// delete link
+// delete body must be passed into data object https://github.com/axios/axios/issues/897
+export async function deleteLink(parameters) {
+  try {
+    if (parameters.topicId && parameters.linkId) {
+      console.log(parameters);
+      const response = await axiosConnection.delete("/api/links/", {
+        data: parameters,
+      });
+      console.log("Delete Link Response:", response);
+      return response;
+    }
+  } catch (error) {
+    return returnError(error, { operation: "deleteLink", on: "link" });
+  }
+}
+
 // modify link
 export async function editLink(linkId, changedData) {
   //console.log(linkId);
@@ -160,7 +181,7 @@ export async function editLink(linkId, changedData) {
       return { data: response.data, status: response.status };
     }
   } catch (error) {
-    return handleError(error);
+    return returnError(error, { operation: "editLink", on: "link" });
   }
 }
 
@@ -171,6 +192,6 @@ export async function deleteTopic(topicId) {
     console.log("Delete Topic Response:", response);
     return response.data;
   } catch (error) {
-    handleError(error);
+    returnError(error, { operation: "deleteTopic", on: "link" });
   }
 }
