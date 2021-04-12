@@ -38,7 +38,7 @@ const displayNavigationPath = (topics) => {
   if (!Array.isArray(topics)) {
     return null;
   }
-  let urlTopic = "";
+  let urlTopic = "/topics";
   return topics.map((topic) => {
     // build the url by adding to it while looping
     urlTopic += "/" + topic.slug;

@@ -5,7 +5,11 @@ Modal.setAppElement("#root");
 
 export default function DeleteTopic(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [keepChildrenTopics, setKeepChildrenTopics] = useState(false);
   let topicToDelete = props.displayedTopic;
+  function toggleState() {
+    setKeepChildrenTopics((prevState) => !prevState);
+  }
   const userLoggedIn = (
     <>
       {" "}
@@ -13,9 +17,25 @@ export default function DeleteTopic(props) {
         Delete topic:{" "}
         {props.displayedTopic && `"${props.displayedTopic.title}"?`}
       </h2>
-      <form onSubmit={handleSubmit}>
-        <button>Yes</button>
-      </form>
+      {props.displayedTopic.children &&
+      props.displayedTopic.children.length !== 0 ? (
+        <>
+          <label>
+            {" "}
+            Keep children topics
+            <input type="checkbox" onChange={toggleState}></input>
+          </label>
+          <br />
+        </>
+      ) : (
+        ""
+      )}
+      <button className="btn btn-yes-no" onClick={handleSubmit}>
+        Yes
+      </button>
+      <button className="btn btn-yes-no btn-gray" onClick={closeModal}>
+        No
+      </button>
     </>
   );
   function openModal() {
@@ -28,8 +48,10 @@ export default function DeleteTopic(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
+    let parameters = { _id: topicToDelete._id };
+    if (keepChildrenTopics) parameters.keepChildrenTopics = true;
     props
-      .deleteCurrentTopic(topicToDelete._id)
+      .deleteCurrentTopic(parameters)
       .then(props.triggerUpdate())
       .then(closeModal());
   }

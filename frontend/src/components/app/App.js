@@ -28,16 +28,20 @@ import { slugify } from "../../utils/utils";
 
 function App() {
   // list of topics
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  const [user, setUser] = useState(null);
+  // TODO figure out page refresh when user logged in
   const [data, setData] = useState(
-    window.localStorage.getItem("guestDB")
+    user
+      ? fetchUserTopics()
+      : window.localStorage.getItem("guestDB")
       ? JSON.parse(window.localStorage.getItem("guestDB"))
       : guestDB
   );
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+
   const [updated, setUpdated] = useState(false);
-  const [error, setError] = useState(null);
   const [sidebarDisplayed, setSidebarDisplayed] = useState(true);
   // useHistory from react-router for redirection
   const history = useHistory();
@@ -54,6 +58,7 @@ function App() {
 
   // get current user at start
   useEffect(() => {
+    console.log("geetin ucrrent user");
     const getCurrentUser = async () => {
       const response = await fetchCurrentUser();
       if (response.currentUser) {
@@ -65,6 +70,7 @@ function App() {
 
   // get the current user's topics when user changes/ update triggered
   useEffect(() => {
+    console.log("geetin  user topics");
     const fetchData = async () => {
       setIsLoading(true);
       try {
@@ -125,10 +131,29 @@ function App() {
       newTopic.slug = slugify(newTopic.title);
       newTopic.links = [];
       newTopic.user = null;
+      newTopic.parent ? (newTopic.depth = 1) : (newTopic.depth = 0);
+      // add to the children list
+      if (newTopic.parent) {
+        setData(
+          [...data].map((topic) => {
+            if (topic._id === newTopic.parent) {
+              topic.children.push({
+                _id: newTopic._id,
+                title: newTopic.title,
+                slug: newTopic.slug,
+              });
+              return topic;
+            } else {
+              return topic;
+            }
+          })
+        );
+      }
       setData((prevState) => [...prevState, newTopic]);
       triggerUpdate();
-      return history.push("/" + newTopic.slug);
+      return history.push("/topics/" + newTopic.slug);
     }
+    console.log(newTopic);
     const response = await createTopic(newTopic);
     // error handling
     if (response && response.status >= 400) {
@@ -137,18 +162,18 @@ function App() {
       return response;
     } else if (response) {
       triggerUpdate();
-      history.push("/" + newTopic.slug);
+      history.push("/topics/" + newTopic.slug);
     }
   }
-  // delete topic
-  async function deleteCurrentTopic(topicId) {
+  // delete topic, with paramters: {_id: objectId, keepChildrenTopics: true(optional)}
+  async function deleteCurrentTopic(parameters) {
     if (!user) {
       setData((prevState) =>
-        prevState.filter((topic) => topic._id !== topicId)
+        prevState.filter((topic) => topic._id !== parameters._id)
       );
       return history.push("/");
     }
-    const response = await deleteTopic(topicId);
+    const response = await deleteTopic(parameters);
     if (!response) {
       setError({
         status: response.status,
@@ -179,7 +204,7 @@ function App() {
         })
       );
       if (payload.title) {
-        return history.push("/" + payload.slug);
+        return history.push("/topics/" + payload.slug);
       }
       return;
     }
@@ -195,7 +220,7 @@ function App() {
         console.log("can edit response: ", response);
         setIsLoading(false);
         triggerUpdate();
-        history.push("/" + response.data.slug);
+        history.push("/topics/" + response.data.slug);
       }
     } catch (err) {
       console.log("error updating data :", err);
@@ -301,6 +326,7 @@ function App() {
           error={error}
           flushAppError={flushAppError}
           handleError={handleError}
+          setSidebarDisplayed={setSidebarDisplayed}
         />
       </div>
     </>
@@ -309,6 +335,8 @@ function App() {
 
 export default App;
 export { guestDB };
+
+// OLD
 // update the data from current topic when it's edited
 // useEffect(() => {
 //   const updateData = async () => {

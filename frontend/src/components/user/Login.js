@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import "../main/main.css";
+
 import "./login.css";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -22,7 +24,7 @@ export default function Login(props) {
   }
 
   return (
-    <div className="container-center">
+    <div className="single-element-container">
       <h3 className="login-title">Login</h3>
       <form
         className="login-form"
@@ -39,7 +41,7 @@ export default function Login(props) {
             errorType = `Login failed.`;
             return setErrorMsg(errorType);
           }
-
+          props.setSidebarDisplayed(true);
           history.push("/");
         }}
       >

@@ -1,15 +1,12 @@
 import React from "react";
-import { Switch, Route, useHistory, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import Main from "../components/main/Main";
 import Login from "../components/user/Login";
 import Register from "../components/user/Register";
 
 import ResetPassword from "../components/user/ResetPassword";
-import PageNotFound from "../components/app/PageNotFound";
-import { mockDB } from "../components/app/App";
+import PageNotFound from "../components/main/PageNotFound";
 export default function Routes(appProps) {
-  const history = useHistory();
-
   return (
     <Switch>
       <Route
@@ -41,12 +38,12 @@ export default function Routes(appProps) {
       ></Route>
       <Route
         exact
-        path="/:mainTopic"
+        path="/topics/:mainTopic"
         render={(routeProps) => <Main {...routeProps} {...appProps} />}
       ></Route>
       <Route
         exact
-        path="/:mainTopic/:firstSubLvl"
+        path="/topics/:mainTopic/:firstSubLvl"
         render={(routeProps) => <Main {...routeProps} {...appProps} />}
       ></Route>
       <Route
@@ -54,8 +51,15 @@ export default function Routes(appProps) {
         path="/"
         render={(routeProps) => <Main {...routeProps} {...appProps} />}
       ></Route>
-      {/* TODO 404 error */}
-      <Route path="*" component={PageNotFound}></Route>
+      <Route
+        path={["/page-not-found"]}
+        render={(routeProps) => (
+          <PageNotFound
+            {...routeProps}
+            setSidebarDisplayed={appProps.setSidebarDisplayed}
+          />
+        )}
+      ></Route>
     </Switch>
   );
 }

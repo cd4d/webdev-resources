@@ -21,6 +21,14 @@
   padding-left: 0;
 }
 
+/* Single element content (no sidebar): login, register...  */
+.single-element-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 /* Buttons */
 
 .btn {
@@ -69,6 +77,22 @@
   background-color: transparent;
   border: none;
   margin-left: 0.5rem;
+}
+
+.btn-yes-no {
+  padding: 0.5rem;
+  margin-top: 10px;
+}
+
+.btn-gray {
+  border-color: gray;
+  color: gray;
+}
+
+.btn-gray:hover {
+  border-color: gainsboro;
+  background-color: grey;
+  color: whitesmoke;
 }
 
 .confirm-cancel-container {

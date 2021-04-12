@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 import "./main.css";
 //import Lorem from "./tests/lorem"
@@ -55,7 +55,7 @@ export default function Main(props) {
   let displayedTopic = { title: "", slug: "", links: [], _id: "" };
   const [displayedError, setDisplayedError] = useState(null);
   const topics = props.topics;
-
+  console.log("topics: ", topics);
   // display error on link/topic or flush it
   useEffect(() => {
     const displayError = function () {
@@ -79,7 +79,6 @@ export default function Main(props) {
     displayError();
   }, [props.error]);
 
- 
   // no topic in url (homepage), set displayed topic to first topic
   if (
     Object.keys(props.match.params).length === 0 &&
@@ -95,18 +94,35 @@ export default function Main(props) {
 
   // if a topic is selected, displays its details
   if (topics && displayedTopic) {
-    // console.log(topics);
+    let topicFound = false;
+    console.log("topics: ", topics);
+    console.log("displayedTopic: ", displayedTopic);
+    console.log("user:", props.user);
     for (let topic of topics) {
       if (topic.slug === displayedTopic.slug) {
         displayedTopic = topic;
+        topicFound = true;
       }
     }
+    if (!topicFound) {
+      console.log("topic not found!");
+      // return (
+      //   <Redirect
+      //     to={{
+      //       pathname: "/page-not-found",
+      //       state: { origin: "topic" },
+      //     }}
+      //   />
+      // );
+    }
   } else if (topics && topics.length > 0) {
+    console.log("defaulting to first topic");
     displayedTopic = topics[0];
   }
-
+  console.log("displayedTopic: ", displayedTopic);
   // render logged in user content
   function renderUserLoggedIn() {
+    console.log("rendering user content");
     if (props.isLoading) {
       return <>Loading...</>;
     }
@@ -114,6 +130,7 @@ export default function Main(props) {
       <div className="main-container">
         <nav>
           <CreateTopic
+            topics={props.topics}
             handleCreateTopic={props.handleCreateTopic}
             triggerUpdate={props.triggerUpdate}
             // noUserLoggedIn={noUserLoggedIn}
@@ -205,11 +222,11 @@ export default function Main(props) {
     </div>
   );
 }
- // Locking guest user, not implemented
-  // const noUserLoggedIn = (
-  //   <>
-  //     Functionality locked to prevent abuse.{" "}
-  //     <Link to="/register">Register</Link> (fake email works) to add your own
-  //     links.
-  //   </>
-  // );
+// Locking guest user, not implemented
+// const noUserLoggedIn = (
+//   <>
+//     Functionality locked to prevent abuse.{" "}
+//     <Link to="/register">Register</Link> (fake email works) to add your own
+//     links.
+//   </>
+// );

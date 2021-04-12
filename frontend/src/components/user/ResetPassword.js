@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../main/main.css";
 import "./login.css";
 
 export default function ResetPassword(props) {
@@ -14,7 +15,7 @@ export default function ResetPassword(props) {
   }, [inputEmail]);
 
   return (
-    <div>
+    <div className="single-element-container">
       <h3 className="login-title">Reset password</h3>
       <form
         className="login-form"

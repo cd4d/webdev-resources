@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
+import { v4 as uuidv4 } from "uuid";
 import "./modal.css";
-import { useHistory } from "react-router-dom";
 
 Modal.setAppElement("#root");
 
 export default function CreateTopic(props) {
-  const history = useHistory();
-
   const [modalIsOpen, setIsOpen] = useState(false);
   const [newTopic, setNewTopic] = useState();
   function openModal() {
@@ -18,16 +16,6 @@ export default function CreateTopic(props) {
     setIsOpen(false);
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    // don't send a request if fields are blank
-    if (!newTopic) {
-      return closeModal();
-    }
-    console.log("topic to add: ", newTopic);
-
-    const response = props.handleCreateTopic(newTopic).then(closeModal());
-  }
   function handleChange(e) {
     const { name, value } = e.target;
     if (name === "title") {
@@ -40,8 +28,33 @@ export default function CreateTopic(props) {
         return { ...prevState, description: value };
       });
     }
+    if (name === "topics-list") {
+      setNewTopic((prevState) => {
+        return { ...prevState, parent: value };
+      });
+    }
   }
 
+  function handleSelect(e) {
+    const { name, value } = e.target;
+    console.log(name, value);
+    if (name === "topics-list") {
+      setNewTopic((prevState) => {
+        return { ...prevState, parent: value };
+      });
+    }
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    // don't send a request if fields are blank
+    if (!newTopic) {
+      return closeModal();
+    }
+    console.log("topic to add: ", newTopic);
+
+    const response = props.handleCreateTopic(newTopic).then(closeModal());
+  }
   const userLoggedIn = (
     <>
       <h2>Create topic</h2>
@@ -80,6 +93,39 @@ export default function CreateTopic(props) {
               required
             />
           </li>
+          {props.topics.length > 1 && (
+            <li>
+              <label htmlFor="create-topic-topics-list" className="label-form">
+                Child of{" "}
+              </label>{" "}
+              <select
+                className="input-form"
+                name="topics-list"
+                id="create-topic-topics-list"
+                onChange={handleChange}
+              >
+                <option value="">None</option>
+                {props.topics
+                  .filter((topic) => topic.depth === 0)
+                  .map((topic) => (
+                    <option
+                      key={uuidv4()}
+                      value={topic._id}
+                      // https://stackoverflow.com/questions/31163693/how-do-i-conditionally-add-attributes-to-react-components/35428331#comment83214168_35428331
+                      selected={
+                        newTopic &&
+                        newTopic.parent &&
+                        topic._id === newTopic.parent
+                          ? "true"
+                          : undefined
+                      }
+                    >
+                      {topic.title}
+                    </option>
+                  ))}
+              </select>
+            </li>
+          )}
         </ul>
 
         <button>Create topic</button>

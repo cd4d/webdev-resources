@@ -239,16 +239,26 @@ router.delete("/:topicId", findUser, async (req, res, next) => {
     }
     console.log(topic);
     // Delete the topic from ancestors and/or children elements
+    // keep the children topics by making them main topics (depth: 0)
+
     try {
       // change depth level for children topics, remove ancestors and parent
-      await Topic.updateMany(
-        { "ancestors._id": mongoose.Types.ObjectId(topic._id) },
-        {
-          $pull: { ancestors: { _id: topic._id } },
-          $set: { parent: null },
-          $inc: { depth: -1 },
-        }
-      );
+      if (req.body.keepChildrenTopics) {
+        await Topic.updateMany(
+          { "ancestors._id": mongoose.Types.ObjectId(topic._id) },
+          {
+            $pull: { ancestors: { _id: topic._id } },
+            $set: { parent: null },
+            $inc: { depth: -1 },
+          }
+        );
+      } else {
+        // remove the children topics entirely
+        await Topic.deleteMany({
+          "ancestors._id": mongoose.Types.ObjectId(topic._id),
+        });
+      }
+      // remove the topic from its ancestors list, if any
       await Topic.updateMany(
         { "children._id": mongoose.Types.ObjectId(topic._id) },
         {
@@ -259,6 +269,7 @@ router.delete("/:topicId", findUser, async (req, res, next) => {
       if (!err.statusCode) err.statusCode = 400;
       next(err);
     }
+
     const deletedTopic = await Topic.findByIdAndDelete(topic._id);
 
     res.send(deletedTopic);

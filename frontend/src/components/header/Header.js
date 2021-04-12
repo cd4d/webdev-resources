@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import logo from "../../static/logo-webresources.png";
 import Ribbon from "./Ribbon";
 import { Link } from "react-router-dom";
-import ResetPassword from "../user/ResetPassword";
 import { v4 as uuidv4 } from "uuid";
 
 import "./header.css";
@@ -31,7 +30,6 @@ export default function Header(props) {
         {/* <img className="logo" src={logo} alt="logo" /> */}
         <h1 id="site-title">Link lists builder</h1>
       </Link>
-      <Link to="/feef">404 here</Link>
       <div className="user-container">
         {props.user ? (
           <>
@@ -40,12 +38,18 @@ export default function Header(props) {
               onSubmit={(e) => {
                 e.preventDefault();
                 props.flushAppError();
+                props.setSidebarDisplayed(true);
                 props.handleLogout();
               }}
             >
               <button type="submit">logout</button>
             </form>
-            <Link to="/reset-password">Reset password</Link>
+            <Link
+              to="/reset-password"
+              onClick={() => props.setSidebarDisplayed(false)}
+            >
+              Reset password
+            </Link>
           </>
         ) : (
           <>

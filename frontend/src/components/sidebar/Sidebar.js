@@ -13,7 +13,7 @@ function SidebarItem(props) {
         {!topic.parent && (
           <>
             <NavLink
-              to={`${topic.slug}`}
+              to={`/topics/${topic.slug}`}
               className="link-sidebar main-topic"
               onClick={props.flushAppError}
             >
@@ -26,7 +26,7 @@ function SidebarItem(props) {
                   <li key={uuidv4()}>
                     {" "}
                     <NavLink
-                      to={`/${topic.slug}/${child.slug}`}
+                      to={`/topics/${topic.slug}/${child.slug}`}
                       className="link-sidebar child-topic"
                       onClick={props.flushAppError}
                     >

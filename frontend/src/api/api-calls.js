@@ -185,10 +185,18 @@ export async function editLink(linkId, changedData) {
   }
 }
 
-export async function deleteTopic(topicId) {
+export async function deleteTopic(parameters) {
   try {
-    console.log("topic to delete:", topicId);
-    const response = await axiosConnection.delete("/api/topics/" + topicId);
+    console.log("topic to delete:", parameters._id);
+    let response;
+    if (parameters.keepChildrenTopics) {
+      response = await axiosConnection.delete("/api/topics/" + parameters._id, {
+        data: { keepChildrenTopics: parameters.keepChildrenTopics },
+      });
+    } else {
+      response = await axiosConnection.delete("/api/topics/" + parameters._id);
+    }
+
     console.log("Delete Topic Response:", response);
     return response.data;
   } catch (error) {
