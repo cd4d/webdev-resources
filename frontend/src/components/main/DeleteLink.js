@@ -33,10 +33,11 @@ export default function DeleteLink(props) {
       props.handleDeleteLink(
         {
           topic: props.displayedTopic,
-          linkId: props.currentLink._id
+          linkId: props.currentLink._id,
         },
         "deleteLink"
       );
+      props.triggerUpdate();
     }
   }
 

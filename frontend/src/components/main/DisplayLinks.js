@@ -62,7 +62,7 @@ export default function DisplayLinks(props) {
   ));
   const pageNumbersButtons = pageNumbers.map((page) => (
     <button
-      className="btn-pagination"
+      className="btn btn-pagination"
       key={uuidv4()}
       page={page}
       onClick={() => changePageNumber(page)}

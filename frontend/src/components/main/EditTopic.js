@@ -1,11 +1,35 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
+import { v4 as uuidv4 } from "uuid";
+import { slugify } from "../../utils/utils";
+import { useHistory } from "react-router-dom";
+
 import "./modal.css";
 Modal.setAppElement("#root");
 
 export default function EditTopic(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [editedTopic, setEditedTopic] = useState(null);
+  const history = useHistory();
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    if (name === "title") {
+      setEditedTopic((prevState) => {
+        return { ...prevState, title: value };
+      });
+    }
+    if (name === "description") {
+      setEditedTopic((prevState) => {
+        return { ...prevState, description: value };
+      });
+    }
+    if (name === "topics-list") {
+      setEditedTopic((prevState) => {
+        return { ...prevState, parent: value };
+      });
+    }
+  }
   const userLoggedIn = (
     <>
       <h2>
@@ -41,6 +65,47 @@ export default function EditTopic(props) {
               onChange={handleChange}
             />
           </li>
+
+          <li>
+            <label htmlFor="create-topic-topics-list" className="label-form">
+              Child of{" "}
+            </label>{" "}
+            <select
+              className="input-form"
+              name="topics-list"
+              id="create-topic-topics-list"
+              onChange={handleChange}
+              value={
+                editedTopic && editedTopic.parent ? editedTopic.parent : ""
+              }
+            >
+              <option value="">None</option>
+              {props.topics
+                .filter(
+                  //only main topics and not the topic itself as possible parent
+                  (topic) =>
+                    topic.depth === 0 &&
+                    topic._id !== props.displayedTopic._id &&
+                    topic._id !== props.displayedTopic.parent
+                )
+                .map((topic) => (
+                  <option
+                    key={uuidv4()}
+                    value={topic._id}
+                    // https://stackoverflow.com/questions/31163693/how-do-i-conditionally-add-attributes-to-react-components/35428331#comment83214168_35428331
+                    // selected={
+                    //   editedTopic &&
+                    //   editedTopic.parent &&
+                    //   topic._id === editedTopic.parent
+                    //     ? true
+                    //     : undefined
+                    // }
+                  >
+                    {topic.title}
+                  </option>
+                ))}
+            </select>
+          </li>
         </ul>
 
         <button>Edit topic</button>
@@ -62,25 +127,16 @@ export default function EditTopic(props) {
       return closeModal();
     }
     console.log("topic to edit: ", editedTopic);
-
+    if (editedTopic.title) {
+      editedTopic.slug = slugify(editedTopic.title);
+    }
     const response = await props
-      .handleEditTopic(props.displayedTopic._id, editedTopic)
+      .handleEditTopic(props.displayedTopic, editedTopic)
+      .then(props.triggerUpdate())
+      .then(editedTopic.title && history.push("/topics/" + editedTopic.slug))
       .then(closeModal());
   }
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    if (name === "title") {
-      setEditedTopic((prevState) => {
-        return { ...prevState, title: value };
-      });
-    }
-    if (name === "description") {
-      setEditedTopic((prevState) => {
-        return { ...prevState, description: value };
-      });
-    }
-  }
   return (
     <>
       <button className="btn btn-edit-topic" onClick={openModal}>

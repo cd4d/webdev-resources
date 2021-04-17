@@ -155,7 +155,7 @@ router.post(
 
 router.patch(
   "/:topicId",
-  checkAllowedUpdates(["title", "links", "description"]),
+  checkAllowedUpdates(["title", "links", "description", "parent"]),
   topicPatchValidationRules(),
   validate,
   findUser,
@@ -213,6 +213,47 @@ router.patch(
           next(err);
         }
       }
+      // change parent topic
+      if (updates.includes("parent")) {
+        try {
+          // remove from old parent children list
+          await Topic.updateOne(
+            { "children._id": mongoose.Types.ObjectId(topic._id) },
+            {
+              $pull: { children: { _id: topic._id } },
+            }
+          );
+          // add to the new parent topic children list
+          await Topic.updateOne(
+            { _id: mongoose.Types.ObjectId(req.body.parent) },
+            {
+              $push: {
+                children: {
+                  _id: topic._id,
+                  title: topic.title,
+                  slug: slugify(topic.title),
+                },
+              },
+            }
+          );
+          // get parent topic
+          const parentTopic = await Topic.findById(req.body.parent);
+          if (!parentTopic) {
+            throw new Error("No parent topic found");
+          } // Build ancestors list
+          let ancestors = [];
+          if (parentTopic.ancestors && parentTopic.ancestors.length < 2) {
+            ancestors = buildAncestors(parentTopic);
+          } else {
+            throw new Error("Cannot have more than 2 ancestors");
+          }
+          topic.ancestors = ancestors;
+        } catch (err) {
+          if (!err.statusCode) err.statusCode = 400;
+          next(err);
+        }
+      }
+
       await topic.save();
       res.send(topic);
     } catch (err) {

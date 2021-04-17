@@ -63,7 +63,7 @@ const topicSchema = new mongoose.Schema({
       },
     ],
     default: [],
-  }, // Depth level i.e main topic(0), child topic(1), grand-child topic(2)
+  }, // Depth level i.e main topic(0), child topic(1)
   depth: {
     type: Number,
     max: 1,

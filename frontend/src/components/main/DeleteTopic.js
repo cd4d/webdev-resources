@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import "./modal.css";
+import { useHistory } from "react-router-dom";
+
 Modal.setAppElement("#root");
 
 export default function DeleteTopic(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [keepChildrenTopics, setKeepChildrenTopics] = useState(false);
+  const history = useHistory();
+
   let topicToDelete = props.displayedTopic;
   function toggleState() {
     setKeepChildrenTopics((prevState) => !prevState);
@@ -48,11 +52,12 @@ export default function DeleteTopic(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    let parameters = { _id: topicToDelete._id };
+    let parameters = props.displayedTopic;
     if (keepChildrenTopics) parameters.keepChildrenTopics = true;
     props
       .deleteCurrentTopic(parameters)
       .then(props.triggerUpdate())
+      .then(history.push("/"))
       .then(closeModal());
   }
 

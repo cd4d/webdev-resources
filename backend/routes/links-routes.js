@@ -18,7 +18,7 @@ const linkPreviewGenerator = require("link-preview-generator");
 
 // build linkpreview for guest user
 
-router.get("/link-preview", async (req, res, next) => {
+router.post("/link-preview", async (req, res, next) => {
   const response = await getLinkPreview(req.body.url).catch((err) => {});
   response && res.send(response);
 });

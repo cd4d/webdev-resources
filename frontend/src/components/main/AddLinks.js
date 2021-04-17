@@ -51,7 +51,7 @@ export default function AddLinks(props) {
 
         <br />
         {errorMsg && <p className="error-msg">{errorMsg}</p>}
-        {isLoading && <p>Loading...</p>}
+        {isLoading && <p>Loading link preview...</p>}
         <button>Submit link</button>
       </form>
     </>
@@ -62,6 +62,7 @@ export default function AddLinks(props) {
   }
   function closeModal() {
     setErrorMsg(null);
+    setIsLoading(false);
     setIsOpen(false);
   }
 
@@ -73,8 +74,7 @@ export default function AddLinks(props) {
       return closeModal();
     }
     // append links at end of existing links array
-    // console.log("existingLinks: ", existingLinks);
-    // console.log("newLink: ", newLink);
+
     // check if link already exists
     if (
       existingLinks.some(
@@ -83,6 +83,7 @@ export default function AddLinks(props) {
     ) {
       //console.log("existing url in same topic");
       setErrorMsg("URL or summary already in this topic.");
+      setIsLoading(false);
       return null;
     }
     // else console.log("displayed topic: ", props.displayedTopic);
@@ -93,22 +94,22 @@ export default function AddLinks(props) {
       });
       if (response.status !== 200) {
         props.handleError(response);
-        setIsOpen(false);
+        closeModal();
       } else {
         props.triggerUpdate();
       }
     } else {
-      props.handleCreateLink(
+      const response = await props.handleCreateLink(
         {
           topic: props.displayedTopic,
           ...newLink,
         },
         "createLink"
       );
-      setIsOpen(false);
     }
+    props.triggerUpdate();
 
-    setIsLoading(false);
+    closeModal();
   }
 
   function handleChange(e) {
@@ -134,7 +135,7 @@ export default function AddLinks(props) {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Example Modal"
-        className="Modal addTopicModal"
+        className="Modal  addTopicModal"
       >
         <button onClick={closeModal} id="button-close-modal">
           close

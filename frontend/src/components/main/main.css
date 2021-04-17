@@ -119,7 +119,7 @@
 }
 
 .btn-pagination {
-  padding: 0;
+  padding: 0.5rem 0.9rem;
 }
 
 .edit-link {
@@ -185,8 +185,8 @@ form li {
   text-align: left;
   margin-right: 0.4rem;
 }
-.input-form {
+form input[type="text"] {
   /* Uniform text field size */
-  width: 300px;
+  width: 60%;
   box-sizing: border-box;
 }

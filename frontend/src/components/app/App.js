@@ -17,32 +17,44 @@ import {
   editTopic,
   createLink,
   deleteLink,
+  getLinkPreview,
   editLink,
   resetPassword,
-} from "../../api/api-calls";
+} from "../../CRUD/api-calls";
+import { createTopicGuest } from "../../CRUD/guestUser/createTopicGuest";
+import { editTopicGuest } from "../../CRUD/guestUser/editTopicGuest";
 
+import { deleteTopicGuest } from "../../CRUD/guestUser/deleteTopicGuest";
+import { handleLinksGuest } from "../../CRUD/guestUser/handleLinksGuest";
 // keep last for CSS order
 import "./icons.css";
 import "./App.css";
-import { slugify } from "../../utils/utils";
 
 function App() {
-  // list of topics
+  const [user, setUser] = useState(null);
+  const [data, setData] = useState(startingData());
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const [user, setUser] = useState(null);
-  // TODO figure out page refresh when user logged in
-  const [data, setData] = useState(
-    user
-      ? fetchUserTopics()
-      : window.localStorage.getItem("guestDB")
-      ? JSON.parse(window.localStorage.getItem("guestDB"))
-      : guestDB
-  );
-
   const [updated, setUpdated] = useState(false);
   const [sidebarDisplayed, setSidebarDisplayed] = useState(true);
+
+  // Starting data: default list of topics or user topics
+  function startingData() {
+    if (user) {
+      return fetchUserTopics();
+    }
+    if (JSON.parse(window.localStorage.getItem("guestDB"))) {
+      return JSON.parse(window.localStorage.getItem("guestDB"));
+    }
+    return guestDB;
+  }
+  console.log("starting data: ", startingData());
+  // set localstorage to default data if empty
+  if (!user && data && !window.localStorage.getItem("guestDB")) {
+    const json = JSON.stringify(data);
+    window.localStorage.setItem("guestDB", json);
+  }
+
   // useHistory from react-router for redirection
   const history = useHistory();
 
@@ -58,20 +70,23 @@ function App() {
 
   // get current user at start
   useEffect(() => {
-    console.log("geetin ucrrent user");
     const getCurrentUser = async () => {
+      console.log("geetin ucrrent user");
+
       const response = await fetchCurrentUser();
       if (response.currentUser) {
         setUser(response.currentUser.username);
       }
     };
+
     getCurrentUser();
   }, [user]);
 
-  // get the current user's topics when user changes/ update triggered
+  // get the current user's topics when user changes or update triggered
   useEffect(() => {
-    console.log("geetin  user topics");
     const fetchData = async () => {
+      console.log("geetin  user topics");
+
       setIsLoading(true);
       try {
         const response = await fetchUserTopics();
@@ -83,16 +98,11 @@ function App() {
     };
     if (user) {
       fetchData();
+    } else {
+      console.log("get guest data");
+      setData(JSON.parse(window.localStorage.getItem("guestDB")));
     }
   }, [user, updated]);
-
-  // update the guest data from window.localStorage in guest mode
-  useEffect(() => {
-    if (!user) {
-      const json = JSON.stringify(data);
-      window.localStorage.setItem("guestDB", json);
-    }
-  }, [user, data]);
 
   function triggerUpdate() {
     setError(null);
@@ -124,168 +134,8 @@ function App() {
       history.push("/");
     }
   }
-  // create topic and redirect to it
-  async function handleCreateTopic(newTopic) {
-    if (!user) {
-      newTopic._id = uuidv4();
-      newTopic.slug = slugify(newTopic.title);
-      newTopic.links = [];
-      newTopic.user = null;
-      newTopic.parent ? (newTopic.depth = 1) : (newTopic.depth = 0);
-      // add to the children list
-      if (newTopic.parent) {
-        setData(
-          [...data].map((topic) => {
-            if (topic._id === newTopic.parent) {
-              topic.children.push({
-                _id: newTopic._id,
-                title: newTopic.title,
-                slug: newTopic.slug,
-              });
-              return topic;
-            } else {
-              return topic;
-            }
-          })
-        );
-      }
-      setData((prevState) => [...prevState, newTopic]);
-      triggerUpdate();
-      return history.push("/topics/" + newTopic.slug);
-    }
-    console.log(newTopic);
-    const response = await createTopic(newTopic);
-    // error handling
-    if (response && response.status >= 400) {
-      handleError(response);
-      setIsLoading(false);
-      return response;
-    } else if (response) {
-      triggerUpdate();
-      history.push("/topics/" + newTopic.slug);
-    }
-  }
-  // delete topic, with paramters: {_id: objectId, keepChildrenTopics: true(optional)}
-  async function deleteCurrentTopic(parameters) {
-    if (!user) {
-      setData((prevState) =>
-        prevState.filter((topic) => topic._id !== parameters._id)
-      );
-      return history.push("/");
-    }
-    const response = await deleteTopic(parameters);
-    if (!response) {
-      setError({
-        status: response.status,
-        statusText: response.statusText,
-        operation: "deleteLink",
-        on: "link",
-      });
-    }
-    triggerUpdate();
-    history.push("/");
-  }
 
-  // edit topic - add link - delete link
-  async function handleEditTopic(topicId, payload) {
-    // guest user using localStorage
-    if (!user) {
-      // slugify title if changed
-      if (payload.title) {
-        payload.slug = slugify(payload.title);
-      }
-      setData(
-        [...data].map((topic) => {
-          if (topic._id === topicId) {
-            return { ...topic, ...payload };
-          } else {
-            return topic;
-          }
-        })
-      );
-      if (payload.title) {
-        return history.push("/topics/" + payload.slug);
-      }
-      return;
-    }
-    try {
-      const response = await editTopic(topicId, payload);
-      // error handling
-      if (response && response.status >= 400) {
-        console.log("error status not 200 ", response);
-        handleError(response);
-        setIsLoading(false);
-        return response;
-      } else if (response && response.status === 200) {
-        console.log("can edit response: ", response);
-        setIsLoading(false);
-        triggerUpdate();
-        history.push("/topics/" + response.data.slug);
-      }
-    } catch (err) {
-      console.log("error updating data :", err);
-      setError(err);
-    }
-  }
-  // links function for guest user, using localStorage
-  async function handleLinkNoUser(payload, operation) {
-    if (!user) {
-      const topicContainingLink = data.find(
-        (topic) => topic._id === payload.topic._id
-      );
-      if (operation === "createLink") {
-        topicContainingLink.links.push({
-          _id: uuidv4(),
-          url: payload.url,
-          summary: payload.summary,
-        });
-      }
-      if (operation === "deleteLink") {
-        const indexOfLinkToDelete = topicContainingLink.links.findIndex(
-          (link) => link._id === payload.linkId
-        );
-        topicContainingLink.links.splice(indexOfLinkToDelete, 1);
-      }
-      if (operation === "editLink") {
-        topicContainingLink.links = topicContainingLink.links.map((link) => {
-          if (link._id === payload.linkId) {
-            return { ...link, ...payload.newData };
-          } else {
-            return link;
-          }
-        });
-      }
-      console.log("new links:", topicContainingLink.links);
-      // https://stackoverflow.com/questions/49477547/setstate-of-an-array-of-objects-in-react
-      setData(
-        [...data].map((topic) => {
-          if (topic._id === topicContainingLink._id) {
-            return { ...topic, links: topicContainingLink.links };
-          } else {
-            return topic;
-          }
-        })
-      );
-    }
-  }
 
-  async function editCurrentLink(linkId, changedData) {
-    try {
-      const response = await editLink(linkId, changedData);
-      if (response && response.status >= 400) {
-        console.log("error status not 200: ", response);
-
-        handleError(response);
-        setIsLoading(false);
-        return response;
-      } else if (response && response.status === 200) {
-        triggerUpdate();
-      }
-    } catch (err) {
-      console.log("error updating data :", err);
-      setError(err);
-    }
-  }
 
   return (
     <>
@@ -316,13 +166,13 @@ function App() {
           handleLogout={handleLogout}
           registerUser={registerUser}
           resetPassword={resetPassword}
-          handleCreateTopic={handleCreateTopic}
-          deleteCurrentTopic={deleteCurrentTopic}
+          handleCreateTopic={user ? createTopic : createTopicGuest}
+          deleteCurrentTopic={user ? deleteTopic : deleteTopicGuest}
           triggerUpdate={triggerUpdate}
-          handleEditTopic={handleEditTopic}
-          handleCreateLink={user ? createLink : handleLinkNoUser}
-          handleDeleteLink={user ? deleteLink : handleLinkNoUser}
-          editCurrentLink={user ? editCurrentLink : handleLinkNoUser}
+          handleEditTopic={user ? editTopic : editTopicGuest}
+          handleCreateLink={user ? createLink : handleLinksGuest}
+          handleDeleteLink={user ? deleteLink : handleLinksGuest}
+          editCurrentLink={user ? editLink : handleLinksGuest}
           error={error}
           flushAppError={flushAppError}
           handleError={handleError}
@@ -335,148 +185,3 @@ function App() {
 
 export default App;
 export { guestDB };
-
-// OLD
-// update the data from current topic when it's edited
-// useEffect(() => {
-//   const updateData = async () => {
-//     setIsLoading(true);
-//     try {
-//       console.log("topicToUpdate: ", topicToUpdate);
-//       console.log("changedData: ", changedData);
-
-//       const response = await editTopic(topicToUpdate, changedData);
-//       if (response && response.status >= 400) {
-//         console.log("error response :", response);
-
-//         setError({
-//           status: response.status,
-//           statusText: response.statusText,
-//         });
-//         return response;
-//       }
-//       setIsLoading(false);
-//     } catch (err) {
-//       console.log("error updating data :", err);
-//       setError(err);
-//       setIsLoading(false);
-//     }
-//   };
-//   updateData();
-// }, [topicToUpdate, changedData]);
-
-// // create link
-// async function createNewLink(linkId) {
-//   try {
-//     const response = await createLink(linkId);
-//     if (response && response.status >= 400) {
-//       console.log("error status not 200: ", response);
-//       let newError = {
-//         status: response.status,
-//         statusText: response.statusText,
-//         operation: "editLink",
-//         on: "link",
-//       };
-//       setError(newError);
-//       setIsLoading(false);
-//       return response;
-//     }
-//   } catch (err) {
-//     console.log("error updating data :", err);
-//     setError(err);
-//   }
-//   triggerUpdate();
-// }
-
-// register user
-// async function handleRegister(userCredentials) {
-//   const response = await registerUser(userCredentials);
-//   console.log("response is:", response);
-//   if (response && response.status >= 400) {
-//     setError({
-//       status: response.status,
-//       statusText: response.statusText,
-//       operation: "register",
-//       on: "register",
-//       errors: response.data.errors,
-//     });
-//     setIsLoading(false);
-//     return response;
-//   }
-//   if (response && response.status === 200) {
-//     setUser(response.loggedUser);
-//   }
-// }
-// reset user password
-// async function handleResetPassword(email) {
-//   const response = await resetPassword(email);
-//   console.log("response in app for reset pw: ", response);
-//   if (response && response.resetLink) {
-//     return { resetLink: response.resetLink };
-//   }
-//   if (response && response.status) {
-//     return { status: response.status, statusText: response.statusText };
-//   }
-// }
-// case "addLink":
-//   setIsLoading(true);
-//   try {
-//     console.log("topicToUpdate: ", topicToUpdate);
-//     console.log("payload: ", payload);
-//     const existingLinks = topic.links;
-//     const updatedLinks = { links: existingLinks.concat(payload) };
-
-//     const response = await editTopic(topicToUpdate, updatedLinks);
-//     if (response && response.status >= 400) {
-//       console.log("error status not 200: ", response);
-//       let newError = {
-//         status: response.status,
-//         statusText: response.statusText,
-//         operation: "addLink",
-//         on: "link",
-//       }; // error if too many links
-//       if (response.data) newError.message = response.data.message;
-//       setError(newError);
-//       setIsLoading(false);
-//       return response;
-//     }
-//   } catch (err) {
-//     console.log("error updating data :", err);
-//     setError(err);
-//   }
-//   triggerUpdate();
-//   setIsLoading(false);
-
-//   break;
-// case "deleteLink":
-//   setIsLoading(true);
-
-//   try {
-//     const existingLinks = topic.links;
-//     const updatedLinks = {
-//       links: existingLinks.filter((link) => link._id !== payload._id),
-//     };
-
-//     const response = await editTopic(topicToUpdate, updatedLinks);
-//     if (response && response.status >= 400) {
-//       // console.log("error response :", response);
-//       setError({
-//         status: response.status,
-//         statusText: response.statusText,
-//         operation: "deleteLink",
-//         on: "link",
-//       });
-//       setIsLoading(false);
-//       return response;
-//     }
-//   } catch (err) {
-//     console.log("error updating data :", err);
-//     setError(err);
-//   }
-//   triggerUpdate();
-//   setIsLoading(false);
-
-//   break;
-
-// this case takes the id of the topic
-//setIsLoading(true);

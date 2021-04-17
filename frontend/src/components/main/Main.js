@@ -55,7 +55,6 @@ export default function Main(props) {
   let displayedTopic = { title: "", slug: "", links: [], _id: "" };
   const [displayedError, setDisplayedError] = useState(null);
   const topics = props.topics;
-  console.log("topics: ", topics);
   // display error on link/topic or flush it
   useEffect(() => {
     const displayError = function () {
@@ -95,9 +94,7 @@ export default function Main(props) {
   // if a topic is selected, displays its details
   if (topics && displayedTopic) {
     let topicFound = false;
-    console.log("topics: ", topics);
-    console.log("displayedTopic: ", displayedTopic);
-    console.log("user:", props.user);
+
     for (let topic of topics) {
       if (topic.slug === displayedTopic.slug) {
         displayedTopic = topic;
@@ -137,9 +134,10 @@ export default function Main(props) {
             user={props.user}
             flushAppError={props.flushAppError}
           />
-          {topics.length !== 0 && (
+          {topics && topics.length !== 0 && (
             <>
               <EditTopic
+                topics={props.topics}
                 handleEditTopic={props.handleEditTopic}
                 displayedTopic={displayedTopic}
                 triggerUpdate={props.triggerUpdate}
@@ -180,7 +178,7 @@ export default function Main(props) {
         )} */}
 
         {/* add link */}
-        {topics.length !== 0 && (
+        {topics && topics.length !== 0 && (
           <AddLinks
             handleCreateLink={props.handleCreateLink}
             displayedTopic={displayedTopic}
@@ -204,7 +202,6 @@ export default function Main(props) {
                 handleDeleteLink={props.handleDeleteLink}
                 displayedTopic={displayedTopic}
                 triggerUpdate={props.triggerUpdate}
-                // noUserLoggedIn={noUserLoggedIn}
                 user={props.user}
               />
             }

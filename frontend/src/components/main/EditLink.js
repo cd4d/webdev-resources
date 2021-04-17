@@ -14,13 +14,9 @@ export default function EditLink(props) {
   }
   function closeModal() {
     setIsOpen(false);
+    setIsLoading(false);
   }
 
-  function editLink() {
-    openModal();
-
-    props.triggerUpdate();
-  }
   function handleChange(e) {
     const { name, value } = e.target;
     if (name === "url") {
@@ -58,7 +54,7 @@ export default function EditLink(props) {
         "editLink"
       );
     }
-    setIsLoading(false);
+    props.triggerUpdate();
   }
 
   return (

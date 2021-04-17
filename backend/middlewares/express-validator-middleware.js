@@ -8,6 +8,7 @@ const topicPostValidationRules = () => {
     body("title").not().escape().isEmpty().trim().isLength(2, 75).isString(),
     body("description").trim().isLength(2, 255).isString(),
     body("user").trim().isMongoId().optional(),
+    body("parent").trim().isMongoId().optional(),
     body("links").isArray().optional(),
     body("links.*.summary").trim().isLength(1, 255).isString(),
     body("links.*.url")
@@ -28,6 +29,7 @@ const topicPatchValidationRules = () => {
       .optional(),
     body("description").trim().isLength(2, 255).isString().optional(),
     body("user").trim().isMongoId().optional(),
+    body("parent").trim().isMongoId().optional(),
     body("links").isArray().optional(),
     body("links.*.summary").trim().isLength(1, 255).isString(),
     body("links.*.url")

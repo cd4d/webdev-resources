@@ -119,13 +119,13 @@ export async function createTopic(topic) {
 }
 
 // modify topic
-export async function editTopic(topicId, changedData) {
-  console.log(topicId);
-
+export async function editTopic(topic, changedData) {
+  console.log(topic);
+  console.log(changedData);
   try {
-    if (topicId) {
+    if (topic) {
       const response = await axiosConnection.patch(
-        "/api/topics/" + topicId,
+        "/api/topics/" + topic._id,
         changedData
       );
       console.log("Edit Topic Response:", response);
@@ -133,6 +133,37 @@ export async function editTopic(topicId, changedData) {
     }
   } catch (error) {
     return returnError(error, { operation: "editTopic", on: "topic" });
+  }
+}
+
+// delete topic
+export async function deleteTopic(parameters) {
+  try {
+    console.log("topic to delete:", parameters._id);
+    let response;
+    if (parameters.keepChildrenTopics) {
+      response = await axiosConnection.delete("/api/topics/" + parameters._id, {
+        data: { keepChildrenTopics: parameters.keepChildrenTopics },
+      });
+    } else {
+      response = await axiosConnection.delete("/api/topics/" + parameters._id);
+    }
+
+    console.log("Delete Topic Response:", response);
+    return response.data;
+  } catch (error) {
+    returnError(error, { operation: "deleteTopic", on: "link" });
+  }
+}
+// get link preview for guest user
+export async function getLinkPreview(url) {
+  try {
+    const response = await axios.post(API_SERVER + "/api/links/link-preview/", {
+      url,
+    });
+    return response;
+  } catch (error) {
+    return returnError(error, { operation: "getLinkPreview", on: "link" });
   }
 }
 
@@ -182,24 +213,5 @@ export async function editLink(linkId, changedData) {
     }
   } catch (error) {
     return returnError(error, { operation: "editLink", on: "link" });
-  }
-}
-
-export async function deleteTopic(parameters) {
-  try {
-    console.log("topic to delete:", parameters._id);
-    let response;
-    if (parameters.keepChildrenTopics) {
-      response = await axiosConnection.delete("/api/topics/" + parameters._id, {
-        data: { keepChildrenTopics: parameters.keepChildrenTopics },
-      });
-    } else {
-      response = await axiosConnection.delete("/api/topics/" + parameters._id);
-    }
-
-    console.log("Delete Topic Response:", response);
-    return response.data;
-  } catch (error) {
-    returnError(error, { operation: "deleteTopic", on: "link" });
   }
 }

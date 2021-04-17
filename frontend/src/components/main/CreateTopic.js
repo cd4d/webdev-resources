@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { v4 as uuidv4 } from "uuid";
+import { useHistory } from "react-router-dom";
+
 import "./modal.css";
 
 Modal.setAppElement("#root");
@@ -8,6 +10,9 @@ Modal.setAppElement("#root");
 export default function CreateTopic(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [newTopic, setNewTopic] = useState();
+  // useHistory from react-router for redirection
+  const history = useHistory();
+
   function openModal() {
     setIsOpen(true);
     props.flushAppError();
@@ -35,16 +40,6 @@ export default function CreateTopic(props) {
     }
   }
 
-  function handleSelect(e) {
-    const { name, value } = e.target;
-    console.log(name, value);
-    if (name === "topics-list") {
-      setNewTopic((prevState) => {
-        return { ...prevState, parent: value };
-      });
-    }
-  }
-
   async function handleSubmit(e) {
     e.preventDefault();
     // don't send a request if fields are blank
@@ -53,7 +48,11 @@ export default function CreateTopic(props) {
     }
     console.log("topic to add: ", newTopic);
 
-    const response = props.handleCreateTopic(newTopic).then(closeModal());
+    const response = props
+      .handleCreateTopic(newTopic)
+      .then(props.triggerUpdate())
+      .then(newTopic.slug && history.push("/topics/" + newTopic.slug))
+      .then(closeModal());
   }
   const userLoggedIn = (
     <>
@@ -93,7 +92,7 @@ export default function CreateTopic(props) {
               required
             />
           </li>
-          {props.topics.length > 1 && (
+          {props.topics && props.topics.length > 1 && (
             <li>
               <label htmlFor="create-topic-topics-list" className="label-form">
                 Child of{" "}
@@ -103,23 +102,14 @@ export default function CreateTopic(props) {
                 name="topics-list"
                 id="create-topic-topics-list"
                 onChange={handleChange}
+                // https://stackoverflow.com/questions/44786669/warning-use-the-defaultvalue-or-value-props-on-select-instead-of-setting
+                value={newTopic && newTopic.parent ? newTopic.parent : ""}
               >
                 <option value="">None</option>
                 {props.topics
                   .filter((topic) => topic.depth === 0)
                   .map((topic) => (
-                    <option
-                      key={uuidv4()}
-                      value={topic._id}
-                      // https://stackoverflow.com/questions/31163693/how-do-i-conditionally-add-attributes-to-react-components/35428331#comment83214168_35428331
-                      selected={
-                        newTopic &&
-                        newTopic.parent &&
-                        topic._id === newTopic.parent
-                          ? "true"
-                          : undefined
-                      }
-                    >
+                    <option key={uuidv4()} value={topic._id}>
                       {topic.title}
                     </option>
                   ))}

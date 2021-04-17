@@ -95,6 +95,17 @@ body {
     animation-name: sidebar-show;
     animation-duration: 300ms;
   }
+  .btn {
+    /* padding: 2px 4px; */
+    font-size: 84%;
+    line-height: 1;
+  }
+  .btn-pagination {
+    font-size: 130%;
+  }
+  .Modal {
+    margin: 10% 5%;
+  }
   @keyframes sidebar-show {
     from {
       margin-left: -500px;
@@ -106,12 +117,6 @@ body {
     to {
       margin-left: 0px;
     }
-  }
-
-  .btn {
-    padding: 2px 4px;
-    font-size: 80%;
-    line-height: 1;
   }
 }
 
