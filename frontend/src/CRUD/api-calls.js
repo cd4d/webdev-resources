@@ -1,6 +1,6 @@
 // Functions to make API calls to the backend
 import axios from "axios";
-import { slugify } from "../utils/utils";
+import slugify from "../utils/utils";
 // to be changed in production
 const API_SERVER = "http://localhost:3000";
 

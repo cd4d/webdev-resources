@@ -10,7 +10,7 @@ export default function DeleteTopic(props) {
   const [keepChildrenTopics, setKeepChildrenTopics] = useState(false);
   const history = useHistory();
 
-  let topicToDelete = props.displayedTopic;
+  const topicToDelete = props.displayedTopic;
   function toggleState() {
     setKeepChildrenTopics((prevState) => !prevState);
   }
@@ -19,10 +19,10 @@ export default function DeleteTopic(props) {
       {" "}
       <h2>
         Delete topic:{" "}
-        {props.displayedTopic && `"${props.displayedTopic.title}"?`}
+        {topicToDelete && `"${topicToDelete.title}"?`}
       </h2>
-      {props.displayedTopic.children &&
-      props.displayedTopic.children.length !== 0 ? (
+      {topicToDelete.children &&
+        topicToDelete.children.length !== 0 ? (
         <>
           <label>
             {" "}
@@ -52,7 +52,7 @@ export default function DeleteTopic(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    let parameters = props.displayedTopic;
+    let parameters = topicToDelete;
     if (keepChildrenTopics) parameters.keepChildrenTopics = true;
     props
       .deleteCurrentTopic(parameters)

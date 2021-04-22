@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import "./modal.css";
 Modal.setAppElement("#root");
@@ -40,12 +40,9 @@ export default function EditLink(props) {
     }
     console.log("topic to edit: ", editedLink);
     if (props.user) {
-      const response = await props.editCurrentLink(
-        props.currentLink._id,
-        editedLink
-      );
+      await props.editCurrentLink(props.currentLink._id, editedLink);
     } else {
-      props.editCurrentLink(
+      const localResponse = await props.editCurrentLink(
         {
           topic: props.displayedTopic,
           linkId: props.currentLink._id,
@@ -53,8 +50,15 @@ export default function EditLink(props) {
         },
         "editLink"
       );
+
+      if (localResponse.status) {
+        props.handleError(localResponse);
+        closeModal();
+      } else {
+        props.triggerUpdate();
+        closeModal();
+      }
     }
-    props.triggerUpdate();
   }
 
   return (

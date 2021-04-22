@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import logo from "../../static/logo-webresources.png";
-import Ribbon from "./Ribbon";
+import React from "react";
+
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 

@@ -1,0 +1,17 @@
+.link-container-enter {
+  opacity: 0;
+}
+.link-container-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-out;
+}
+
+.link-container-exit {
+  opacity: 1;
+}
+/* This fires as element leaves the DOM*/
+
+.link-container-exit-active {
+  opacity: 0;
+  transition: opacity 500ms ease-out;
+}

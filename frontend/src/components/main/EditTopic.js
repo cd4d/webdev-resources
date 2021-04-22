@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { v4 as uuidv4 } from "uuid";
-import { slugify } from "../../utils/utils";
+import slugify from "../../utils/utils";
 import { useHistory } from "react-router-dom";
 
 import "./modal.css";
@@ -75,6 +75,7 @@ export default function EditTopic(props) {
               name="topics-list"
               id="create-topic-topics-list"
               onChange={handleChange}
+              //https://reactjs.org/docs/forms.html#the-select-tag
               value={
                 editedTopic && editedTopic.parent ? editedTopic.parent : ""
               }
@@ -127,14 +128,37 @@ export default function EditTopic(props) {
       return closeModal();
     }
     console.log("topic to edit: ", editedTopic);
+    let newSlug = "";
     if (editedTopic.title) {
-      editedTopic.slug = slugify(editedTopic.title);
+      newSlug = slugify(editedTopic.title);
     }
-    const response = await props
-      .handleEditTopic(props.displayedTopic, editedTopic)
-      .then(props.triggerUpdate())
-      .then(editedTopic.title && history.push("/topics/" + editedTopic.slug))
-      .then(closeModal());
+    if (props.user) {
+      const response = await props.handleEditTopic(
+        props.displayedTopic,
+        editedTopic
+      );
+      if (response.status >= 400) {
+        props.handleError(response);
+        closeModal();
+      } else {
+        props.triggerUpdate();
+        editedTopic.title && history.push("/topics/" + newSlug);
+        closeModal();
+      }
+    } else {
+      const localResponse = await props.handleEditTopic(
+        props.displayedTopic,
+        editedTopic
+      );
+
+      if (localResponse.status) {
+        props.handleError(localResponse);
+        closeModal();
+      } else {
+        props.triggerUpdate();
+        closeModal();
+      }
+    }
   }
 
   return (

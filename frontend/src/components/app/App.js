@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import Header from "../header/Header";
 import Sidebar from "../sidebar/Sidebar";
 import Routes from "../../routes/routes";
+import WelcomeScreen from "./WelcomeScreen";
 import { useHistory } from "react-router-dom";
 import guestDB from "../../DB/guestDB.json";
-import { v4 as uuidv4 } from "uuid";
 
 import {
   fetchUserTopics,
@@ -17,7 +17,6 @@ import {
   editTopic,
   createLink,
   deleteLink,
-  getLinkPreview,
   editLink,
   resetPassword,
 } from "../../CRUD/api-calls";
@@ -34,21 +33,25 @@ function App() {
   const [user, setUser] = useState(null);
   const [data, setData] = useState(startingData());
   const [isLoading, setIsLoading] = useState(false);
+  // uncomment line below and delete line above to bring welcome sscreen back
+  // const [isLoading, setIsLoading] = useState(true);
+
   const [error, setError] = useState(null);
   const [updated, setUpdated] = useState(false);
   const [sidebarDisplayed, setSidebarDisplayed] = useState(true);
-
   // Starting data: default list of topics or user topics
   function startingData() {
     if (user) {
+      console.log("logged user");
+
       return fetchUserTopics();
     }
+    console.log("no logged user");
     if (JSON.parse(window.localStorage.getItem("guestDB"))) {
       return JSON.parse(window.localStorage.getItem("guestDB"));
     }
     return guestDB;
   }
-  console.log("starting data: ", startingData());
   // set localstorage to default data if empty
   if (!user && data && !window.localStorage.getItem("guestDB")) {
     const json = JSON.stringify(data);
@@ -71,8 +74,6 @@ function App() {
   // get current user at start
   useEffect(() => {
     const getCurrentUser = async () => {
-      console.log("geetin ucrrent user");
-
       const response = await fetchCurrentUser();
       if (response.currentUser) {
         setUser(response.currentUser.username);
@@ -85,8 +86,6 @@ function App() {
   // get the current user's topics when user changes or update triggered
   useEffect(() => {
     const fetchData = async () => {
-      console.log("geetin  user topics");
-
       setIsLoading(true);
       try {
         const response = await fetchUserTopics();
@@ -94,12 +93,13 @@ function App() {
       } catch (err) {
         setError(err);
       }
-      setIsLoading(false);
     };
     if (user) {
+      console.log("getting new data");
+
       fetchData();
+      setIsLoading(false);
     } else {
-      console.log("get guest data");
       setData(JSON.parse(window.localStorage.getItem("guestDB")));
     }
   }, [user, updated]);
@@ -135,8 +135,6 @@ function App() {
     }
   }
 
-
-
   return (
     <>
       <Header
@@ -157,26 +155,26 @@ function App() {
             flushAppError={flushAppError}
           />
         )}
-
+        {/* {!user && <WelcomeScreen setIsLoading={setIsLoading} />} */}
         <Routes
           topics={data}
           user={user}
           isLoading={isLoading}
-          handleLogin={(userCredentials) => handleLogin(userCredentials)}
           handleLogout={handleLogout}
           registerUser={registerUser}
           resetPassword={resetPassword}
-          handleCreateTopic={user ? createTopic : createTopicGuest}
-          deleteCurrentTopic={user ? deleteTopic : deleteTopicGuest}
           triggerUpdate={triggerUpdate}
-          handleEditTopic={user ? editTopic : editTopicGuest}
-          handleCreateLink={user ? createLink : handleLinksGuest}
-          handleDeleteLink={user ? deleteLink : handleLinksGuest}
-          editCurrentLink={user ? editLink : handleLinksGuest}
           error={error}
           flushAppError={flushAppError}
           handleError={handleError}
           setSidebarDisplayed={setSidebarDisplayed}
+          handleCreateTopic={user ? createTopic : createTopicGuest}
+          deleteCurrentTopic={user ? deleteTopic : deleteTopicGuest}
+          handleLogin={(userCredentials) => handleLogin(userCredentials)}
+          handleEditTopic={user ? editTopic : editTopicGuest}
+          handleCreateLink={user ? createLink : handleLinksGuest}
+          handleDeleteLink={user ? deleteLink : handleLinksGuest}
+          editCurrentLink={user ? editLink : handleLinksGuest}
         />
       </div>
     </>

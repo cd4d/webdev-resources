@@ -1,6 +1,5 @@
 // **** Shared functions **** //
 import React from "react";
-import { useReducer } from "react";
 import { NavLink } from "react-router-dom";
 // Frontend data retrieval to be replaced with rest API
 import { v4 as uuidv4 } from "uuid";
@@ -74,6 +73,14 @@ function slugify(string) {
     .replace(/-+$/, ""); // Trim - from end of text
 }
 
+// truncate opengraph description
+function truncateDescription(description, maxChars) {
+  if (description.length > maxChars) {
+    return description.substring(0, maxChars - 3) + "...";
+  }
+  return description;
+}
+
 // reducer to add/remove links
 function linksReducer(state, action, newLink) {
   switch (action.type) {
@@ -97,8 +104,13 @@ function linksReducer(state, action, newLink) {
 //   }, []
 // );
 
-export default displayLinks;
-export { buildNavigationPath, displayNavigationPath, slugify, linksReducer };
+export default slugify;
+export {
+  truncateDescription,
+  buildNavigationPath,
+  displayNavigationPath,
+  linksReducer,
+};
 
 // OLD
 // const buildNavigationPath = (db, query) => {

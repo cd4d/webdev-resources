@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./register.css";
-import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
 
 export default function Login(props) {
-  const history = useHistory();
-
   const [inputUsername, setUsername] = useState("");
   const [inputEmail, setEmail] = useState("");
 

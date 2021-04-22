@@ -3,9 +3,24 @@ export async function editTopicGuest(topicToEdit, editedTopic) {
   console.log("editedTopic: ", editedTopic);
   const oldData = JSON.parse(window.localStorage.getItem("guestDB")) || [];
   let newData;
-  // TODO find out why sdebar not updated
+  let error = null;
+  // check if topic title already exists
+  oldData.map((topic) => {
+    if (topic.title === editedTopic.title) {
+      error = topic.title;
+      return topic;
+    }
+    return topic;
+  });
+  if (error)
+    return {
+      status: 409,
+      statusText: "Duplicate title",
+      on: "topic",
+      operation: "editTopic",
+    };
 
-  // change a main topic t ao child topic
+  // change a main topic to a child topic
   if (editedTopic.parent && editedTopic.parent !== topicToEdit._id) {
     newData = oldData.map((topic) => {
       if (topic._id === editedTopic.parent) {
@@ -44,20 +59,15 @@ export async function editTopicGuest(topicToEdit, editedTopic) {
   // update
   newData = oldData.map((topic) => {
     if (topic._id === topicToEdit._id) {
-      console.log("topic found:", topic);
-      console.log({ ...topic, ...editedTopic });
+      // console.log("topic found:", topic);
+      // console.log({ ...topic, ...editedTopic });
       return { ...topic, ...editedTopic };
     } else {
       return topic;
     }
   });
   // save
-  console.log("storage is:", newData);
   window.localStorage.setItem("guestDB", JSON.stringify(newData));
 
-  //console.log(storage);
-  // if (editedTopic.title) {
-  //   return history.push("/topics/" + editedTopic.slug);
-  // }
-  return;
+  return newData;
 }

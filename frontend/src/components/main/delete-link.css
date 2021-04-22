@@ -1,0 +1,27 @@
+/* https://blog.logrocket.com/react-transition-group-examples-tutorial/ */
+
+
+
+
+/* This fires as soon as the element enters the DOM */
+
+.delete-link-enter {
+  opacity: 0.01;
+}
+/* This is where we can add the transition*/
+
+.delete-link-enter.delete-link-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+/* This fires as soon as the changeDeleteLinkClicked is false */
+
+.delete-link-leave {
+  opacity: 1;
+}
+/* This fires as element leaves the DOM*/
+
+.delete-link-leave.delete-link-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}

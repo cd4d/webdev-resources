@@ -47,12 +47,29 @@ export default function CreateTopic(props) {
       return closeModal();
     }
     console.log("topic to add: ", newTopic);
+    if (props.user) {
+      const response = await props.handleCreateTopic(newTopic);
+      if (response.status >= 400) {
+        props.handleError(response);
+        closeModal();
+      } else {
+        props.triggerUpdate();
+        newTopic.slug && history.push("/topics/" + newTopic.slug);
+        closeModal();
+      }
+    } else {
+      const localResponse = await props.handleCreateTopic(newTopic);
 
-    const response = props
-      .handleCreateTopic(newTopic)
-      .then(props.triggerUpdate())
-      .then(newTopic.slug && history.push("/topics/" + newTopic.slug))
-      .then(closeModal());
+      if (localResponse.status) {
+        props.handleError(localResponse);
+        closeModal();
+      } else {
+        props.triggerUpdate();
+        newTopic.slug && history.push("/topics/" + newTopic.slug);
+
+        closeModal();
+      }
+    }
   }
   const userLoggedIn = (
     <>

@@ -65,6 +65,8 @@ function Sidebar(props) {
 }
 
 export default Sidebar;
+
+
 // OLD
 // function SidebarItem(item) {
 //  return (

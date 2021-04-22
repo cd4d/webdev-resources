@@ -5,14 +5,15 @@
   "dependencies": {
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "axios": "^0.21.0",
-    "bootstrap": "^4.5.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-modal": "^3.11.2",
+    "axios": "^0.21.1",
+    "bootstrap": "^4.6.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-modal": "^3.13.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.0",
-    "uuid": "^8.3.0"
+    "react-scripts": "^4.0.3",
+    "react-transition-group": "^4.4.1",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "PORT=4000 react-scripts start",
@@ -38,7 +39,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.5",
-    "react-test-renderer": "^16.13.1"
+    "enzyme-adapter-react-16": "^1.15.6",
+    "react-test-renderer": "^16.14.0"
   }
 }

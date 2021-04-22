@@ -1,0 +1,17 @@
+.topic-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* .topic-container {
+  animation: fadeIn 2s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+} */

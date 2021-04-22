@@ -86,30 +86,35 @@ export default function AddLinks(props) {
       setIsLoading(false);
       return null;
     }
-    // else console.log("displayed topic: ", props.displayedTopic);
     if (props.user) {
       const response = await props.handleCreateLink({
         topic: props.displayedTopic,
         ...newLink,
       });
-      if (response.status !== 200) {
+      if (response.status >= 400) {
+        console.log("addlink user error: ", response);
         props.handleError(response);
         closeModal();
       } else {
         props.triggerUpdate();
       }
     } else {
-      const response = await props.handleCreateLink(
+      const localResponse = await props.handleCreateLink(
         {
           topic: props.displayedTopic,
           ...newLink,
         },
         "createLink"
       );
-    }
-    props.triggerUpdate();
 
-    closeModal();
+      if (localResponse.status) {
+        props.handleError(localResponse);
+        closeModal();
+      } else {
+        props.triggerUpdate();
+        closeModal();
+      }
+    }
   }
 
   function handleChange(e) {

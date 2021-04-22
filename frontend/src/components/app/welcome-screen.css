@@ -1,0 +1,12 @@
+.welcome-screen-modal {
+    border: 1px solid;
+    margin: 10% 30%;
+    padding: 20px;
+    background: white;
+  }
+
+  
+  #button-close-modal {
+    float: right;
+  }
+  

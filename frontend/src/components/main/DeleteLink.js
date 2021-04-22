@@ -5,24 +5,22 @@ Modal.setAppElement("#root");
 
 export default function DeleteLink(props) {
   //console.log(props);
-  const [deleteLinkClicked, setDeleteLinkClicked] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
 
   let topicToEdit = props.displayedTopic;
-  function openModal() {
-    setIsOpen(true);
-  }
+
   function closeModal() {
     setIsOpen(false);
   }
   useEffect(() => {
-    setDeleteLinkClicked(false);
+    setShowDeleteConfirmation(false);
   }, []);
-  function changeDeleteLinkClicked() {
-    setDeleteLinkClicked((prevState) => !prevState);
+  function toggleDeleteConfirmation() {
+    setShowDeleteConfirmation((prevState) => !prevState);
   }
   async function handleDelete() {
-    setDeleteLinkClicked(true);
+    setShowDeleteConfirmation(true);
     if (props.user) {
       await props.handleDeleteLink({
         topicId: topicToEdit._id,
@@ -43,14 +41,13 @@ export default function DeleteLink(props) {
 
   return (
     <>
-      {!deleteLinkClicked ? (
+      {!showDeleteConfirmation ? (
         <>
+          {" "}
           <span className="blank-space"></span>
           <button
             className="btn-delete-link"
-            onClick={changeDeleteLinkClicked}
-
-            // onClick={props.user ? changeDeleteLinkClicked : openModal}
+            onClick={toggleDeleteConfirmation}
           >
             <span className="gg-trash" title="Delete link"></span>
           </button>
@@ -64,13 +61,14 @@ export default function DeleteLink(props) {
             <span className="gg-check-r" title="Confirm"></span>
           </button>
           <button
-            onClick={changeDeleteLinkClicked}
+            onClick={toggleDeleteConfirmation}
             className="btn-confirm-cancel cancel-delete-link"
           >
             <span className="gg-close-o" title="Cancel"></span>
           </button>
         </span>
-      )}{" "}
+      )}
+
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
