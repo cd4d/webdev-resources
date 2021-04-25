@@ -1,11 +1,16 @@
 // Session handling
-
 const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
+// const MongoStore = require("connect-mongo")(session);
+
+const MongoStore = require("connect-mongo");
 
 // change to prod db
-const sessionStore = new MongoStore({
-  url: process.env.DB_DEV,
+// const sessionStore = new MongoStore({
+//   url: process.env.DB_DEV,
+//   collection: "sessions",
+// });
+const sessionStore = MongoStore.create({
+  mongoUrl: process.env.DB_DEV,
   collection: "sessions",
 });
 module.exports = function (app) {

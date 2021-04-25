@@ -2,8 +2,8 @@
 import axios from "axios";
 import slugify from "../utils/utils";
 // to be changed in production
-//const API_SERVER = "http://localhost:3000";
-const API_SERVER = "secret-dusk-22976.herokuapp.com";
+const API_SERVER = "http://localhost:3000";
+//const API_SERVER = "secret-dusk-22976.herokuapp.com";
 
 // common parameters for axios: https://flaviocopes.com/axios-credentials/ a
 const axiosConnection = axios.create({
