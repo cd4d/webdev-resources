@@ -2,8 +2,15 @@
   list-style-type: none;
 }
 
-.navigation-path li{
-    display: inline;
-    margin:0 0.5rem 0 0
-  }
-  
+.navigation-path li {
+  display: inline;
+  margin: 0 0.5rem 0 0;
+}
+
+.navigation-path a::after {
+  content: " > ";
+  display: inline;
+}
+.navigation-path a:last-of-type::after {
+  content: "";
+}

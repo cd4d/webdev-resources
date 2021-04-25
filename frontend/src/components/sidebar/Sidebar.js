@@ -2,6 +2,7 @@ import React from "react";
 import "./sidebar.css";
 import { v4 as uuidv4 } from "uuid";
 import { NavLink } from "react-router-dom";
+
 // https://dev.to/jsmanifest/create-a-modern-dynamic-sidebar-menu-in-react-using-recursion-36eo
 // https://stackoverflow.com/questions/59495416/react-link-using-react-router-in-sidebar-when-clicked-multiple-times-causes-ur
 function SidebarItem(props) {
@@ -50,14 +51,12 @@ function Sidebar(props) {
     <>
       <input type="checkbox" id="mobile-menu-checkbox" />
       <div className="sidebar column">
-        {!props.isLoading ? (
+        {!props.isLoading && (
           <nav className="content">
             <ul className="sidebar-items">
               <SidebarItem {...props} />
             </ul>
           </nav>
-        ) : (
-          <>Loading...</>
         )}
       </div>
     </>
@@ -65,7 +64,6 @@ function Sidebar(props) {
 }
 
 export default Sidebar;
-
 
 // OLD
 // function SidebarItem(item) {

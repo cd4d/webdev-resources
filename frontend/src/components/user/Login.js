@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "../main/main.css";
 
 import "./login.css";
@@ -6,10 +6,13 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 export default function Login(props) {
+  useEffect(() => {
+    props.setSidebarDisplayed(false);
+  });
   const history = useHistory();
 
   const [inputUsername, setUsername] = useState("");
-  const [inputPassword, setpassword] = useState("");
+  const [inputPassword, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState(null);
 
   let errorType = "";
@@ -19,7 +22,7 @@ export default function Login(props) {
       setUsername(e.target.value);
     }
     if (e.target.id === "password") {
-      setpassword(e.target.value);
+      setPassword(e.target.value);
     }
   }
 
@@ -30,8 +33,6 @@ export default function Login(props) {
         className="login-form"
         onSubmit={async (e) => {
           e.preventDefault();
-          console.log("user:", inputUsername);
-          console.log("pw:", inputPassword);
 
           const response = await props.handleLogin({
             username: inputUsername,

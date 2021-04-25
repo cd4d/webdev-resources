@@ -14,6 +14,10 @@ export default function Login(props) {
     setErrorMsg(null);
   }, []);
 
+  useEffect(() => {
+    props.setSidebarDisplayed(false);
+  });
+
   function handleChange(e) {
     if (e.target.id === "username") {
       setUsername(e.target.value);

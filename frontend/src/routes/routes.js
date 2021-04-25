@@ -1,6 +1,7 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Main from "../components/main/Main";
+import About from "../components/about/About";
 import Login from "../components/user/Login";
 import Register from "../components/user/Register";
 
@@ -30,6 +31,13 @@ export default function Routes(appProps) {
             <Register {...routeProps} {...appProps} />
           )
         }
+      ></Route>
+      <Route
+        exact
+        path="/about"
+        render={(routeProps) => (
+          <About setSidebarDisplayed={appProps.setSidebarDisplayed} />
+        )}
       ></Route>
       <Route
         exact

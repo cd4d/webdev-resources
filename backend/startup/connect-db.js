@@ -4,7 +4,7 @@ let DATABASE = process.env.DB_DEV;
 if (process.env.NODE_ENV === "test") {
   DATABASE = process.env.DB_TEST;
 }
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "prod") {
   DATABASE = process.env.DB_PROD;
 }
 

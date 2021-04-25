@@ -1,0 +1,10 @@
+.about-container {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
+.about-title {
+  color: blueviolet;
+}
+.about-container h2 {
+}

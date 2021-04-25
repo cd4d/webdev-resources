@@ -30,11 +30,11 @@ import "./icons.css";
 import "./App.css";
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [checkingLogin, setCheckingLogin] = useState(true);
+
   const [user, setUser] = useState(null);
   const [data, setData] = useState(startingData());
-  const [isLoading, setIsLoading] = useState(false);
-  // uncomment line below and delete line above to bring welcome sscreen back
-  // const [isLoading, setIsLoading] = useState(true);
 
   const [error, setError] = useState(null);
   const [updated, setUpdated] = useState(false);
@@ -42,11 +42,8 @@ function App() {
   // Starting data: default list of topics or user topics
   function startingData() {
     if (user) {
-      console.log("logged user");
-
       return fetchUserTopics();
     }
-    console.log("no logged user");
     if (JSON.parse(window.localStorage.getItem("guestDB"))) {
       return JSON.parse(window.localStorage.getItem("guestDB"));
     }
@@ -71,22 +68,24 @@ function App() {
     });
   }
 
-  // get current user at start
+  // get current user at start and stop loading state
   useEffect(() => {
     const getCurrentUser = async () => {
       const response = await fetchCurrentUser();
       if (response.currentUser) {
         setUser(response.currentUser.username);
       }
+      setIsLoading(false);
+      setCheckingLogin(false);
     };
-
-    getCurrentUser();
+    setTimeout(getCurrentUser, 1000);
+    // getCurrentUser();
   }, [user]);
 
   // get the current user's topics when user changes or update triggered
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
-      setIsLoading(true);
       try {
         const response = await fetchUserTopics();
         setData(response);
@@ -96,16 +95,17 @@ function App() {
     };
     if (user) {
       console.log("getting new data");
-
       fetchData();
       setIsLoading(false);
-    } else {
+    } else if (!checkingLogin) {
       setData(JSON.parse(window.localStorage.getItem("guestDB")));
+      setIsLoading(false);
     }
-  }, [user, updated]);
+  }, [user, updated, checkingLogin]);
 
   function triggerUpdate() {
     setError(null);
+
     setUpdated((prevState) => !prevState);
   }
 
@@ -114,10 +114,13 @@ function App() {
   }
   //  login and setting current user
   async function handleLogin(userCredentials) {
+    setIsLoading(true);
+    setCheckingLogin(true);
     const response = await loginUser(userCredentials);
     if (response && response.status === 200) {
       setUser(response.loggedUser);
     }
+
     return response;
   }
 

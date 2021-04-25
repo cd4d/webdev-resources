@@ -4,13 +4,6 @@ import { NavLink } from "react-router-dom";
 // Frontend data retrieval to be replaced with rest API
 import { v4 as uuidv4 } from "uuid";
 
-function displayLinks(currentTopicLinks) {
-  return currentTopicLinks.map((link) => (
-    <li key={uuidv4()} id={link._id} className="list-group-item">
-      <a href={link.url}>{link.description}</a>
-    </li>
-  ));
-}
 // builds the navigation path, traversing the array of topics recursively
 const buildNavigationPath = (allTopics, currentTopic) => {
   for (let topic of allTopics) {
@@ -42,18 +35,16 @@ const displayNavigationPath = (topics) => {
     // build the url by adding to it while looping
     urlTopic += "/" + topic.slug;
     return (
-      <li key={uuidv4()}>
-        <NavLink to={`${urlTopic}`}>
-          {topic.title} {"/"}
-          {""}
-        </NavLink>
-      </li>
+      <NavLink key={uuidv4()} to={`${urlTopic}`}>
+        {topic.title}
+        {""}
+      </NavLink>
     );
   });
 };
 
 // https://gist.github.com/hagemann/382adfc57adbd5af078dc93feef01fe1
-// generate URL slugs from regular string Web development -> web-development
+// generate URL slugs from regular string: Web development -> web-development
 function slugify(string) {
   const a =
     "àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;";
@@ -67,8 +58,8 @@ function slugify(string) {
     .replace(/\s+/g, "-") // Replace spaces with -
     .replace(p, (c) => b.charAt(a.indexOf(c))) // Replace special characters
     .replace(/&/g, "-and-") // Replace & with 'and'
-    .replace(/[^\w\-]+/g, "") // Remove all non-word characters
-    .replace(/\-\-+/g, "-") // Replace multiple - with single -
+    .replace(/[^\w-]+/g, "") // Remove all non-word characters
+    .replace(/--+/g, "-") // Replace multiple - with single -
     .replace(/^-+/, "") // Trim - from start of text
     .replace(/-+$/, ""); // Trim - from end of text
 }
@@ -91,6 +82,24 @@ function linksReducer(state, action, newLink) {
       return state;
   }
 }
+
+export default slugify;
+export {
+  truncateDescription,
+  buildNavigationPath,
+  displayNavigationPath,
+  linksReducer,
+};
+
+// OLD
+
+// function displayLinks(currentTopicLinks) {
+//   return currentTopicLinks.map((link) => (
+//     <li key={uuidv4()} id={link._id} className="list-group-item">
+//       <a href={link.url}>{link.description}</a>
+//     </li>
+//   ));
+// }
 // const [linksArray, dispatch] = useReducer(
 //   (linksArray, { operation, newLink }) => {
 //     switch (operation) {
@@ -103,16 +112,6 @@ function linksReducer(state, action, newLink) {
 //     }
 //   }, []
 // );
-
-export default slugify;
-export {
-  truncateDescription,
-  buildNavigationPath,
-  displayNavigationPath,
-  linksReducer,
-};
-
-// OLD
 // const buildNavigationPath = (db, query) => {
 //   for (var i = 0; i < db.length; i++) {
 //     // add traversed topic

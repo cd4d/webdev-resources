@@ -97,6 +97,7 @@ export default function AddLinks(props) {
         closeModal();
       } else {
         props.triggerUpdate();
+        closeModal();
       }
     } else {
       const localResponse = await props.handleCreateLink(

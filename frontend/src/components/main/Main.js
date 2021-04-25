@@ -9,8 +9,7 @@ import CreateTopic from "./CreateTopic";
 import DeleteTopic from "./DeleteTopic";
 import EditTopic from "./EditTopic";
 import TopicContainer from "./TopicContainer";
-
-
+import Loading from "../app/Loading";
 
 // export let defaultData = {
 //   // default data to be displayed
@@ -51,6 +50,7 @@ import TopicContainer from "./TopicContainer";
 // };
 
 export default function Main(props) {
+  
   // default blank data
   let displayedTopic = { title: "", slug: "", links: [], _id: "" };
   const topics = props.topics;
@@ -92,10 +92,10 @@ export default function Main(props) {
   } else if (topics && topics.length > 0) {
     displayedTopic = topics[0];
   }
-  // render logged in user content
-  function renderUserLoggedIn() {
+  // render  user content
+  function renderUserTopics() {
     if (props.isLoading) {
-      return <>Loading...</>;
+      return <Loading />;
     }
     return (
       <div className="main-container">
@@ -134,7 +134,7 @@ export default function Main(props) {
       </div>
     );
   }
-  return <div className="main content column">{renderUserLoggedIn()}</div>;
+  return <div className="main content column">{renderUserTopics()}</div>;
 }
 // Locking guest user, not implemented
 // const noUserLoggedIn = (

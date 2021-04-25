@@ -19,5 +19,8 @@
   "homepage": "https://github.com/cd4d/webdev-resources#readme",
   "devDependencies": {
     "concurrently": "^5.3.0"
+  },
+  "dependencies": {
+    "compression": "^1.7.4"
   }
 }
