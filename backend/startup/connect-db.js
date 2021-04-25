@@ -1,4 +1,4 @@
-require("dotenv").config();
+if (process.env.NODE_ENV !== "prod") require("dotenv").config();
 const mongoose = require("mongoose");
 let DATABASE = process.env.DB_DEV;
 if (process.env.NODE_ENV === "test") {

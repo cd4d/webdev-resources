@@ -1,4 +1,5 @@
-require("dotenv").config();
+if (process.env.NODE_ENV !== "prod") require("dotenv").config();
+
 const nodemailer = require("nodemailer");
 // Send a reset email
 // TODO change to gmail/other provider in production

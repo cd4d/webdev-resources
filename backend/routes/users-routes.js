@@ -1,4 +1,4 @@
-require("dotenv").config();
+if (process.env.NODE_ENV !== "prod") require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 
