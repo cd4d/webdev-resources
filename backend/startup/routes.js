@@ -1,5 +1,5 @@
 // routes paths defined here, used by index.js
-if (process.env.NODE_ENV !== "prod") require("dotenv").config();
+if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const usersRoute = require("../routes/users-routes");

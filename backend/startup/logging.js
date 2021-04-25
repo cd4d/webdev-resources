@@ -1,5 +1,5 @@
 // https://www.digitalocean.com/community/tutorials/how-to-use-winston-to-log-node-js-applications
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const winston = require("winston");
 // define the custom settings for each transport (file, console)
 const options = {

@@ -1,6 +1,6 @@
 // Generate a password reset token from hashing user provided data
 
-if (process.env.NODE_ENV !== "prod") require("dotenv").config();
+if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const crypto = require("crypto");
 
 module.exports = function (user, requestDate) {
