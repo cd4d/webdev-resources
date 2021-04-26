@@ -8,10 +8,12 @@ const linksRoute = require("../routes/links-routes");
 // enable CORS, change in production to real URL
 
 // authorized list of origins
-const whiteList = [
-  process.env.LOCAL_BACKEND_URL,
-  process.env.LOCAL_FRONTEND_URL,
-];
+let whiteList;
+if (process.env.NODE_ENV !== "production") {
+  whiteList = [process.env.LOCAL_BACKEND_URL, process.env.LOCAL_FRONTEND_URL];
+} else {
+  whiteList = [process.env.PROD_BACKEND_URL, process.env.PROD_FRONTEND_URL];
+}
 // https://stackoverflow.com/questions/42589882/nodejs-cors-middleware-origin-undefined
 const corsOptions = {
   origin: function (origin, callback) {
