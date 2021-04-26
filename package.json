@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-all": "concurrently \"cd backend && npm run nodemon\" \"cd frontend && npm start\" ",
-    "heroku-postbuild": "cd frontend && npm install && npm run build"
+    "heroku-postbuild": "cd frontend && npm install && npm run build && npm start"
   },
   "repository": {
     "type": "git",
