@@ -21,10 +21,10 @@ require("./startup/errors")(app); // error handling middleware must come last
 // https://stackoverflow.com/questions/36504768/deploy-the-backend-and-frontend-on-the-same-heroku-app-dyno
 const path = require("path");
 // Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, "frontend/build")));
+app.use(express.static("frontend/build"));
 // Anything that doesn't match the above, send back index.html
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname + "/frontend/build/index.html"));
+  res.sendFile("/frontend/build/index.html");
 });
 
 const server = require("./startup/connect-server")(app);
