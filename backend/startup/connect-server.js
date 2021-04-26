@@ -1,6 +1,6 @@
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
 
-let port = process.env.PORT;
+let port = process.env.BACKEND_PORT;
 if (port == null || port == "") {
   port = 3000;
 }
