@@ -31,8 +31,8 @@ const corsOptions = {
 module.exports = function (app) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  //app.use(cors()); // use defaults, all origins allowed
-  app.use(cors(corsOptions));
+  app.use(cors()); // use defaults, all origins allowed
+  //app.use(cors(corsOptions));
 
   app.use("/api/users", usersRoute);
   app.use("/api/topics", topicsRoute);

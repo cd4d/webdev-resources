@@ -94,7 +94,7 @@ export async function resetPassword(email) {
 
 export async function fetchUserTopics() {
   try {
-    console.log("api URL: ", API_URL);
+    //console.log("api URL: ", API_URL);
     const response = await axiosConnection(API_URL + "/api/topics/");
     // console.log("User topics Response:", response);
     return response.data;
