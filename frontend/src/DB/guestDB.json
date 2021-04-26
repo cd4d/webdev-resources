@@ -34,13 +34,13 @@
       "children": [
           {
               "_id": "7db89a03-d1d0-4dcf-97fa-cc59a650c9af",
-              "title": "Child Python 1",
-              "slug": "child-python-1"
+              "title": "Django",
+              "slug": "django"
           },
           {
               "_id": "f74569fd-79a0-4413-860d-c073c75ef838",
-              "title": "Child Python 2",
-              "slug": "child-python-2"
+              "title": "Data science",
+              "slug": "data-science"
           }
       ],
       "slug": "python",
@@ -105,43 +105,48 @@
       "__v": 0
   },
   {
-      "title": "Child Python 1",
-      "description": "childPython 1",
+      "title": "Django",
+      "description": "Django web framework",
       "parent": "606782d122d6513cae812068",
       "_id": "7db89a03-d1d0-4dcf-97fa-cc59a650c9af",
-      "slug": "child-python-1",
+      "slug": "django",
       "links": [
           {
               "_id": "328c329a-8a6e-4f98-a377-54a0dfea020f",
-              "url": "https://childpython1.com/",
-              "summary": "childpython1 link 1"
+              "url": "https://www.djangoproject.com/",
+              "summary": "Django official page"
           },
           {
               "_id": "aa980585-3483-468f-8316-22559f51587f",
-              "url": "https://childpython12.com/",
-              "summary": "childpython1 link 2"
+              "url": "https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Introduction",
+              "summary": "MDN Django introduction"
           }
       ],
       "user": null,
       "depth": 1,"children": []
   },
   {
-      "title": "Child Python 2",
-      "description": "childPython 2",
+      "title": "Data science",
+      "description": "Data science using Python",
       "parent": "606782d122d6513cae812068",
       "_id": "f74569fd-79a0-4413-860d-c073c75ef838",
-      "slug": "child-python-2",
+      "slug": "data-science",
       "links": [
           {
               "_id": "95e496c4-7270-46b4-acf3-767482e93989",
-              "url": "https://childpython21.com/",
-              "summary": "childpython2 link 1"
+              "url": "https://pandas.pydata.org/",
+              "summary": "pandas"
           },
           {
-              "_id": "42f3d576-6a09-49de-a8b3-f6f6f4b91131",
-              "url": "https://childpython22.com/",
-              "summary": "childpython2 link 2"
-          }
+            "_id": "9669e7f5-50d8-45fa-92d1-44bfda264e6f",
+            "url": "https://www.anaconda.com/",
+            "summary": "Anaconda",
+            "openGraphTitle": "Anaconda | The World's Most Popular Data Science Platform",
+            "openGraphDescription": "Anaconda is the birthplace of Python data science. We are a movement of data scientists, data-driven enterprises, and open source communities.",
+            "openGraphSiteName": "Anaconda",
+            "openGraphDomainName": "https://www.anaconda.com",
+            "openGraphImage": "https://assets-cdn.anaconda.com/assets/_1200x630_crop_center-center_82_none/anaconda-meta.jpg?mtime=20200506175707&focal=none&tmtime=20210216163404"
+        }
       ],
       "user": null,
       "depth": 1

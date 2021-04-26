@@ -25,6 +25,12 @@ export default function WelcomeScreen(props) {
           A react app to bookmark links by topics with Open Graph generated
           preview.{" "}
         </p>
+        <p>
+          Save, delete, edit links and topics. Unregistered use is saved in
+          localStorage, registered users (no real email needed) are saved in a
+          remote MongoDB database.
+        </p>
+        <p>Uses MongoDB, Express, Node and React (MERN stack).</p>
         <button onClick={closeModal}>close</button>
       </Modal>
     </>

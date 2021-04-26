@@ -1,3 +1,5 @@
+import slugify from "../../utils/utils";
+
 export async function editTopicGuest(topicToEdit, editedTopic) {
   console.log("topicToEdit: ", topicToEdit);
   console.log("editedTopic: ", editedTopic);
@@ -19,6 +21,22 @@ export async function editTopicGuest(topicToEdit, editedTopic) {
       on: "topic",
       operation: "editTopic",
     };
+  // update slug in children topic of parent
+  if (topicToEdit.parent && editedTopic.title) {
+    newData = oldData.map((topic) => {
+      if (topic._id === topicToEdit.parent) {
+        topic.children.forEach((childTopic, index) => {
+          if (childTopic._id === topicToEdit._id) {
+            childTopic.title = editedTopic.title;
+            childTopic.slug = editedTopic.slug;
+          }
+        });
+        return topic;
+      } else {
+        return topic;
+      }
+    });
+  }
 
   // change a main topic to a child topic
   if (editedTopic.parent && editedTopic.parent !== topicToEdit._id) {
@@ -42,7 +60,7 @@ export async function editTopicGuest(topicToEdit, editedTopic) {
       return topic;
     });
   } // if child topic, remove the topic from previous parent list
-  if (topicToEdit.parent) {
+  if (topicToEdit.parent && editedTopic.parent) {
     newData = oldData.map((topic) => {
       if (topic._id === topicToEdit.parent) {
         topic.children.forEach((childTopic, index) => {

@@ -131,6 +131,7 @@ export default function EditTopic(props) {
     let newSlug = "";
     if (editedTopic.title) {
       newSlug = slugify(editedTopic.title);
+      editedTopic.slug = newSlug;
     }
     if (props.user) {
       const response = await props.handleEditTopic(
@@ -156,6 +157,7 @@ export default function EditTopic(props) {
         closeModal();
       } else {
         props.triggerUpdate();
+        editedTopic.title && history.push("/topics/" + newSlug);
         closeModal();
       }
     }

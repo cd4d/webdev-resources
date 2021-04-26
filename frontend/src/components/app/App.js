@@ -158,7 +158,7 @@ function App() {
             flushAppError={flushAppError}
           />
         )}
-        {/* {!user && <WelcomeScreen setIsLoading={setIsLoading} />} */}
+        {!user && <WelcomeScreen setIsLoading={setIsLoading} />}
         <Routes
           topics={data}
           user={user}

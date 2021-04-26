@@ -155,7 +155,7 @@ router.post(
 
 router.patch(
   "/:topicId",
-  checkAllowedUpdates(["title", "links", "description", "parent"]),
+  checkAllowedUpdates(["title", "links", "description", "parent", "slug"]),
   topicPatchValidationRules(),
   validate,
   findUser,
