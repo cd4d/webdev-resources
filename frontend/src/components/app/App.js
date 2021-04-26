@@ -94,7 +94,7 @@ function App() {
       }
     };
     if (user) {
-      console.log("getting new data");
+      // console.log("getting new data");
       fetchData();
       setIsLoading(false);
     } else if (!checkingLogin) {

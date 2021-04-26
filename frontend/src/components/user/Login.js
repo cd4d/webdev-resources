@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../main/main.css";
 
 import "./login.css";
@@ -6,9 +6,10 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 export default function Login(props) {
+  const { setSidebarDisplayed } = props;
   useEffect(() => {
-    props.setSidebarDisplayed(false);
-  });
+    setSidebarDisplayed(false);
+  }, [setSidebarDisplayed]);
   const history = useHistory();
 
   const [inputUsername, setUsername] = useState("");
@@ -42,7 +43,7 @@ export default function Login(props) {
             errorType = `Login failed.`;
             return setErrorMsg(errorType);
           }
-          props.setSidebarDisplayed(true);
+          setSidebarDisplayed(true);
           history.push("/");
         }}
       >
