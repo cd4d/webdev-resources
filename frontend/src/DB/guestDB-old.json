@@ -1,0 +1,194 @@
+[
+  {
+      "user": null,
+      "parent": null,
+      "depth": 0,
+      "_id": "606782d122d6513cae812068",
+      "title": "Python",
+      "links": [
+          {
+              "openGraphTitle": "Welcome to Python.org",
+              "openGraphDescription": "The official home of the Python Programming Language",
+              "openGraphSiteName": "Python.org",
+              "openGraphDomainName": "https://www.python.org/",
+              "openGraphImage": "https://www.python.org/static/opengraph-icon-200x200.png",
+              "_id": "606ce35a2cd91c1e15c5ce89",
+              "topic": "606782d122d6513cae812068",
+              "url": "https://www.python.org/",
+              "summary": "python.org"
+          },
+          {
+              "openGraphTitle": "Learn Python - Free Interactive Python Tutorial",
+              "openGraphDescription": "learnpython.org is a free interactive Python tutorial for people who want to learn Python, fast.",
+              "openGraphSiteName": null,
+              "openGraphDomainName": "https://www.learnpython.org",
+              "openGraphImage": "https://www.learnpython.org/static/img/share-logos/learnpython.org.png",
+              "_id": "606ce3762cd91c1e15c5ce8a",
+              "topic": "606782d122d6513cae812068",
+              "url": "https://www.learnpython.org/",
+              "summary": "LearnPython"
+          }
+      ],
+      "description": "Links on Python",
+      "ancestors": [],
+      "children": [
+          {
+              "_id": "7db89a03-d1d0-4dcf-97fa-cc59a650c9af",
+              "title": "Django",
+              "slug": "django"
+          },
+          {
+              "_id": "f74569fd-79a0-4413-860d-c073c75ef838",
+              "title": "Data science",
+              "slug": "data-science"
+          }
+      ],
+      "slug": "python",
+      "__v": 0
+  },
+  {
+      "user": null,
+      "parent": null,
+      "depth": 0,
+      "_id": "606ce3b62cd91c1e15c5ce8b",
+      "title": "Javascript",
+      "links": [
+          {
+              "openGraphTitle": null,
+              "openGraphDescription": "JavaScript (JS) is a lightweight, interpreted, or just-in-time compiled programming language with first-class functions. While it is most well-known as the scripting language for Web pages, many non-browser environments also use it, such as Node.js, Apache CouchDB and Adobe Acrobat. JavaScript is a prototype-based, multi-paradigm, single-threaded, dynamic language, supporting object-oriented, imperative, and declarative (e.g. functional programming) styles. Read more about JavaScript.JavaScript (JS) is a lightweight, interpreted, or just-in-time compiled programming language with first-class functions. While it is most well-known as the scripting language for Web pages, many non-browser environments also use it, such as Node.js, Apache CouchDB and Adobe Acrobat.",
+              "openGraphSiteName": null,
+              "openGraphDomainName": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+              "openGraphImage": null,
+              "_id": "606ce3bc2cd91c1e15c5ce8c",
+              "topic": "606ce3b62cd91c1e15c5ce8b",
+              "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+              "summary": "Mozilla developer Network"
+          },
+          {
+              "openGraphTitle": "The Modern JavaScript Tutorial",
+              "openGraphDescription": "Modern JavaScript Tutorial: simple, but detailed explanations with examples and tasks, including: closures, document and events, object oriented programming and more.",
+              "openGraphSiteName": null,
+              "openGraphDomainName": "https://javascript.info/",
+              "openGraphImage": "https://javascript.info/img/site_preview_en_1200x630.png",
+              "_id": "606ce3e32cd91c1e15c5ce8e",
+              "topic": "606ce3b62cd91c1e15c5ce8b",
+              "url": "https://javascript.info/",
+              "summary": "javascript.info"
+          },
+          {
+              "openGraphTitle": "React – A JavaScript library for building user interfaces",
+              "openGraphDescription": "A JavaScript library for building user interfaces",
+              "openGraphSiteName": null,
+              "openGraphDomainName": "https://reactjs.org/",
+              "openGraphImage": "https://reactjs.org/logo-og.png",
+              "_id": "606cee062cd91c1e15c5ce94",
+              "topic": "606ce3b62cd91c1e15c5ce8b",
+              "url": "https://reactjs.org/",
+              "summary": "react"
+          }
+      ],
+      "description": "Links on Javascript",
+      "ancestors": [],
+      "children": [
+          {
+              "_id": "8dc7922c-1a9c-4039-a804-be77c0d319fe",
+              "title": "Child JS 1",
+              "slug": "child-js-1"
+          },
+          {
+              "_id": "e9cea6a9-1e1d-485b-850a-a40bf3ee6a1b",
+              "title": "Child JS 2",
+              "slug": "child-js-2"
+          }
+      ],
+      "slug": "javascript",
+      "__v": 0
+  },
+  {
+      "title": "Django",
+      "description": "Django web framework",
+      "parent": "606782d122d6513cae812068",
+      "_id": "7db89a03-d1d0-4dcf-97fa-cc59a650c9af",
+      "slug": "django",
+      "links": [
+          {
+              "_id": "328c329a-8a6e-4f98-a377-54a0dfea020f",
+              "url": "https://www.djangoproject.com/",
+              "summary": "Django official page"
+          },
+          {
+              "_id": "aa980585-3483-468f-8316-22559f51587f",
+              "url": "https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Introduction",
+              "summary": "MDN Django introduction"
+          }
+      ],
+      "user": null,
+      "depth": 1,"children": []
+  },
+  {
+      "title": "Data science",
+      "description": "Data science using Python",
+      "parent": "606782d122d6513cae812068",
+      "_id": "f74569fd-79a0-4413-860d-c073c75ef838",
+      "slug": "data-science",
+      "links": [
+          {
+              "_id": "95e496c4-7270-46b4-acf3-767482e93989",
+              "url": "https://pandas.pydata.org/",
+              "summary": "pandas"
+          },
+          {
+            "_id": "9669e7f5-50d8-45fa-92d1-44bfda264e6f",
+            "url": "https://www.anaconda.com/",
+            "summary": "Anaconda",
+            "openGraphTitle": "Anaconda | The World's Most Popular Data Science Platform",
+            "openGraphDescription": "Anaconda is the birthplace of Python data science. We are a movement of data scientists, data-driven enterprises, and open source communities.",
+            "openGraphSiteName": "Anaconda",
+            "openGraphDomainName": "https://www.anaconda.com",
+            "openGraphImage": "https://assets-cdn.anaconda.com/assets/_1200x630_crop_center-center_82_none/anaconda-meta.jpg?mtime=20200506175707&focal=none&tmtime=20210216163404"
+        }
+      ],
+      "user": null,
+      "depth": 1
+  },
+  {
+      "title": "Child JS 1",
+      "description": "childJS 1",
+      "parent": "606ce3b62cd91c1e15c5ce8b",
+      "_id": "8dc7922c-1a9c-4039-a804-be77c0d319fe",
+      "slug": "child-js-1",
+      "links": [],
+      "user": null,
+      "depth": 1,"children": []
+  },
+  {
+      "title": "Child JS 2",
+      "description": "childJS 2",
+      "parent": "606ce3b62cd91c1e15c5ce8b",
+      "_id": "e9cea6a9-1e1d-485b-850a-a40bf3ee6a1b",
+      "slug": "child-js-2",
+      "links": [],
+      "user": null,
+      "depth": 1,"children": []
+  },
+  {"children": [],
+"depth": 0,
+"description": "topic 3 desc",
+"links": [ {"openGraphDescription": "We're looking at the rooftop of Casa Batlló, a six",
+    "openGraphDomainName": "https://www.bing.com/?form=HPFBBK&ssd=20210423_0400&mkt=en-CA",
+    "openGraphImage": "https://www.bing.com/th?id=OHR.BatlloJordi_EN-CA5849120609_tmb.jpg&rf=",
+    "openGraphSiteName": "Bing",
+    "openGraphTitle": "A house of grand scale(s)",
+    "summary": "bing",
+    "url": "https://bing.com/",
+    "_id": "411c705b-cf4c-40ad-8941-8e3140e921c4",
+    "slug": "topic-3",
+    "title": "Topic 3",
+    "user": null,
+    "_id": "c84e8c73-e8de-4f4c-bf77-f6b178f7a758"}],
+"slug": "topic-3",
+"title": "Topic 3",
+"user": null,
+"_id": "c84e8c73-e8de-4f4c-bf77-f6b178f7a758"}
+]
+
