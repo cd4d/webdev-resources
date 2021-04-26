@@ -2,13 +2,17 @@
 import axios from "axios";
 import slugify from "../utils/utils";
 // to be changed in production
-const API_SERVER = "http://localhost:3000";
-//const API_SERVER = "secret-dusk-22976.herokuapp.com";
+let API_URL;
+if (process.env.NODE_ENV !== "production") {
+  API_URL = "http://localhost:3000";
+} else {
+  API_URL = process.env.PROD_BACKEND_URL;
+}
 
 // common parameters for axios: https://flaviocopes.com/axios-credentials/ a
 const axiosConnection = axios.create({
   withCredentials: true,
-  baseURL: API_SERVER,
+  baseURL: API_URL,
 });
 
 function returnError(error, context) {
@@ -54,7 +58,7 @@ export async function loginUser(credentials) {
 
 export async function logoutUser() {
   try {
-    const response = await axiosConnection(API_SERVER + "/api/users/logout");
+    const response = await axiosConnection(API_URL + "/api/users/logout");
     // console.log("logout Response:", response);
     return response.data;
   } catch (error) {
@@ -77,7 +81,7 @@ export async function registerUser(credentials) {
 export async function resetPassword(email) {
   try {
     const response = await axios.post(
-      API_SERVER + "/api/users/reset-password",
+      API_URL + "/api/users/reset-password",
       email
     );
     console.log("reset pw response: ", response);
@@ -89,7 +93,7 @@ export async function resetPassword(email) {
 
 export async function fetchUserTopics() {
   try {
-    const response = await axiosConnection(API_SERVER + "/api/topics/");
+    const response = await axiosConnection(API_URL + "/api/topics/");
     // console.log("User topics Response:", response);
     return response.data;
   } catch (error) {
@@ -159,7 +163,7 @@ export async function deleteTopic(parameters) {
 // get link preview for guest user
 export async function getLinkPreview(url) {
   try {
-    const response = await axios.post(API_SERVER + "/api/links/link-preview/", {
+    const response = await axios.post(API_URL + "/api/links/link-preview/", {
       url,
     });
     return response;
