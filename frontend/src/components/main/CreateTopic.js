@@ -71,7 +71,7 @@ export default function CreateTopic(props) {
       }
     }
   }
-  const userLoggedIn = (
+  const createTopicContent = (
     <>
       <h2>Create topic</h2>
       <form onSubmit={handleSubmit}>
@@ -142,9 +142,9 @@ export default function CreateTopic(props) {
 
   return (
     <>
-      <button className="btn btn-create-topic" onClick={openModal}>
+      <span className="btn btn-create-topic" onClick={openModal}>
         Create Topic
-      </button>
+      </span>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -155,7 +155,7 @@ export default function CreateTopic(props) {
           close
         </button>
         {/* {props.user ? userLoggedIn : props.noUserLoggedIn} */}
-        {userLoggedIn}
+        {createTopicContent}
       </Modal>
     </>
   );

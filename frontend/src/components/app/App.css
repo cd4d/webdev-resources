@@ -11,7 +11,8 @@ body {
 }
 
 .column {
-  height: 100vh; /*allows both columns to span the full height of the browser window*/
+  /*allows both columns to span the full height of the browser window*/
+  /* height: 100vh;  */
   display: flex;
   flex-direction: column; /*places the left and right headers above the bottom content*/
 }
@@ -50,11 +51,22 @@ body {
 }
 
 @media (max-width: 767px) {
+  html {
+    /*CSS variable for fixed header*/
+    --top-spacing: 90px;
+  }
+  .lower {
+    height: 90vh;
+  }
+  .top {
+    padding: 10px;
+  }
   .header-container {
     font-size: small;
   }
   #site-title {
     font-size: 1.2rem;
+    margin-left: 8%;
   }
   .topic-title {
     font-size: medium;
@@ -66,12 +78,18 @@ body {
   .user-container {
     margin-right: 10%;
   }
+  .sidebar-items {
+    font-size: smaller;
+  }
 
   /* width of links container */
   .links-list {
     margin-top: 0;
     width: 85%;
     font-size: smaller;
+  }
+  .links-list img {
+    width: 85%;
   }
   /* shorten top margin of  link boxes */
   .link-container {
@@ -84,19 +102,9 @@ body {
   .link-preview-right {
     flex-basis: 30%;
   }
-  /* toggle mobile menu */
-  label[for="mobile-menu-checkbox"] {
-    display: block;
-  }
-  #mobile-menu-checkbox:not(:checked) ~ .sidebar {
-    display: none;
-  }
-  .sidebar {
-    animation-name: sidebar-show;
-    animation-duration: 300ms;
-  }
+
   .btn {
-    /* padding: 2px 4px; */
+    padding: 4px 6px;
     font-size: 84%;
     line-height: 1;
   }
@@ -106,6 +114,89 @@ body {
   .Modal {
     margin: 10% 5%;
   }
+
+  /* toggle mobile menu */
+  label[for="mobile-menu-checkbox"] {
+    display: block;
+  }
+  #mobile-menu-checkbox:not(:checked) ~ .sidebar {
+    display: none;
+  }
+  .sidebar {
+    width: 120px;
+    padding: 0;
+    animation-name: sidebar-show;
+    animation-duration: 300ms;
+  }
+  /* Move main content to right */
+  #mobile-menu-checkbox:checked ~ .main {
+    width: auto;
+    left: 120px;
+    animation-name: sidebar-show;
+    animation-duration: 300ms;
+  }
+  #mobile-menu-checkbox:checked ~ .main .topic-buttons-container {
+    display: flex;
+    flex-direction: column;
+    animation-name: sidebar-show;
+    animation-duration: 300ms;
+  }
+
+  /* #mobile-menu-checkbox:checked ~ .main .btn-delete-topic {
+    font-size: 0;
+    box-sizing: border-box;
+    position: relative;
+    transform: scale(var(--ggs, 1));
+    width: 10px;
+    height: 12px;
+    border: 2px solid transparent;
+    box-shadow: 0 0 0 2px, inset -2px 0 0, inset 2px 0 0;
+    border-bottom-left-radius: 1px;
+    border-bottom-right-radius: 1px;
+    margin-top: 4px;
+  }
+  #mobile-menu-checkbox:checked ~ .main .btn-delete-topic::before {
+    width: 12px;
+    height: 4px;
+    border: 2px solid;
+    border-bottom: transparent;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    top: -8px;
+    left: 0px;
+  }
+  #mobile-menu-checkbox:checked ~ .main .btn-delete-topic::after,
+  #mobile-menu-checkbox:checked ~ .main .btn-delete-topic::before {
+    content: "";
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+  }
+  #mobile-menu-checkbox:checked ~ .main .btn-delete-topic::after {
+    background: currentColor;
+    border-radius: 3px;
+    width: 16px;
+    height: 2px;
+    top: -4px;
+    left: -5px;
+  }
+
+  #mobile-menu-checkbox:checked ~ .main .btn-edit-topic {
+    font-size: 0;
+
+    box-sizing: border-box;
+    position: relative;
+    transform: rotate(-45deg) scale(var(--ggs, 1));
+    width: 14px;
+    height: 4px;
+    border-right: 2px solid transparent;
+    box-shadow: 0 0 0 2px, inset -2px 0 0;
+    border-top-right-radius: 1px;
+    border-bottom-right-radius: 1px;
+    margin-right: -2px;
+    color: gray;
+  } */
+
   @keyframes sidebar-show {
     from {
       margin-left: -500px;

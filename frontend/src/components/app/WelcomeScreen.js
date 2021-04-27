@@ -18,7 +18,7 @@ export default function WelcomeScreen(props) {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Example Modal"
-        className="welcome-screen-modal  addTopicModal"
+        className="Modal welcome-screen-modal  addTopicModal"
       >
         <h2>Simple Link bookmark</h2>
         <p>

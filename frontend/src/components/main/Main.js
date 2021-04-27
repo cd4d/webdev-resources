@@ -99,7 +99,7 @@ export default function Main(props) {
     }
     return (
       <div className="main-container">
-        <nav>
+        <nav className="topic-buttons-container">
           <CreateTopic
             topics={props.topics}
             handleCreateTopic={props.handleCreateTopic}
