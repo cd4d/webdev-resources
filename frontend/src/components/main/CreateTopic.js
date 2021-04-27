@@ -42,7 +42,7 @@ export default function CreateTopic(props) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    // don't send a request if fields are blank
+    // don't send a request if fields are blank.
     if (!newTopic) {
       return closeModal();
     }
