@@ -26,6 +26,8 @@ body {
   flex-grow: 1; /*ensures that the container will take up the full height of the parent container*/
   overflow-y: auto; /*adds scroll to this container*/
   align-items: center;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 200 200'%3E%3Cpolygon fill='%23DCEFFA' fill-opacity='0.2' points='100 0 0 100 100 100 100 200 200 100 200 0'/%3E%3C/svg%3E");
 }
 
 .required::after {
