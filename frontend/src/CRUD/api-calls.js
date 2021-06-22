@@ -3,11 +3,11 @@ import axios from "axios";
 import slugify from "../utils/utils";
 // to be changed in production
 let API_URL;
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "prod") {
   API_URL = "http://localhost:3000";
 } else {
-  //API_URL = process.env.REACT_APP_PROD_BACKEND_URL;
-  API_URL = "";
+  API_URL = process.env.REACT_APP_PROD_BACKEND_URL;
+  //API_URL = "";
 }
 
 // common parameters for axios: https://flaviocopes.com/axios-credentials/ a
