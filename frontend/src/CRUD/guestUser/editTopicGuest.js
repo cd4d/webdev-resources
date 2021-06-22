@@ -1,5 +1,3 @@
-import slugify from "../../utils/utils";
-
 export async function editTopicGuest(topicToEdit, editedTopic) {
   console.log("topicToEdit: ", topicToEdit);
   console.log("editedTopic: ", editedTopic);
