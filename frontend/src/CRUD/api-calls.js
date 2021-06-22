@@ -3,7 +3,7 @@ import axios from "axios";
 import slugify from "../utils/utils";
 // to be changed in production
 let API_URL;
-if (process.env.NODE_ENV !== "prod") {
+if (process.env.NODE_ENV !== "production") {
   API_URL = "http://localhost:3000";
 } else {
   API_URL = process.env.REACT_APP_PROD_BACKEND_URL;
