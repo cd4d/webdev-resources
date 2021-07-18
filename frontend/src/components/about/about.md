@@ -1,5 +1,3 @@
-# Links bookmarker
-
 ## Full-stack MERN application:
 
 This application allowing links to be saved in a remote database with optional email-based registration. Guest users data is saved in local storage. 

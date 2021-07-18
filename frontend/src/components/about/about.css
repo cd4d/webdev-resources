@@ -6,5 +6,15 @@
 .about-title {
   color: blueviolet;
 }
-.about-container h2 {
+.about-container-one-column {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  overflow: auto;
+  margin-bottom: 5%;
+}
+.about-text {
+  margin-left: 20%;
+  margin-right: 20%;
+  text-align: justify;
 }
