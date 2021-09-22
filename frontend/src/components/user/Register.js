@@ -109,7 +109,7 @@ export default function Login(props) {
           type="password"
           label="password"
           id="password"
-          placeholder="password"
+          placeholder="password, min. 5 chars"
           value={inputPassword}
           onChange={handleChange}
           required
