@@ -11,12 +11,12 @@ services:
     envVars:
       - key: BACKEND_PORT # Imported from Heroku app
         value: 3000
-      - key: DB_PROD # Imported from Heroku app
-        value: mongodb+srv://admin-mongodbatlas:4CMXjdvr6rF1mkgM@webdev-resources.cn7yn.mongodb.net/web-resources_dev_prod?retryWrites&#x3D;true&amp;w&#x3D;majority
+      # - key: DB_PROD # Imported from Heroku app
+      #   value: 
       - key: FRONTEND_PORT # Imported from Heroku app
         value: 4000
-      - key: MAILTRAP_USERNAME # Imported from Heroku app
-        value: a7cfb190d8901a
+      # - key: MAILTRAP_USERNAME # Imported from Heroku app
+      #   value: a7cfb190d8901a
       - key: NODE_ENV # Imported from Heroku app
         value: production
       - key: NODE_MODULES_CACHE # Imported from Heroku app
