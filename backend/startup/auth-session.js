@@ -20,6 +20,7 @@ if (process.env.NODE_ENV !== "production") {
 const sessionStore = MongoStore.create({
   mongoUrl: DB_URL,
   collection: "sessions",
+  client: "client"
 });
 module.exports = function (app) {
   app.use(
