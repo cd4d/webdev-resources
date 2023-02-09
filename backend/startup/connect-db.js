@@ -19,5 +19,5 @@ module.exports = function () {
       autoIndex: true,
     })
     .then(() => console.log(`Connected to ${DATABASE}...`))
-    .catch((err) => console.log("Could not connect to database."));
+    .catch((err) => console.log("Could not connect to database.", err));
 };
