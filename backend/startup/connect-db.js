@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === "production") {
 
 module.exports = function () {
   mongoose
-    .connect(DATABASE, {
+    .connect(encodeURI(DATABASE), {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
