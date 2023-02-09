@@ -28,6 +28,7 @@ ARG PROD_BACKEND_URL
 ARG PROD_FRONTEND_URL
 ARG PROD_FRONTEND_2_URL
 ARG SESSION_SECRET
+ARG DB_URL_NO_SRV
 
 
 # The FROM statement above refers to an image with the base buildpacks already

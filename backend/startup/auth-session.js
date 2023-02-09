@@ -18,7 +18,7 @@ if (process.env.NODE_ENV !== "production") {
   DB_URL = `mongodb+srv://${process.env.DB_ADMIN}:${encodeURIComponent(process.env.DB_PASSWORD)}@${process.env.DB_PROD}`;
 }
 const sessionStore = MongoStore.create({
-  mongoUrl: DB_URL,
+  mongoUrl: process.env.DB_URL_NO_SRV,
   collection: "sessions",
   client: "client"
 });
