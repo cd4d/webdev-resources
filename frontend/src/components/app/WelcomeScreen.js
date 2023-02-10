@@ -26,9 +26,7 @@ export default function WelcomeScreen(props) {
           preview.{" "}
         </p>
         <p>
-          Save, delete, edit links and topics. Unregistered use is saved in
-          localStorage, registered users (no real email needed) are saved in a
-          remote MongoDB database.
+          Save, delete, edit links and topics. 
         </p>
         <p>Uses MongoDB, Express, Node and React (MERN stack).</p>
         <button onClick={closeModal}>close</button>
