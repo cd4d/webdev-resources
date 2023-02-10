@@ -7,7 +7,7 @@ import "./header.css";
 export default function Header(props) {
   const renderUserSection = (
     <div className="user-container">
-      {props.user ? (
+      {/* {props.user ? (
         <>
           Welcome, <span className="username-header">{props.user}</span>
           <form
@@ -63,7 +63,16 @@ export default function Header(props) {
             About
           </Link>
         </>
-      )}
+      )} */}
+      <Link
+        className="login-register-links"
+        to="/about"
+        onClick={() => {
+          props.flushAppError();
+        }}
+      >
+        About
+      </Link>
       {/* <form
   onSubmit={(e) => {
     e.preventDefault();
